@@ -6,7 +6,10 @@ There are other Vue calendar components, but they were either focused on date-pi
 
 My use case is far simpler--I just wanted a traditional month-grid calendar, with events listed (including multi-day events), that would raise events when the calendar month is changed or the user clicks/taps a date or event.
 
-A test page is included, with hot reload, etc.
+## Demo
+A demo page is included, with hot reload, etc. Here's a live demo:
+
+https://www.tallent.us/vue-simple-calendar/
 
 ## Features
 - Lightweight!

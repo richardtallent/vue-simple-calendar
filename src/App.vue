@@ -20,10 +20,8 @@ export default {
 		Calendar,
 	},
 	data() {
-		const d = new Date();
-		d.setHours(0, 0, 0, 0);
 		return {
-			showDate: d,
+			showDate: new Date(2017, 4, 1),
 			message: 'Click a date or event...',
 			events: [
 				{ id: 'e1', startDate: new Date(2017, 4, 12), endDate: new Date(2017, 4, 12), title: 'Single-day event with a long title' },
