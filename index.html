@@ -1,10 +1,36 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>vue-simple-calendar Demo</title>
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
+	<head>
+		<meta charset="utf-8">
+		<title>vue-simple-calendar Demo</title>
+		<style type="text/css">
+			/*
+			These styles are optional, added for the demo only, to illustrate the flexbility
+			of styling the calendar purely with CSS.
+			*/
+
+			/* Add some icons beside the day number for traditional holidays */
+			.calendar .d10-31 .date::before { content: '🎃'; margin-right: 0.5em; }
+			.calendar .d12-25 .date::before { content: '🎄'; margin-right: 0.5em; }
+			.calendar .d12-31 .date::before { content: '🍾'; margin-right: 0.5em; }
+			.calendar .d05-05 .date::before { content: '🇲🇽'; margin-right: 0.5em; }
+			.calendar .d07-04 .date::before { content: '🇺🇸'; margin-right: 0.5em; }
+			.calendar .d07-01 .date::before { content: '🇨🇦'; margin-right: 0.5em; }
+			.calendar .d07-14 .date::before { content: '🇫🇷'; margin-right: 0.5em; }
+
+			/* Easter: example of a holiday that changes each year. Easy to pre-populate for a reasonable number of years. */
+			.calendar .d2016-04-05 .date::before { content: '✝️'; margin-right: 0.5em; }
+			.calendar .d2016-03-27 .date::before { content: '✝️'; margin-right: 0.5em; }
+			.calendar .d2017-04-16 .date::before { content: '✝️'; margin-right: 0.5em; }
+			.calendar .d2018-04-01 .date::before { content: '✝️'; margin-right: 0.5em; }
+
+			/* Add some styling for events tagged with the "birthday" class */
+			.calendar .event.birthday { background-color: #e0f0e0; border-color: #d7e7d7; }
+			.calendar .event.birthday::before { content: '🎂'; margin-right: 0.5em; }
+
+		</style>
+	</head>
+	<body>
+		<div id="app"></div>
+	</body>
 </html>

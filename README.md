@@ -25,15 +25,32 @@ https://www.tallent.us/vue-simple-calendar/
 
 This is still early in development. PRs, ideas, and issues are welcome.
 
+## Component parameters
+
+The following attributes can be provided:
+
+events: array containing the events to show on the calendar
+show-date: the month/year to start the calendar on (the day of the month is ignored). Defaults to the current month.
+enable-drag-drop: whether to enable dragging and dropping of events. Defaults to false.
+
+## Events
+
+clickDay(date): fired when user clicks a date
+clickEvent(event): fired when user clicks on an event
+setShowDate(date): fired when user goes to a different month
+dropEventOnDate(event, date): fired when user drags an event to a date
+
 ## Future plans
 - Keep it simple, not a kitchen-sink control.
 - Better docs.
 - Add optional external stylesheets (keep scoped styling to the basics).
 - Add a "starts-on-Monday" mode.
-- Possibly add a "week" view (no of day, just 7 taller boxes).
+- Possibly add a "week" view (no time of day, just 7 taller boxes).
 - Possibly add modes for a set number of weeks, multiple months, or even a full year.
 - Handle events with times.
-- Make this an NPM package *(I know nothing about this and could use a hand with it!)*
+- Make this an NPM package *(I know nothing about this and could use a hand with it!)*.
+- Extract date manipulation methods to a separate plugin.
+- Fix a display issue that could occur when multi-day events stack and stagger
 
 PRs and issues are welcome! Please use the same code style. Use of "Prettier" is encouraged.
 
@@ -44,6 +61,7 @@ This project was inspired by Monthly.js, a JQuery-based control I've contributed
 | Date | Version | Notes |
 | --- | --- | --- |
 | 2017-05-11 | 1.0 | First version |
+| 2017-05-15 | 1.1 | Better demo styling; refactor code; add basic drag/drop capability; fix display issue when events not sorted by start date |
 
 ## License
 

@@ -4,7 +4,7 @@
 				'locale-' + locale
 			]">
 		<div class="header">
-			<div class="previousMonth"><button @click="onClickPreviousMonth" :disabled="disablePast && (today > eopm(showDate))"></button></div>
+			<div class="previousMonth"><button @click="onClickPreviousMonth" :disabled="disablePast && (today > endOfPreviousMonth(showDate))"></button></div>
 			<div class="thisMonth">
 				<div class="monthLabel">
 					<span class="monthname">{{monthName(showDate)}}</span>
@@ -12,27 +12,31 @@
 				</div>
 				<div class="currentMonth" v-if="!isSameMonth(today, showDate)"><button @click="onClickCurrentMonth"></button></div>
 			</div>
-			<div class="nextMonth"><button @click="onClickNextMonth" :disabled="disableFuture && (today < bonm(showDate))"></button></div>
+			<div class="nextMonth"><button @click="onClickNextMonth" :disabled="disableFuture && (today < beginningOfNextMonth(showDate))"></button></div>
 		</div>
 		<div class="daylist">
 			<div class="day" v-for="(w, index) in weekdayNames" :class="'dow'+index">{{w}}</div>
 		</div>
 		<div class="month">
-			<div v-for="day in days" class="day" :class="[
-				'dow' + day.getDay(),
-				'd' + iso(day),
-				'd' + isoMonthDay(day),
-				{
-					outsideOfMonth : day.getMonth() != showDate.getMonth(),
-					today : isSameDate(day, today),
-					past : isInPast(day)
-				}
-			]" @click="onClickDay(day)">
+			<div v-for="day in days" class="day" 
+				@drop="onDrop($event, day)"
+				@dragover="onDragOver($event, day)"
+				:class="[
+					'dow' + day.getDay(),
+					'd' + isoYearMonthDay(day),
+					'd' + isoMonthDay(day),
+					{
+						outsideOfMonth : day.getMonth() != showDate.getMonth(),
+						today : isSameDate(day, today),
+						past : isInPast(day)
+					}
+				]" @click="onClickDay(day)">
 				<div class="content">
 					<div class="date">{{day.getDate()}}</div>
 					<div v-for="e in getEvents(day)" 
 						class="event"
 						:draggable="enableDragDrop && !isPlaceholder(e, day)"
+						@dragstart="onDragStart($event, e)"
 						@click.stop="onClickEvent(e, day)"
 						:class="[
 							getSpan(e, day),
@@ -41,6 +45,7 @@
 								placeholder: isPlaceholder(e, day),
 								continued: !isPlaceholder(e, day) && (e.startDate < day),
 								toBeContinued: !isPlaceholder(e, day) && (dayDiff(day, e.endDate) > (6 - day.getDay())),
+								hasUrl: e.url
 							}
 						]"
 						:title="e.title"
@@ -100,7 +105,6 @@ export default {
 			default() { return false; },
 		},
 		enableDragDrop: {
-			type: Boolean,
 			default() { return false; },
 		},
 	},
@@ -117,8 +121,8 @@ export default {
 		days() {
 			// Returns an array of object representing each day in the view, whether or not
 			// it is part of the visible month.
-			const firstDate = this.boc(this.showDate);
-			const lastDate = this.eoc(this.showDate);
+			const firstDate = this.beginningOfCalendar(this.showDate);
+			const lastDate = this.endOfCalendar(this.showDate);
 			const numDays = this.dayDiff(firstDate, lastDate);
 			const result = [];
 			for (let x = 0; x < numDays; x++) {
@@ -141,29 +145,33 @@ export default {
 		},
 		allowLastMonthClick() {
 			if (!this.disablePast) return true;
-			const endOfLastMonth = this.addDays(this.bom(this.showDate), -1);
+			const endOfLastMonth = this.addDays(this.beginningOfMonth(this.showDate), -1);
 			return endOfLastMonth >= this.today;
 		},
 		allowNextMonthClick() {
 			if (!this.disableFuture) return true;
-			const beginningOfNextMonth = this.addDays(this.eom(this.showDate), 1);
+			const beginningOfNextMonth = this.addDays(this.endOfMonth(this.showDate), 1);
 			return beginningOfNextMonth <= this.today;
 		},
 	},
 
 	methods: {
+
 		addDays(d, days) {
 			const d2 = new Date(d);
 			d2.setDate(d.getDate() + days);
 			return d2;
 		},
+
 		isSameDate(d1, d2) {
 			// http://stackoverflow.com/questions/492994/compare-two-dates-with-javascript
 			return d1.getTime() === d2.getTime();
 		},
+
 		isSameMonth(d1, d2) {
 			return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth();
 		},
+
 		isInPast(d) {
 			const currentYear = this.today.getFullYear();
 			const yr = d.getFullYear();
@@ -177,40 +185,44 @@ export default {
 					|| (month === currentMonth && dayNumber < currentDay)
 				));
 		},
+
 		isPlaceholder(event, d) {
 			// True if the event should be a placeholder for this date
 			return (event.startDate < d) && (d.getDay() > 0);
 		},
+
 		getSpan(event, d) {
 			// Returns the span class of the event, from 1-7, representing
 			// the number of days this event takes up on the week.
 			if (this.isPlaceholder(event, d)) return '';
 			return `span${Math.min(7 - d.getDay(), this.dayDiff(d, event.endDate) + 1)}`;
 		},
-		// ISO date
-		iso: d => d.toISOString().slice(0, 10),
-		// IDO month and date
+
+		isoYearMonthDay: d => d.toISOString().slice(0, 10),
+
 		isoMonthDay: d => d.toISOString().slice(5, 10),
-		// Beginning of month
-		bom: d => new Date(d.getFullYear(), d.getMonth(), 1),
-		// End of month
-		eom: d => new Date(d.getFullYear(), d.getMonth() + 1, 0),
-		// End of previous month
-		eopm: d => new Date(d.getFullYear(), d.getMonth(), 0),
-		// Beginning of previous month
-		bopm: d => new Date(d.getFullYear(), d.getMonth() - 1, 1),
-		// Beginning of next month
-		bonm: d => new Date(d.getFullYear(), d.getMonth() + 1, 1),
-		// Beginning of week
-		bow(d) { return this.addDays(d, 0 - d.getDay()); },
-		// End of week
-		eow(d) { return this.addDays(d, 7 - d.getDay()); },
-		// Beginning of calendar (including out-of-month days)
-		boc(d) { return this.bow(this.bom(d)); },
-		// End of calendar
-		eoc(d) { return this.eow(this.eom(d)); },
+
+		beginningOfMonth: d => new Date(d.getFullYear(), d.getMonth(), 1),
+
+		endOfMonth: d => new Date(d.getFullYear(), d.getMonth() + 1, 0),
+
+		endOfPreviousMonth: d => new Date(d.getFullYear(), d.getMonth(), 0),
+
+		beginningOfPreviousMonth: d => new Date(d.getFullYear(), d.getMonth() - 1, 1),
+
+		beginningOfNextMonth: d => new Date(d.getFullYear(), d.getMonth() + 1, 1),
+
+		beginningOfWeek(d) { return this.addDays(d, 0 - d.getDay()); },
+
+		endOfWeek(d) { return this.addDays(d, 7 - d.getDay()); },
+
+		beginningOfCalendar(d) { return this.beginningOfWeek(this.beginningOfMonth(d)); },
+
+		endOfCalendar(d) { return this.endOfWeek(this.endOfMonth(d)); },
+
 		// Number of days between two dates (times must be 0)
 		dayDiff(d1, d2) { return (d2 - d1) / 86400000; },
+
 		// Name of the given month (only used once)
 		monthName(d) {
 			// Use the user's locale if possible to obtain the name of the month
@@ -221,29 +233,62 @@ export default {
 			const formatter = new Intl.DateTimeFormat(this.locale, { month: this.monthNameFormat });
 			return formatter.format(d);
 		},
+
 		onClickDay(day) {
 			if (this.disablePast && this.isInPast(day)) return;
 			this.$emit('clickDay', day);
 		},
+
 		onClickEvent(e, day) {
 			this.$emit('clickEvent', e, day);
 		},
+
 		onClickPreviousMonth() {
-			this.$emit('setShowDate', this.bopm(this.showDate));
+			this.$emit('setShowDate', this.beginningOfPreviousMonth(this.showDate));
 		},
+
 		onClickNextMonth() {
-			this.$emit('setShowDate', this.bonm(this.showDate));
+			this.$emit('setShowDate', this.beginningOfNextMonth(this.showDate));
 		},
+
 		onClickCurrentMonth() {
 			this.$emit('setShowDate', this.bom(this.today));
 		},
+
 		getEvents(d) {
 			// Return a list of events that CONTAIN the day.
+			// Sorted so the events that start earlier are always shown first.
 			return this.events.filter(event =>
 				event.startDate <= d
 				&& event.endDate >= d
-			, this);
+			, this).sort((a, b) => {
+				if (a.startDate < b.startDate) return -1;
+				if (b.startDate < a.startDate) return 1;
+				if (a.endDate > b.endDate) return -1;
+				if (b.endDate > a.endDate) return 1;
+				return a.id < b.id ? -1 : 1;
+			});
 		},
+
+		onDragStart(ev, calendarEvent) {
+			if (!this.enableDragDrop) return;
+			ev.dataTransfer.setData('calendarEventId', calendarEvent.id);
+		},
+
+		onDragOver(ev, day) {
+			if (!this.enableDragDrop) return;
+			ev.preventDefault();
+			const calendarEventId = ev.dataTransfer.getData('calendarEventId');
+			this.$emit('dragEventOverDate', calendarEventId, day);
+		},
+
+		onDrop(ev, day) {
+			if (!this.enableDragDrop) return;
+			ev.preventDefault();
+			const calendarEventId = ev.dataTransfer.getData('calendarEventId');
+			this.$emit('dropEventOnDate', calendarEventId, day);
+		},
+
 	},
 
 };
@@ -376,7 +421,7 @@ they continue to the next day.
 .event {
 	position: relative;
 	clear: right;
-	border: 1px solid #99f;
+	border: 1px solid #e7e7ff;
 	border-radius: 0.5em;
 	background-color: #f0f0ff;
 	z-index: 1;
@@ -387,8 +432,8 @@ they continue to the next day.
 	overflow: hidden;
 }
 
-.event:hover {
-	border-color: #33f;
+.event.hasUrl:hover {
+	text-decoration: underline;
 }
 
 /* Used to hold when an event has spilled over to this day */
@@ -426,7 +471,7 @@ they continue to the next day.
 	border-bottom-right-radius: 0;
 }
 
-/* Set min-height to 100% of width (1:1 ratio) */
+/* Set min-height to 85% of width */
 .month .day:before {
 	content: "";
 	display: block;
