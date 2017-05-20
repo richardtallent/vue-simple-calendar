@@ -52,7 +52,6 @@ dropEventOnDate(event, date): fired when an event is dropped on a date
 - Handle events with times.
 - Make this an NPM package *(I know nothing about this and could use a hand with it!)*.
 - Extract date manipulation methods to a separate plugin.
-- Fix a display issue that could occur when multi-day events stack and stagger
 
 PRs and issues are welcome! Please use the same code style. Use of "Prettier" is encouraged.
 
