@@ -29,18 +29,18 @@ This is still early in development. PRs, ideas, and issues are welcome.
 
 The following attributes can be provided:
 
-events: array containing the events to show on the calendar
-show-date: the month/year to start the calendar on (the day of the month is ignored). Defaults to the current month.
-enable-drag-drop: whether to enable dragging and dropping of events. Defaults to false.
+- events: array containing the events to show on the calendar
+- show-date: the month/year to start the calendar on (the day of the month is ignored). Defaults to the current month.
+- enable-drag-drop: whether to enable dragging and dropping of events. Defaults to false.
 
 ## Events
 
-clickDay(date): fired when user clicks a date
-clickEvent(event): fired when user clicks on an event
-setShowDate(date): fired when user goes to a different month. The date passed is the first of the month in view (days before and after the month may also be visible).
-dragEventEnterDate(event): fires when an event is dragged over a date
-dragEventLeaveDate(event): fires when an event is dragged out of a date without dropping it there
-dropEventOnDate(event, date): fired when an event is dropped on a date
+- clickDay(date): fired when user clicks a date
+- clickEvent(event): fired when user clicks on an event
+- setShowDate(date): fired when user goes to a different month. The date passed is the first of the month in view (days before and after the month may also be visible).
+- dragEventEnterDate(event): fires when an event is dragged over a date
+- dragEventLeaveDate(event): fires when an event is dragged out of a date without dropping it there
+- dropEventOnDate(event, date): fired when an event is dropped on a date
 
 ## Future plans
 - Keep it simple, not a kitchen-sink control.
