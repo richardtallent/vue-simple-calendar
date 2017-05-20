@@ -246,7 +246,7 @@ export default {
 		},
 
 		onClickCurrentMonth() {
-			this.$emit('setShowDate', this.bom(this.today));
+			this.$emit('setShowDate', this.beginningOfMonth(this.today));
 		},
 
 		findAndSortEventsInWeek(weekStart) {
