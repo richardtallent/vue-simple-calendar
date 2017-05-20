@@ -270,7 +270,7 @@ export default {
 			// Sorted so the events that start earlier are always shown first.
 			const events = this.findAndSortEventsInWeek(weekStart);
 			const results = [];
-			const slots = [[], [], [], [], [], [], []];
+			const slots = [[], [], [], [], [], [], [], [], [], []];
 			for (let i = 0; i < events.length; i++) {
 				const e = events[i];
 				const ep = { details: e, slot: 0 };
