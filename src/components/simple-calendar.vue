@@ -18,40 +18,35 @@
 			<div class="day" v-for="(w, index) in weekdayNames" :class="'dow'+index">{{w}}</div>
 		</div>
 		<div class="month">
-			<div v-for="day in days" class="day" 
-				@drop="onDrop($event, day)"
-				@dragover="onDragOver($event, day)"
-				:class="[
-					'dow' + day.getDay(),
-					'd' + isoYearMonthDay(day),
-					'd' + isoMonthDay(day),
-					{
-						outsideOfMonth : day.getMonth() != showDate.getMonth(),
-						today : isSameDate(day, today),
-						past : isInPast(day)
-					}
-				]" @click="onClickDay(day)">
-				<div class="content">
-					<div class="date">{{day.getDate()}}</div>
-					<div v-for="e in getEvents(day)" 
-						class="event"
-						:draggable="enableDragDrop && !isPlaceholder(e, day)"
-						@dragstart="onDragStart($event, e)"
-						@click.stop="onClickEvent(e, day)"
-						:class="[
-							getSpan(e, day),
-							e.classes,
-							{
-								placeholder: isPlaceholder(e, day),
-								continued: !isPlaceholder(e, day) && (e.startDate < day),
-								toBeContinued: !isPlaceholder(e, day) && (dayDiff(day, e.endDate) > (6 - day.getDay())),
-								hasUrl: e.url
-							}
-						]"
-						:title="e.title"
-						v-html="e.title"></div>
+			<div v-for="(weekStart, weekIndex) in weeks" class="week" :class="['week' + (weekIndex+1), 'ws' + isoYearMonthDay(weekStart)]">
+				<div v-for="day in daysOfWeek(weekStart)" class="day" 
+					@drop="onDrop($event, day)"
+					@dragover="onDragOver($event)"
+					@dragenter="onDragEnter($event, day)"
+					@dragleave="onDragLeave($event, day)"
+					:class="[
+						'dow' + day.getDay(),
+						'd' + isoYearMonthDay(day),
+						'd' + isoMonthDay(day),
+						{
+							outsideOfMonth : day.getMonth() != showDate.getMonth(),
+							today : isSameDate(day, today),
+							past : isInPast(day)
+						}
+					]" @click="onClickDay(day)">
+					<div class="content">
+						<div class="date">{{day.getDate()}}</div>
+					</div>
 				</div>
-			</div>
+				<div v-for="e in getWeekEvents(weekStart)"
+					class="event"
+					:draggable="enableDragDrop"
+					@dragstart="onDragStart($event, e)"
+					@click.stop="onClickEvent(e)"
+					:class="e.classes"
+					:title="e.details.title"
+					v-html="e.details.title"></div>
+				</div>
 		</div>
 	</div>
 </template>
@@ -118,15 +113,15 @@ export default {
 		languageCode() {
 			return this.locale.substring(0, 2);
 		},
-		days() {
-			// Returns an array of object representing each day in the view, whether or not
-			// it is part of the visible month.
+		weeks() {
+			// Returns an array of object representing the date of the beginning of each week
+			// included in the view (which, by default, consists of an entire month).
 			const firstDate = this.beginningOfCalendar(this.showDate);
 			const lastDate = this.endOfCalendar(this.showDate);
-			const numDays = this.dayDiff(firstDate, lastDate);
+			const numWeeks = Math.floor(this.dayDiff(firstDate, lastDate) / 7);
 			const result = [];
-			for (let x = 0; x < numDays; x++) {
-				result.push(this.addDays(firstDate, x));
+			for (let x = 0; x < numWeeks; x++) {
+				result.push(this.addDays(firstDate, x * 7));
 			}
 			return result;
 		},
@@ -172,30 +167,25 @@ export default {
 			return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth();
 		},
 
+		daysOfWeek(weekStart) {
+			const result = [];
+			for (let x = 0; x < 7; x++) result.push(this.addDays(weekStart, x));
+			return result;
+		},
+
 		isInPast(d) {
+			// Could be more terse, but gets date parts lazily for performance.
 			const currentYear = this.today.getFullYear();
 			const yr = d.getFullYear();
+			if (yr < currentYear) return true;
+			if (yr > currentYear) return false;
 			const currentMonth = this.today.getMonth();
 			const month = d.getMonth();
+			if (month < currentMonth) return true;
+			if (month > currentMonth) return false;
 			const dayNumber = d.getDate();
 			const currentDay = this.today.getDate();
-			return yr < currentYear
-				|| (yr === currentYear && (
-					month < currentMonth
-					|| (month === currentMonth && dayNumber < currentDay)
-				));
-		},
-
-		isPlaceholder(event, d) {
-			// True if the event should be a placeholder for this date
-			return (event.startDate < d) && (d.getDay() > 0);
-		},
-
-		getSpan(event, d) {
-			// Returns the span class of the event, from 1-7, representing
-			// the number of days this event takes up on the week.
-			if (this.isPlaceholder(event, d)) return '';
-			return `span${Math.min(7 - d.getDay(), this.dayDiff(d, event.endDate) + 1)}`;
+			return dayNumber < currentDay;
 		},
 
 		isoYearMonthDay: d => d.toISOString().slice(0, 10),
@@ -234,13 +224,17 @@ export default {
 			return formatter.format(d);
 		},
 
+		monthWeek(d) {
+			return 1 + Math.floor(this.dayDiff(this.beginningOfCalendar(this.showDate), d) / 7);
+		},
+
 		onClickDay(day) {
 			if (this.disablePast && this.isInPast(day)) return;
 			this.$emit('clickDay', day);
 		},
 
 		onClickEvent(e, day) {
-			this.$emit('clickEvent', e, day);
+			this.$emit('clickEvent', e.details, day);
 		},
 
 		onClickPreviousMonth() {
@@ -255,12 +249,12 @@ export default {
 			this.$emit('setShowDate', this.bom(this.today));
 		},
 
-		getEvents(d) {
-			// Return a list of events that CONTAIN the day.
+		findAndSortEventsInWeek(weekStart) {
+			// Return a list of events that CONTAIN the week starting on a day.
 			// Sorted so the events that start earlier are always shown first.
-			return this.events.filter(event =>
-				event.startDate <= d
-				&& event.endDate >= d
+			const events = this.events.filter(event =>
+				event.startDate < this.addDays(weekStart, 7)
+				&& event.endDate >= weekStart
 			, this).sort((a, b) => {
 				if (a.startDate < b.startDate) return -1;
 				if (b.startDate < a.startDate) return 1;
@@ -268,23 +262,82 @@ export default {
 				if (b.endDate > a.endDate) return 1;
 				return a.id < b.id ? -1 : 1;
 			});
+			return events;
+		},
+
+		getWeekEvents(weekStart) {
+			// Return a list of events that CONTAIN the week starting on a day.
+			// Sorted so the events that start earlier are always shown first.
+			const events = this.findAndSortEventsInWeek(weekStart);
+			const results = [];
+			const slots = [[], [], [], [], [], [], []];
+			for (let i = 0; i < events.length; i++) {
+				const e = events[i];
+				const ep = { details: e, slot: 0 };
+				const continued = e.startDate < weekStart;
+				const startOffset = continued ? 0 : this.dayDiff(weekStart, e.startDate);
+				const toBeContinued = this.dayDiff(weekStart, e.endDate) > 7;
+				const span = Math.min(
+					7 - startOffset,
+					this.dayDiff(this.addDays(weekStart, startOffset), e.endDate) + 1);
+				for (let d = 0; d < 7; d++) {
+					if (d === startOffset) {
+						for (let s = 0; s < 10; s++) {
+							if (!slots[d][s]) {
+								ep.slot = s;
+								slots[d][s] = true;
+								break;
+							}
+						}
+					} else if (d < startOffset + span) {
+						slots[d][ep.slot] = true;
+					}
+				}
+				ep.classes = [
+					`offset${startOffset}`,
+					`span${span}`,
+					`slot${ep.slot + 1}`,
+					{
+						continued,
+						toBeContinued,
+						hasUrl: e.url,
+					},
+				];
+				if (e.classes) ep.classes = ep.classes.concat(e.classes);
+				results.push(ep);
+			}
+			return results;
 		},
 
 		onDragStart(ev, calendarEvent) {
 			if (!this.enableDragDrop) return;
-			ev.dataTransfer.setData('calendarEventId', calendarEvent.id);
+			ev.dataTransfer.setData('calendarEventId', calendarEvent.details.id);
 		},
 
-		onDragOver(ev, day) {
+		onDragOver(ev) {
 			if (!this.enableDragDrop) return;
 			ev.preventDefault();
+		},
+
+		onDragEnter(ev, day) {
+			if (!this.enableDragDrop) return;
+			ev.target.classList.add('draghover');
 			const calendarEventId = ev.dataTransfer.getData('calendarEventId');
-			this.$emit('dragEventOverDate', calendarEventId, day);
+			this.$emit('dragEventEnterDate', calendarEventId, day);
+		},
+
+		onDragLeave(ev, day) {
+			if (!this.enableDragDrop) return;
+			ev.preventDefault();
+			ev.target.classList.remove('draghover');
+			const calendarEventId = ev.dataTransfer.getData('calendarEventId');
+			this.$emit('dragEventLeaveDate', calendarEventId, day);
 		},
 
 		onDrop(ev, day) {
 			if (!this.enableDragDrop) return;
 			ev.preventDefault();
+			ev.target.classList.remove('draghover');
 			const calendarEventId = ev.dataTransfer.getData('calendarEventId');
 			this.$emit('dropEventOnDate', calendarEventId, day);
 		},
@@ -315,6 +368,7 @@ they continue to the next day.
 
 .month,
 .header,
+.week,
 .daylist {
 	display: flex;
 	width: 100%;
@@ -325,6 +379,10 @@ they continue to the next day.
 	align-content: flex-start;
 	border-style: solid;
 	border-color: #DDD;
+}
+
+.month {
+	flex-direction: column;
 }
 
 .header {
@@ -343,6 +401,14 @@ they continue to the next day.
 
 .header .currentMonth {
 	margin-left: 1em;
+}
+
+.week {
+	position: relative;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	border: none;
 }
 
 .daylist div {
@@ -382,6 +448,7 @@ they continue to the next day.
 
 .month {
 	border-width: 0 0 0.05em 0.05em;
+	overflow: hidden;
 }
 
 .day {
@@ -390,7 +457,28 @@ they continue to the next day.
 	border-color: #DDD;
 	border-width: 0.05em 0.05em 0 0;
 	width: 14.285714%;
+	background-color: #fff;
 }
+
+.day .content.draghover {
+	border: 3px solid yellow;
+}
+
+/* Use z-index to ensure events too tall for the view are clipped vertically */
+
+.month .week1 { z-index: 2; }
+.month .week2 { z-index: 4; }
+.month .week3 { z-index: 6; }
+.month .week4 { z-index: 8; }
+.month .week5 { z-index: 10; }
+.month .week6 { z-index: 12; }
+
+.month .week1 .event { z-index: 3; }
+.month .week2 .event { z-index: 5; }
+.month .week3 .event { z-index: 7; }
+.month .week4 .event { z-index: 9; }
+.month .week5 .event { z-index: 11; }
+.month .week6 .event { z-index: 13; }
 
 .day.today {
 	background-color: #ffe;
@@ -416,21 +504,40 @@ they continue to the next day.
 	float: right;
 	padding: 0.2em;
 	clear: both;
+	line-height: 1em;
 }
 
 .event {
-	position: relative;
-	clear: right;
+	position: absolute;
 	border: 1px solid #e7e7ff;
 	border-radius: 0.5em;
 	background-color: #f0f0ff;
-	z-index: 1;
 	padding: 0.3em 0.3em;
 	line-height: 1em;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
 }
+
+.event.slot1 { top: 1.5em; }
+.event.slot2 { top: calc(1.5em + 1 * 1.6em + 2px); }
+.event.slot3 { top: calc(1.5em + 2 * 1.6em + 2px); }
+.event.slot4 { top: calc(1.5em + 3 * 1.6em + 2px); }
+.event.slot5 { top: calc(1.5em + 4 * 1.6em + 2px); }
+.event.slot6 { top: calc(1.5em + 5 * 1.6em + 2px); }
+.event.slot7 { top: calc(1.5em + 6 * 1.6em + 2px); }
+.event.slot8 { top: calc(1.5em + 7 * 1.6em + 2px); }
+.event.slot9 { top: calc(1.5em + 8 * 1.6em + 2px); }
+.event.slot10 { top: calc(1.5em + 9 * 1.6em + 2px); }
+.event.slot0 { display: none; } /* More than 10 slots not currently supported */
+
+.event.offset0 { left: calc(.05em); }
+.event.offset1 { left: calc(14.28571429% + .05em); }
+.event.offset2 { left: calc(14.28571429% * 2 + .05em); }
+.event.offset3 { left: calc(14.28571429% * 3 + .05em); }
+.event.offset4 { left: calc(14.28571429% * 4 + .05em); }
+.event.offset5 { left: calc(14.28571429% * 5 + .05em); }
+.event.offset6 { left: calc(14.28571429% * 6 + .05em); }
 
 .event.hasUrl:hover {
 	text-decoration: underline;
@@ -445,13 +552,13 @@ they continue to the next day.
 	content: ".";
 }
 
-.event.span1 { width: 100%; }
-.event.span2 { width: calc(0.05em + 200%); text-align: center; }
-.event.span3 { width: calc(0.10em + 300%); text-align: center;  }
-.event.span4 { width: calc(0.15em + 400%); text-align: center;  }
-.event.span5 { width: calc(0.20em + 500%); text-align: center;  }
-.event.span6 { width: calc(0.25em + 600%); text-align: center;  }
-.event.span7 { width: calc(0.30em + 700%); text-align: center;  }
+.event.span1 { width: calc(14.28571429% - .05em); }
+.event.span2 { width: calc(14.28571429% * 2 - .05em); }
+.event.span3 { width: calc(14.28571429% * 3 - .05em); text-align: center;}
+.event.span4 { width: calc(14.28571429% * 4 - .05em); text-align: center;}
+.event.span5 { width: calc(14.28571429% * 5 - .05em); text-align: center;}
+.event.span6 { width: calc(14.28571429% * 6 - .05em); text-align: center;}
+.event.span7 { width: calc(14.28571429% * 6 - .05em); text-align: center;}
 
 .event.continued		{ 
 	border-left-style: none;

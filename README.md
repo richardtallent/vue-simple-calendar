@@ -20,8 +20,8 @@ https://www.tallent.us/vue-simple-calendar/
 - Shows a traditional month-grid calendar, starting on Sunday.
 - Month and day names are localized for the current user.
 - Can show "events," including multi-day events.
-- Events emitted for clicking a day, clicking an event, or changing the view month.
-- More responsive
+- Optional drag/drop support
+- Events emitted for clicking a day, clicking an event, dragging/dropping an event, or changing the view month.
 
 This is still early in development. PRs, ideas, and issues are welcome.
 
@@ -37,8 +37,10 @@ enable-drag-drop: whether to enable dragging and dropping of events. Defaults to
 
 clickDay(date): fired when user clicks a date
 clickEvent(event): fired when user clicks on an event
-setShowDate(date): fired when user goes to a different month
-dropEventOnDate(event, date): fired when user drags an event to a date
+setShowDate(date): fired when user goes to a different month. The date passed is the first of the month in view (days before and after the month may also be visible).
+dragEventEnterDate(event): fires when an event is dragged over a date
+dragEventLeaveDate(event): fires when an event is dragged out of a date without dropping it there
+dropEventOnDate(event, date): fired when an event is dropped on a date
 
 ## Future plans
 - Keep it simple, not a kitchen-sink control.
@@ -62,6 +64,7 @@ This project was inspired by Monthly.js, a JQuery-based control I've contributed
 | --- | --- | --- |
 | 2017-05-11 | 1.0 | First version |
 | 2017-05-15 | 1.1 | Better demo styling; refactor code; add basic drag/drop capability; fix display issue when events not sorted by start date |
+| 2017-05-20 | 1.2 | Redesigned to work around z-index context issue with multi-day events (events now positioned above days, weeks rendered individually). Significant improvements to handling of event slots and clipping when event content exceeds height/width. |
 
 ## License
 
