@@ -64,6 +64,7 @@ This project was inspired by Monthly.js, a JQuery-based control I've contributed
 | 2017-05-11 | 1.0 | First version |
 | 2017-05-15 | 1.1 | Better demo styling; refactor code; add basic drag/drop capability; fix display issue when events not sorted by start date |
 | 2017-05-20 | 1.2 | Redesigned to work around z-index context issue with multi-day events (events now positioned above days, weeks rendered individually). Significant improvements to handling of event slots and clipping when event content exceeds height/width. |
+| 2017-05-21 | 1.3 | Fixed IE. Bad IE. Fixed CSS references to emoji. Default style adjustments. Clean up some old code. Add previous/next year buttons. |
 
 ## License
 
