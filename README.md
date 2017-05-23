@@ -50,7 +50,6 @@ The following attributes can be provided:
 - Possibly add a "week" view (no time of day, just 7 taller boxes).
 - Possibly add modes for a set number of weeks, multiple months, or even a full year.
 - Handle events with times.
-- Make this an NPM package *(I know nothing about this and could use a hand with it!)*.
 - Extract date manipulation methods to a separate plugin.
 
 PRs and issues are welcome! Please use the same code style. Use of "Prettier" is encouraged.
@@ -65,6 +64,7 @@ This project was inspired by Monthly.js, a JQuery-based control I've contributed
 | 2017-05-15 | 1.1 | Better demo styling; refactor code; add basic drag/drop capability; fix display issue when events not sorted by start date |
 | 2017-05-20 | 1.2 | Redesigned to work around z-index context issue with multi-day events (events now positioned above days, weeks rendered individually). Significant improvements to handling of event slots and clipping when event content exceeds height/width. |
 | 2017-05-21 | 1.3 | Fixed IE. Bad IE. Fixed CSS references to emoji. Default style adjustments. Clean up some old code. Add previous/next year buttons. |
+| 2017-05-22 | 1.3 | Improved demo, published to npm. |
 
 ## License
 
