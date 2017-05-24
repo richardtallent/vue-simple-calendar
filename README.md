@@ -133,12 +133,13 @@ This is added to an event when it is spills over into the following week. By def
 #### hasUrl
 This is added to an event when it has a `url` attribute (i.e., it is a hyperlink). By default, this is used to add a hovering underscore to event titles that are hyperlinked.
 
-
 I may add a few more of these date-specific classes:
 
 - `mYYYY`, `mYYYY-MM`, and `mMM` to the `.calendar` node, to allow styling of any part of the calendar based on the year and/or month.
 - `dDD` to the `.month .day` nodes, to allow styling the nth day of each month.
+- `last` to the `.month .day` nodes, to allow styling the last day of each month.
 - `wmX` to the `.month .day` nodes, where X represent the index of weekdays of that type in the month. For example, the first Tuesday of each month would have classes `dow2 wm1`. This isn't necessarily the first *visible* Monday, as the view could include Mondays that are *outside* the month.
+- `lastX` to the `.month .day` nodes, to indicate the last day of a particular week (*e.g.*, the last Friday of the month).
 - `future` to the `.month .day` nodes. This is really just any day that is *not* either past or today, but adding a class will make styling of these simpler. For example, you may have business rules that don't allow users to add future events, so you might want to grey them out.
 
 I'm open to other suggestions, provided they are easily calculated and there's some reasonable use case for having them.
