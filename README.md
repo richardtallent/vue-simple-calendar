@@ -70,65 +70,68 @@ Here's the main markup structure by class:
 
 where:
 
-<dt>locale-<i>X</i></dt>
-<dd>Two locale classes are added--one for the user's full locale, the other for just the first two letters (the language),
+#### locale-<i>X</i>
+
+Two locale classes are added--one for the user's full locale, the other for just the first two letters (the language),
 both in lowercase. You could use this information to hide or show specific holidays, or to localize text using CSS `content`.
 Example:
-	<quote>locale-en locale-en-us</quote>
-</dd>
 
-<dt>(future|past)</dt>
-<dd>When the month shown is not the current calendar month (local time), one of these classes is added. By default, this shows and hides and determines the label for the button that returns the view to the current month. <i>(Note: may move this up to the `calendar` level in the future.)</i></dd>
+> locale-en locale-en-us
 
-<dt>dow<i>X</i></dt>
-<dd>This class, ranging from dow0 to dow6, is added to the day name labels at the top, and to each day in the grid. This
-allows you to easily style certain days of the week (say, weekend days) differently from other days.</dd>
+#### (future|past)
+When the month shown is not the current calendar month (local time), one of these classes is added. By default, this shows and hides and determines the label for the button that returns the view to the current month. <i>(Note: may move this up to the `calendar` level in the future.)</i>
+
+#### dow<i>X</i>
+This class, ranging from dow0 to dow6, is added to the day name labels at the top, and to each day in the grid. This
+allows you to easily style certain days of the week (say, weekend days) differently from other days.
 
 ### Week classes
 
-<dt>week<i>X</i></dt>
-<dd>Each week is numbered from 1-6, starting with the first week of the month. This controls the z-index that ensures that
-the events from one week don't overlap the following week, but could be used for other purposes as well.</dd>
+#### week<i>X</i>
+Each week is numbered from 1-6, starting with the first week of the month. This controls the z-index that ensures that
+the events from one week don't overlap the following week, but could be used for other purposes as well.
 
-<dt>ws<i>YYYY-MM-DD</i></dt>
-<dd>Each week also has a class representing the date of the Sunday starting that week. This could be used to style entire
-weeks that have some special importance.</dd>
+#### ws<i>YYYY-MM-DD</i>
+Each week also has a class representing the date of the Sunday starting that week. This could be used to style entire
+weeks that have some special importance.
 
 ### Day classes
 
-<dt>d<i>YYYY-MM-DD</i> / d<i>MM-DD</i></dt>
-<dd>Each day in the grid is given two special classes -- one for the month and day (01/01-12/31), the other for the entire
+#### d<i>YYYY-MM-DD</i> / d<i>MM-DD</i>
+Each day in the grid is given two special classes -- one for the month and day (01/01-12/31), the other for the entire
 ISO 8601 date. This allows easy styling of holidays and other special days using CSS alone (rather than using events).
-The demo calendar has some examples of using these to add holiday emoji beside the day numbers.</dd>
+The demo calendar has some examples of using these to add holiday emoji beside the day numbers. Example:
 
-<dt>outsideOfMonth</dt>
-<dd>This class is added to each day falling outside of the month being shown. By default, these days are greyed out.</dd>
+> d2017-05-23 d05-23
 
-<dt>past</dt>
-<dd>This class is added to days before the current date (local time).</dd>
+#### outsideOfMonth
+This class is added to each day falling outside of the month being shown. By default, these days are greyed out.
 
-<dt>today</dt>
-<dd>This class is added to the current date (local time), if visible on the current view.</dd>
+#### past
+This class is added to days before the current date (local time).
+
+#### today
+This class is added to the current date (local time), if visible on the current view.
 
 ### Event classes
 
-<dt>offset<i>X</i></dt>
-<dd>This class on an event represents the day of the week when the event starts *on this week*. If an event spans more than one week, the offset for the second week, etc. would be `offset0` (Sunday).</dd>
+#### offset<i>X</i>
+This class on an event represents the day of the week when the event starts *on this week*. If an event spans more than one week, the offset for the second week, etc. would be `offset0` (Sunday).
 
-<dt>span<i>X</i></dt>
-<dd>This class on an event represents the width of the event display *that week*, in days. For example, if an event spans from a Thursday to the next Wednesday, it would have `span3` on the first week and `span4` on the second week.</dd>
+#### span<i>X</i>
+This class on an event represents the width of the event display *that week*, in days. For example, if an event spans from a Thursday to the next Wednesday, it would have `span3` on the first week and `span4` on the second week.
 
-<dt>slot<i>X</i></dt>
-<dd>This class on an event represents the "row" where the event is drawn that week, starting at `1`. With the default height, only 5-6 slots are visible.</dd>
+#### slot<i>X</i>
+This class on an event represents the "row" where the event is drawn that week, starting at `1`. With the default height, only 5-6 slots are visible.
 
-<dt>continued</dt>
-<dd>This is added to an event when it is continuing from a previous week. By default, this turns off the rounded corners on the left side of the event box and adds a grey right-arrow before the title.</dd>
+#### continued
+This is added to an event when it is continuing from a previous week. By default, this turns off the rounded corners on the left side of the event box and adds a grey right-arrow before the title.
 
-<dt>toBeContinued</dt>
-<dd>This is added to an event when it is spills over into the following week. By default, this turns off the rounded corners on the right side of the event box and adds a grey right-arrow after the title.</dd>
+#### toBeContinued
+This is added to an event when it is spills over into the following week. By default, this turns off the rounded corners on the right side of the event box and adds a grey right-arrow after the title.
 
-<dt>hasUrl</dt>
-<dd>This is added to an event when it has a `url` attribute (i.e., it is a hyperlink). By default, this is used to add a hovering underscore to event titles that are hyperlinked.</dd>
+#### hasUrl
+This is added to an event when it has a `url` attribute (i.e., it is a hyperlink). By default, this is used to add a hovering underscore to event titles that are hyperlinked.
 
 
 I may add a few more of these date-specific classes:
