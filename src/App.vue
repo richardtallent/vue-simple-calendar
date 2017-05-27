@@ -94,10 +94,19 @@ export default {
 	.calendar .d07-14 .date::before { content: '\1F1EB\1F1F7'; margin-right: 0.5em; }
 
 	/* Easter: example of a holiday that changes each year. Easy to pre-populate for a reasonable number of years. */
-	.calendar .d2016-04-05 .date::before { content: '\271D'; margin-right: 0.5em; }
+	.calendar .d2015-04-05 .date::before { content: '\271D'; margin-right: 0.5em; }
 	.calendar .d2016-03-27 .date::before { content: '\271D'; margin-right: 0.5em; }
 	.calendar .d2017-04-16 .date::before { content: '\271D'; margin-right: 0.5em; }
 	.calendar .d2018-04-01 .date::before { content: '\271D'; margin-right: 0.5em; }
+
+	/* Thanksgiving, the 4th Thursday of each year */
+	.calendar.m11 .day.dow4.instance4 .date::before { content: '\1F64F'; margin-right: 0.5em; }
+
+	/* Labor Day, the 1st Monday in September of each year */
+	.calendar.m09 .day.dow1.instance1 .date::before { content: '\1F4AA'; margin-right: 0.5em; }
+
+	/* Memorial Day, the last Monday in May of each year */
+	.calendar.m05 .day.dow1.lastInstance .date::before { content: '\1F1FA\1F1F8'; margin-right: 0.5em; }
 
 	/* Add some styling for events tagged with the "birthday" class */
 	.calendar .event.birthday { background-color: #e0f0e0; border-color: #d7e7d7; }

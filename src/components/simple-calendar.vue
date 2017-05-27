@@ -1,26 +1,29 @@
 <template>
-	<div class="calendar" :class="[
+	<div class="calendar"
+		:class="[
 				'locale-' + languageCode,
-				'locale-' + locale
+				'locale-' + locale,
+				'y' + showDate.getFullYear(),
+				'm' + paddedMonth(showDate),
+				{
+					past: beginningOfMonth(today) < showDate,
+					future: beginningOfMonth(today) > showDate
+				}
 			]">
 		<div class="header">
 			<div class="previousYear"><button @click="onClickPreviousYear" :disabled="disablePast && (today > endOfPreviousYear(showDate))"></button></div>
 			<div class="previousMonth"><button @click="onClickPreviousMonth" :disabled="disablePast && (today > endOfPreviousMonth(showDate))"></button></div>
 			<div class="thisMonth">
 				<div class="monthLabel">
-					<span class="monthname">{{monthName(showDate)}}</span>
-					<span class="yearnumber">{{showDate.getFullYear()}}</span>
+					<span class="monthName">{{monthName(showDate)}}</span>
+					<span class="yearNumber">{{showDate.getFullYear()}}</span>
 				</div>
-				<div v-if="!isSameMonth(today, showDate)" class="currentMonth"
-					:class="{ past: today < showDate, future: today > showDate }"
-					><button @click="onClickCurrentMonth"></button></div>
+				<div v-if="!isSameMonth(today, showDate)" class="currentMonth"><button @click="onClickCurrentMonth"></button></div>
 			</div>
-			
 			<div class="nextMonth"><button @click="onClickNextMonth" :disabled="disableFuture && (today < beginningOfNextMonth(showDate))"></button></div>
 			<div class="nextYear"><button @click="onClickNextYear" :disabled="disableFuture && (today < beginningOfNextYear(showDate))"></button></div>
-			
 		</div>
-		<div class="daylist">
+		<div class="dayList">
 			<div class="day" v-for="(w, index) in weekdayNames" :class="'dow'+index">{{w}}</div>
 		</div>
 		<div class="month">
@@ -34,10 +37,15 @@
 						'dow' + day.getDay(),
 						'd' + isoYearMonthDay(day),
 						'd' + isoMonthDay(day),
+						'd' + paddedDay(day),
+						'instance' + instanceOfMonth(day),
 						{
 							outsideOfMonth : day.getMonth() != showDate.getMonth(),
 							today : isSameDate(day, today),
-							past : isInPast(day)
+							past : isInPast(day),
+							future : isInFuture(day),
+							last: day.getMonth() !== addDays(day, 1).getMonth(),
+							lastInstance: lastInstanceOfMonth(day),
 						}
 					]" @click="onClickDay(day)">
 					<div class="content">
@@ -179,24 +187,21 @@ export default {
 			return result;
 		},
 
-		isInPast(d) {
-			// Could be more terse, but gets date parts lazily for performance.
-			const currentYear = this.today.getFullYear();
-			const yr = d.getFullYear();
-			if (yr < currentYear) return true;
-			if (yr > currentYear) return false;
-			const currentMonth = this.today.getMonth();
-			const month = d.getMonth();
-			if (month < currentMonth) return true;
-			if (month > currentMonth) return false;
-			const dayNumber = d.getDate();
-			const currentDay = this.today.getDate();
-			return dayNumber < currentDay;
-		},
+		isInFuture(d) { return d > this.today; },
+
+		isInPast(d) { return d < this.today; },
+
+		instanceOfMonth: d => Math.ceil(d.getDate() / 7),
 
 		isoYearMonthDay: d => d.toISOString().slice(0, 10),
 
 		isoMonthDay: d => d.toISOString().slice(5, 10),
+
+		isoYearMonth: d => d.toISOString().slice(0, 7),
+
+		paddedMonth: d => ('0' + String(d.getMonth() + 1)).slice(-2),
+
+		paddedDay: d => ('0' + String(d.getDate() + 1)).slice(-2),
 
 		beginningOfMonth: d => new Date(d.getFullYear(), d.getMonth(), 1),
 
@@ -211,6 +216,8 @@ export default {
 		beginningOfPreviousMonth: d => new Date(d.getFullYear(), d.getMonth() - 1, 1),
 
 		beginningOfNextMonth: d => new Date(d.getFullYear(), d.getMonth() + 1, 1),
+
+		lastInstanceOfMonth(d) { return d.getMonth() !== this.addDays(d, 7).getMonth(); },
 
 		beginningOfWeek(d) { return this.addDays(d, 0 - d.getDay()); },
 
@@ -360,7 +367,7 @@ export default {
 	.month,
 	.header,
 	.week,
-	.daylist {
+	.dayList {
 		display: flex;
 		width: 100%;
 		flex-wrap: wrap;
@@ -407,19 +414,19 @@ export default {
 
 	.header .currentMonth button { margin-left: 0.5em; }
 
-	.header .currentMonth.past button::after { content: '\21BA'; }
-	.header .currentMonth.future button::after { content: '\21BB'; }
+	.calendar.past .currentMonth button::after { content: '\21BA'; }
+	.calendar.future .currentMonth button::after { content: '\21BB'; }
 
-	.daylist div {
+	.dayList div {
 		padding: 0.3em;
 	}
 
 
-	.daylist {
+	.dayList {
 		border-width: 0 0 0 0.05em;
 	}
 
-	.daylist .day {
+	.dayList .day {
 		text-align: center;
 	}
 
