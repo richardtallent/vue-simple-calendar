@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 
-		<h1>vue-simple-calendar 1.3</h1>
+		<h1>vue-simple-calendar 1.4</h1>
 
 		<p>Below is an example of vue-simple-calendar. You can drag and drop events to change the start date (this functionality is optional and controlled by the calling app.</p>
 
