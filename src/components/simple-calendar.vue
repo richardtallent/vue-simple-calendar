@@ -68,7 +68,7 @@
 <script>
 
 export default {
-	name: 'hello',
+	name: 'simple-calendar',
 
 	data() {
 		return {};
