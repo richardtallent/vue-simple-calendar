@@ -52,7 +52,7 @@ export default {
 		};
 	},
 	methods: {
-		thisMonth(d) { const t = new Date(); return new Date(t.getFullYear(), t.getMonth(), d); },
+		thisMonth: (d) => { const t = new Date(); return new Date(t.getFullYear(), t.getMonth(), d); },
 		onClickDay(d) { this.message = `You clicked: ${d.toLocaleDateString()}`; },
 		onClickEvent(e) { this.message = `You clicked: ${e.title}`; },
 		setShowDate(d) {
