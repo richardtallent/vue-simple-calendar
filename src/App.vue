@@ -53,15 +53,14 @@ export default {
 	},
 	methods: {
 		thisMonth(d) { const t = new Date(); return new Date(t.getFullYear(), t.getMonth(), d); },
-		onClickDay(d) { this.message = `You clicked: ${this.isoDate(d)}`; },
+		onClickDay(d) { this.message = `You clicked: ${d.toLocaleDateString()}`; },
 		onClickEvent(e) { this.message = `You clicked: ${e.title}`; },
-		isoDate(d) { return d.toISOString().slice(0, 10); },
 		setShowDate(d) {
-			this.message = `Changing calendar view to ${this.isoDate(d)}`;
+			this.message = `Changing calendar view to ${d.toLocaleDateString()}`;
 			this.showDate = d;
 		},
 		onDrop(event, date) {
-			this.message = `You dropped ${event} on ${this.isoDate(date)}`;
+			this.message = `You dropped ${event} on ${date.toLocaleDateString()}`;
 			const e = this.events.filter(ev => ev.id === event)[0];
 			const eLength = Calendar.methods.dayDiff(e.startDate, e.endDate);
 			e.startDate = date;
@@ -77,7 +76,7 @@ export default {
 		font-family: Calibri;
 		width: 60vw;
 		min-width: 40em;
-		max-width: 80em;
+		max-width: 100em;
 		margin-left: auto;
 		margin-right: auto;
 	}
