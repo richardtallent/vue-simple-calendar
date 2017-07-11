@@ -22,8 +22,10 @@ module.exports = {
   },
   // add your custom rules here
   rules: {
+	"key-spacing": ["error", { "mode": "minimum" }],
 	"no-plusplus": 0,
     "no-tabs": 0,
+	"max-len": 0,
 	"prefer-template": 0,
     indent: ["error", "tab"],
     // don't require .vue extension when importing

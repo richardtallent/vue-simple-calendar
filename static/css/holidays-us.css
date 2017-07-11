@@ -1,0 +1,63 @@
+/*
+********************************************************************************************************
+This theme adds emoji next to the day number for major holidays traditionally celebrated in the USA.
+
+There are two types of holidays: officially-recognized holidays, and traditionally-celebrated ones
+(most of the traditionally-celebrated ones are connected with the Christian faith.)
+
+To activate this theme, include the CSS and style the calendar instance with the `holidays-us-official`
+and/or `holidays-us-traditional` classes.
+********************************************************************************************************
+*/
+
+/* **************************************************** */
+/* Official US Holidays 								*/
+/* **************************************************** */
+
+/* New Year's Day - January 1 */
+.calendar-month.holiday-us-official .d01-01 .date::before { content: '\1F37E'; }
+
+/* Martin Luther King, Jr. Day - 3rd Monday of January */
+.calendar-month.holiday-us-official.m01 .day.dow1.instance3 .date::before { content: '\270C\1F3FE'; }
+
+/* Washington's Birthday - 3rd Monday in February */
+.calendar-month.holiday-us-official.m02 .day.dow1.instance3 .date::before { content: '\1F34E'; }
+
+/* Memorial Day - last Monday in May */
+.calendar-month.holiday-us-official.m05 .day.dow1.lastInstance .date::before { content: '\1F1FA\1F1F8'; }
+
+/* Independence Day - July 4 */
+.calendar-month.holiday-us-official .d07-04 .date::before { content: '\1F1FA\1F1F8'; }
+
+/* Labor Day - 1st Monday in September */
+.calendar-month.holiday-us-official.m09 .day.dow1.instance1 .date::before { content: '\1F4AA'; }
+
+/* Columbus Day - 2nd Monday in October */
+.calendar-month.holiday-us-official.m10 .day.dow1.instance2 .date::before { content: '\2388'; }
+
+/* Veteran's Day - November 11 */
+.calendar-month.holiday-us-official .d11-11 .date::before { content: '\1F396'; }
+
+/* Thanksgiving Day - 4th Thursday of November */
+.calendar-month.holiday-us-official.m11 .day.dow4.instance4 .date::before { content: '\1F64F'; }
+
+/* Christmas Day - December 25 */
+.calendar-month.holiday-us-official .d12-25 .date::before { content: '\1F384'; }
+
+
+/* **************************************************** */
+/* Traditional US Holidays 								*/
+/* **************************************************** */
+
+/* Easter: example of a holiday that changes each year. Easy to pre-populate for a reasonable number of years. */
+.calendar-month.holiday-us-traditional .d2015-04-05 .date::before { content: '\271D'; }
+.calendar-month.holiday-us-traditional .d2016-03-27 .date::before { content: '\271D'; }
+.calendar-month.holiday-us-traditional .d2017-04-16 .date::before { content: '\271D'; }
+.calendar-month.holiday-us-traditional .d2018-04-01 .date::before { content: '\271D'; }
+
+/* Cinco de Mayo */
+.calendar-month.holiday-us-traditional .d05-05 .date::before { content: '\1F1F2\1F1FD'; }
+
+/* Halloween - October 31 */
+.calendar-month.holiday-us-traditional .d10-31 .date::before { content: '\1F383'; }
+
