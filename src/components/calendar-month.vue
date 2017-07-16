@@ -193,7 +193,8 @@ export default {
 			// Return a list of events that CONTAIN the week starting on a day.
 			// Sorted so the events that start earlier are always shown first.
 			const events = this.events.filter(event =>
-				event.startDate < this.addDays(weekStart, 7) && event.endDate >= weekStart
+				event.startDate < this.addDays(weekStart, 7)
+				&& (!event.endDate || event.endDate >= weekStart)
 				, this).sort((a, b) => {
 				if (a.startDate < b.startDate) return -1;
 				if (b.startDate < a.startDate) return 1;
@@ -211,7 +212,14 @@ export default {
 			const results = [];
 			const slots = [[], [], [], [], [], [], [], [], [], []];
 			for (let i = 0; i < events.length; i++) {
-				const e = events[i];
+				const e = {
+					startDate:	events[i].startDate,
+					endDate:	events[i].endDate	|| events[i].startDate,
+					title:		events[i].title		|| 'Untitled',
+					id:			events[i].id		|| ('e' + Math.random().toString(36).substr(2, 10)),
+					url:		events[i].url,
+					classes:	events[i].classes,
+				};
 				const ep = { details: e, slot: 0 };
 				const continued = e.startDate < weekStart;
 				const startOffset = continued ? 0 : this.dayDiff(weekStart, e.startDate);
@@ -239,7 +247,7 @@ export default {
 					{
 						continued,
 						toBeContinued,
-						hasUrl: e.url,
+						hasUrl: ep.details.url,
 					},
 				];
 				if (e.classes) ep.classes = ep.classes.concat(e.classes);

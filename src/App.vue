@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 
-		<h1>vue-calendar-month 1.5</h1>
+		<h1>vue-calendar-month 1.5.0</h1>
 
 		<p>Below is an example of vue-calendar-month. You can drag and drop events to change the start date (this
 			functionality is optional and controlled by the calling app).</p>
@@ -11,6 +11,8 @@
 			and clean without getting so complicated that they would be difficult to override.</p>
 
 		<h3>{{message}}</h3>
+
+		<button @click="clickTestAddEvent" :disabled="alreadyAdded">Add Event on 22nd-23rd</button>
 
 		<calendar-month
 			class="holiday-us-traditional holiday-us-official"
@@ -40,6 +42,7 @@ export default {
 			/* Show the current month, and give it some fake events to show */
 			showDate: this.thisMonth(1),
 			message: 'Click a date or event...',
+			alreadyAdded: false,
 			events: [
 				{ id: 'e1', startDate: this.thisMonth(15), endDate: this.thisMonth(15), title: 'Single-day event with a long title' },
 				{ id: 'e2', startDate: this.thisMonth(7), endDate: this.thisMonth(10), title: 'Multi-day event with a long title' },
@@ -69,6 +72,11 @@ export default {
 			const eLength = CalendarMath.methods.dayDiff(e.startDate, e.endDate);
 			e.startDate = date;
 			e.endDate = CalendarMath.methods.addDays(date, eLength);
+		},
+		clickTestAddEvent() {
+			if (this.alreadyAdded) return;
+			this.alreadyAdded = true;
+			this.events.push({ id: 'e12', startDate: this.thisMonth(22), endDate: this.thisMonth(23), title: 'New Event' });
 		},
 	},
 };

@@ -54,6 +54,11 @@ and/or `holidays-us-traditional` classes.
 .calendar-month.holiday-us-traditional .d2016-03-27 .date::before { content: '\271D'; }
 .calendar-month.holiday-us-traditional .d2017-04-16 .date::before { content: '\271D'; }
 .calendar-month.holiday-us-traditional .d2018-04-01 .date::before { content: '\271D'; }
+.calendar-month.holiday-us-traditional .d2019-04-21 .date::before { content: '\271D'; }
+.calendar-month.holiday-us-traditional .d2020-04-12 .date::before { content: '\271D'; }
+.calendar-month.holiday-us-traditional .d2021-04-04 .date::before { content: '\271D'; }
+.calendar-month.holiday-us-traditional .d2022-04-17 .date::before { content: '\271D'; }
+.calendar-month.holiday-us-traditional .d2023-04-09 .date::before { content: '\271D'; }
 
 /* Cinco de Mayo */
 .calendar-month.holiday-us-traditional .d05-05 .date::before { content: '\1F1F2\1F1FD'; }
