@@ -50,7 +50,7 @@ Note that the events are *not* child nodes of the days, they are children of the
 The only markup not listed here are the buttons within the header (within `previousYear`, `previousMonth`, `currentMonth`, `nextMonth`, and `nextYar`).
 
 ```
-calendar locale-X yYYYY mMM (past|future)
+calendar-month locale-X yYYYY mMM (past|future)
 	header
 		previousYear
 		previousMonth
@@ -136,7 +136,7 @@ This class is added to the current date (local time), if visible on the current 
 This class is added to days after the current date (local time).
 
 #### last
-This class is added to the last day of the month. Note that if a portion of the previous month is also showing, *its last day will also have this class*. If you want to style *only* the last day of the main month in view, use the rule `.calendar .last:not(.outsideOfMonth)`.
+This class is added to the last day of the month. Note that if a portion of the previous month is also showing, *its last day will also have this class*. If you want to style *only* the last day of the main month in view, use the rule `.calendar-month .last:not(.outsideOfMonth)`.
 
 ### Event classes
 
@@ -161,14 +161,14 @@ This is added to an event when it has a `url` attribute (i.e., it is a hyperlink
 I'm open to other suggestions, provided they are easily calculated and there's some reasonable use case for having them.
 
 ## Future plans
-- Keep it simple, not a kitchen-sink control.
-- Better docs.
-- Add optional external stylesheets (keep scoped styling to the basics).
-- Add a "starts-on-Monday" mode.
-- Possibly add a "week" view (no time of day, just 7 taller boxes).
-- Possibly add modes for a set number of weeks, multiple months, or even a full year.
-- Handle events with times.
-- Extract date manipulation methods to a separate plugin.
+[x] Keep it simple, not a kitchen-sink control.
+[x] Better docs.
+[x] Add optional external stylesheets (keep scoped styling to the basics).
+[] Add a "starts-on-Monday" mode.
+[] Possibly add a "week" view (no time of day, just 7 taller boxes).
+[] Possibly add modes for a set number of weeks, multiple months, or even a full year.
+[] Handle events with times.
+[x] Extract date manipulation methods to a separate plugin.
 
 PRs and issues are welcome! Please use the same code style. Use of "Prettier" is encouraged.
 
@@ -191,7 +191,8 @@ But I do have some ideas in mind, such as adding handles to be able to change an
 Moment.js is great, but I would only need a tiny fraction of its capabilities, and for simplicity, I wanted to not have any dependencies (other than Vue of course).
 
 #### Why is the style so "basic"?
-I purposefully chose a very restrained, clean, and simple set of default styles for the calendar. The fanciest formatting is probably the rounded corners on the events. If you want to add animations, drop-shadows, gradients, etc., you can do so easily without having to first override a bunch of my default styles. I also use CSS `content` where possible, so you can override static text in the buttons, etc.
+I purposefully chose a very restrained, clean, and simple set of default styles for the calendar. The fanciest formatting is probably the rounded corners on the events.
+Also, any styles not critical to the display are in a static CSS file (`static/css/default.css`) rather than in the Vue component, making it easier for you to completely override my theme with your own. I also use CSS `content` where possible, so you can override static text in the buttons, etc. using CSS rather than having to modify the component's source or pass more props or slots.
 
 #### What styles can I *not* override?
 - You can't add a background-image to the entire calendar. Each day block needs a background color so it "hides" events spilling over from the day above it in the previous week. I'm considering some possible solutions. You *could* put background images on individual days, or weeks, or the header.
