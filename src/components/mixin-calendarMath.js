@@ -32,7 +32,7 @@ export default {
 			// included in the view (which, by default, consists of an entire month).
 			const firstDate = this.beginningOfCalendar(d);
 			const lastDate = this.endOfCalendar(d);
-			const numWeeks = Math.floor(this.dayDiff(firstDate, lastDate) / 7);
+			const numWeeks = Math.floor((this.dayDiff(firstDate, lastDate) + 1) / 7);
 			return Array(numWeeks).fill().map((_, i) => this.addDays(firstDate, i * 7));
 		},
 

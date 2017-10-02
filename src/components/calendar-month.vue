@@ -85,7 +85,7 @@
 
 <script>
 
-import mixinCalendarMath from '../mixins/mixin-calendarMath';
+import mixinCalendarMath from './mixin-calendarMath';
 
 export default {
 
