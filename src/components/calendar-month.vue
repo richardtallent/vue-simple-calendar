@@ -43,8 +43,8 @@
 				class="week"
 				:key="weekIndex"
 				:class="['week' + (weekIndex+1), 'ws' + isoYearMonthDay(weekStart)]">
-				<div v-for="day in daysOfWeek(weekStart)" class="day" 
-					:key="day"
+				<div v-for="(day, dayIndex) in daysOfWeek(weekStart)" class="day" 
+					:key="dayIndex"
 					:class="[
 						'dow' + day.getDay(),
 						'd' + isoYearMonthDay(day),
@@ -85,7 +85,7 @@
 
 <script>
 
-import mixinCalendarMath from './mixin-calendarMath';
+import mixinCalendarMath from '../components/mixin-calendarMath';
 
 export default {
 

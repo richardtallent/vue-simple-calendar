@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 
-		<h1>vue-calendar-month 1.5.0</h1>
+		<h1>vue-calendar-month 1.5.2</h1>
 
 		<p>Below is an example of vue-calendar-month. You can drag and drop events to change the start date (this
 			functionality is optional and controlled by the calling app).</p>
@@ -30,7 +30,7 @@
 
 <script>
 import CalendarMonth from './components/calendar-month';
-import CalendarMath from './mixins/mixin-calendarMath';
+import CalendarMath from './components/mixin-calendarMath';
 
 export default {
 	name: 'app',
