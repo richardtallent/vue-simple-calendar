@@ -400,22 +400,22 @@ All CSS related to colors, border radius, etc. should be part of a theme.
 	.calendar-month .event.slot0 { display: none; } /* More than 10 slots not currently supported */
 
 	.calendar-month .event.offset0 { left: calc(.05em); }
-	.calendar-month .event.offset1 { left: calc(14.28571429% + .05em); }
-	.calendar-month .event.offset2 { left: calc(14.28571429% * 2 + .05em); }
-	.calendar-month .event.offset3 { left: calc(14.28571429% * 3 + .05em); }
-	.calendar-month .event.offset4 { left: calc(14.28571429% * 4 + .05em); }
-	.calendar-month .event.offset5 { left: calc(14.28571429% * 5 + .05em); }
-	.calendar-month .event.offset6 { left: calc(14.28571429% * 6 + .05em); }
+	.calendar-month .event.offset1 { left: calc(calc(100% / 7) + .05em); }
+	.calendar-month .event.offset2 { left: calc(calc(100% / 7) * 2 + .05em); }
+	.calendar-month .event.offset3 { left: calc(calc(100% / 7) * 3 + .05em); }
+	.calendar-month .event.offset4 { left: calc(calc(100% / 7) * 4 + .05em); }
+	.calendar-month .event.offset5 { left: calc(calc(100% / 7) * 5 + .05em); }
+	.calendar-month .event.offset6 { left: calc(calc(100% / 7) * 6 + .05em); }
 
 	/* Metrics for events spanning dates */
 
-	.calendar-month .event.span1 { width: calc(14.28571429% - .05em); }
-	.calendar-month .event.span2 { width: calc(14.28571429% * 2 - .05em); }
-	.calendar-month .event.span3 { width: calc(14.28571429% * 3 - .05em); text-align: center;}
-	.calendar-month .event.span4 { width: calc(14.28571429% * 4 - .05em); text-align: center;}
-	.calendar-month .event.span5 { width: calc(14.28571429% * 5 - .05em); text-align: center;}
-	.calendar-month .event.span6 { width: calc(14.28571429% * 6 - .05em); text-align: center;}
-	.calendar-month .event.span7 { width: calc(14.28571429% * 7 - .05em); text-align: center;}
+	.calendar-month .event.span1 { width: calc(calc(100% / 7) - .05em); }
+	.calendar-month .event.span2 { width: calc(calc(100% / 7) * 2 - .05em); }
+	.calendar-month .event.span3 { width: calc(calc(100% / 7) * 3 - .05em); text-align: center;}
+	.calendar-month .event.span4 { width: calc(calc(100% / 7) * 4 - .05em); text-align: center;}
+	.calendar-month .event.span5 { width: calc(calc(100% / 7) * 5 - .05em); text-align: center;}
+	.calendar-month .event.span6 { width: calc(calc(100% / 7) * 6 - .05em); text-align: center;}
+	.calendar-month .event.span7 { width: calc(calc(100% / 7) * 7 - .05em); text-align: center;}
 
 	/* Misc */
 
