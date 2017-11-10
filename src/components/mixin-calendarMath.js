@@ -84,7 +84,7 @@ export default {
 		// ******************************
 
 		// Number of days between two dates (times must be 0)
-		dayDiff(d1, d2)				{ return (d2 - d1) / 86400000; },
+		dayDiff(d1, d2)				{ return Math.round((d2 - d1) / 86400000); },
 
 		// http://stackoverflow.com/questions/492994/compare-two-dates-with-javascript
 		isSameDate(d1, d2)			{ return d1.getTime() === d2.getTime(); },
@@ -136,4 +136,3 @@ export default {
 	},
 
 };
-
