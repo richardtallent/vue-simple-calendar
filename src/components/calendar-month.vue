@@ -223,7 +223,7 @@ export default {
 				const ep = { details: e, slot: 0 };
 				const continued = e.startDate < weekStart;
 				const startOffset = continued ? 0 : this.dayDiff(weekStart, e.startDate);
-				const toBeContinued = this.dayDiff(weekStart, e.endDate) > 7;
+				const toBeContinued = this.dayDiff(weekStart, e.endDate) > 6;
 				const span = Math.min(
 					7 - startOffset,
 					this.dayDiff(this.addDays(weekStart, startOffset), e.endDate) + 1);
