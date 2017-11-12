@@ -361,9 +361,9 @@ All CSS related to colors, border radius, etc. should be part of a theme.
 
 	/* Borders */
 
-	.calendar-month .month		{ border-style: solid; border-width: 0		0		0.05em	0.05em; }
+	.calendar-month .month		{ border-style: solid; border-width: 0		0		1px 	1px; }
 	.calendar-month .header		{ border-style: solid; border-width: 0.05em	0.05em	0		0.05em;	}
-	.calendar-month .dayList	{ border-style: solid; border-width: 0		0		0		0.05em; }
+	.calendar-month .dayList	{ border-style: solid; border-width: 0		0		0		1px; }
 	.calendar-month .day		{ border-style: solid; border-width: 0.05em	0.05em	0		0; }
 	.calendar-month .header button,
 	.calendar-month .event		{ border-style: solid; border-width: 0.05em; }
