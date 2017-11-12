@@ -1,19 +1,20 @@
 <template>
 	<div id="app">
+		<div class="app-description">
+			<h1>vue-calendar-month 1.5.2</h1>
 
-		<h1>vue-calendar-month 1.5.3</h1>
+			<p>Below is an example of vue-calendar-month. You can drag and drop events to change the start date (this
+				functionality is optional and controlled by the calling app).</p>
 
-		<p>Below is an example of vue-calendar-month. You can drag and drop events to change the start date (this
-			functionality is optional and controlled by the calling app).</p>
+			<p>Note that this demo page has some examples of custom styles -- the holiday icons. As you can see from the source,
+				it's easy to customize the style to meet your needs. I've purposefully tried to choose defaults that are modern
+				and clean without getting so complicated that they would be difficult to override.</p>
 
-		<p>Note that this demo page has some examples of custom styles -- the holiday icons. As you can see from the source,
-			it's easy to customize the style to meet your needs. I've purposefully tried to choose defaults that are modern
-			and clean without getting so complicated that they would be difficult to override.</p>
+			<h3>{{message}}</h3>
 
-		<h3>{{message}}</h3>
-
-		<button @click="clickTestAddEvent" :disabled="alreadyAdded">Add Event on 22nd-23rd</button>
-
+			<button @click="clickTestAddEvent" :disabled="alreadyAdded">Add Event on 22nd-23rd</button>
+		</div>
+		
 		<calendar-month
 			class="holiday-us-traditional holiday-us-official"
 			:show-date="showDate"
@@ -84,13 +85,28 @@ export default {
 
 <style>
 
+	html, body {
+		height: 100%;
+		margin: 0;
+	}
+
 	#app {
 		font-family: Calibri;
 		width: 80vw;
+		height: 100%;
 		min-width: 40em;
 		max-width: 100em;
 		margin-left: auto;
 		margin-right: auto;
+		display: flex;
+		flex-direction: column;
+	}
+	.app-description {
+		flex: 0 1 auto;
+	}
+	.calendar-month {
+		flex: 1 1 auto;
+		margin-bottom: 1em;
 	}
 
 	/*
