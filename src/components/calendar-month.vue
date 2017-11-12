@@ -271,10 +271,16 @@ All CSS related to colors, border radius, etc. should be part of a theme.
 
 	/* Position/Flex */
 
-	.calendar-month .month,
+	/* Make the calendar flex vertically */
+	.calendar-month {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+	/* Set flex-grow and flex-shrink to 0 for header and dayList so they remain static */
 	.calendar-month .header,
-	.calendar-month .week,
 	.calendar-month .dayList {
+		flex: 0 0 auto;
 		display: flex;
 		width: 100%;
 		flex-wrap: wrap;
@@ -282,6 +288,22 @@ All CSS related to colors, border radius, etc. should be part of a theme.
 		justify-content: flex-start;
 		align-items: stretch;
 		align-content: flex-start;
+	}
+	/* The calendar grid should take up the remaining vertical space */
+	.calendar-month .month {
+		flex: 1 1 auto;
+		display: flex;
+		flex-direction: column;
+	}
+	/* Use flex basis of 0 on week row so all weeks will be same height regardless of content */
+	.calendar-month .week {
+		flex: 1 1 0;
+		display: flex;
+		flex-direction: row;
+		min-height: 2em;
+	}
+	.calendar-month .week .day {
+		flex: 1 1 auto;
 	}
 
 	.calendar-month .header {
@@ -307,13 +329,6 @@ All CSS related to colors, border radius, etc. should be part of a theme.
 		position: relative;
 		width: 14.285714%;
 		background-color: #fff;
-	}
-
-	/* Set min-height to 85% of width */
-	.calendar-month .week .day:before {
-		content: "";
-		display: block;
-		padding-top: 85%;
 	}
 
 	.calendar-month .day .content {
