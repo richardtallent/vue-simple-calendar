@@ -302,8 +302,9 @@ All CSS related to colors, border radius, etc. should be part of a theme.
 		flex-direction: row;
 		min-height: 2em;
 	}
-	.calendar-month .week .day {
-		flex: 1 1 auto;
+	.calendar-month .week .day,
+	.calendar-month .dayList .day {
+		flex: 1 1 0;
 	}
 
 	.calendar-month .header {
@@ -327,7 +328,7 @@ All CSS related to colors, border radius, etc. should be part of a theme.
 
 	.calendar-month .day {
 		position: relative;
-		width: calc(100% / 7);
+		swidth: 14.285714285%;
 		background-color: #fff;
 	}
 
