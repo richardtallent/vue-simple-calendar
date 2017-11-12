@@ -83,15 +83,15 @@ export default {
 		// Date comparisons
 		// ******************************
 
-		// Number of days between two dates (times must be 0)
+		// Number of days between two dates (times must be 0). Rounding to account for potential DST change offests.
 		dayDiff(d1, d2)				{ return Math.round((d2 - d1) / 86400000); },
 
 		// http://stackoverflow.com/questions/492994/compare-two-dates-with-javascript
 		isSameDate(d1, d2)			{ return d1.getTime() === d2.getTime(); },
 		isSameMonth(d1, d2)			{ return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth(); },
 
-		isPastMonth(d)				{ return this.beginningOfMonth(this.today) < this.beginningOfMonth(d); },
-		isFutureMonth(d)			{ return this.beginningOfMonth(this.today) > this.beginningOfMonth(d); },
+		isPastMonth(d)				{ return this.beginningOfMonth(d) < this.beginningOfMonth(this.today); },
+		isFutureMonth(d)			{ return this.beginningOfMonth(d) > this.beginningOfMonth(this.today); },
 
 		isInFuture(d)				{ return d > this.today; },
 		isInPast(d)					{ return d < this.today; },

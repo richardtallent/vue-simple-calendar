@@ -210,6 +210,7 @@ Also, any styles not critical to the display are in a static CSS file (`static/c
 | 2017.07.16 | 1.5.0 | Clean up code, move date math to a mixin; allow `endDate`, `title`, and `id` to be optional; change so only core CSS (mostly position / metrics) is in the component, a separate CSS file contains the default theme. Reorganized and updated optional US holiday theme CSS file. Tweaked default theme and metrics for consistency and cleaner look. NOTE: the default component name is now `calendar-month`, as is the primary container's CSS class. This was done for possible future expansion to support other views (such as a week view) and to give the CSS a slightly more unique name without resorting to scoped CSS. The name of the npm package, repository, etc. remains vue-simple-calendar.
 | 2017.10.03 | 1.5.1 | Fix issue where months ending in Saturday did not show their last week. Moved mixin to component folder.
 | 2017.10.04 | 1.5.2 | Fix webpack issue with mixin import and Vue warning about non-primitive keys.
+| 2017.11.11 | 1.5.3 | Fix date differences over DST and toBeContinued logic (thanks @houseoftech and @sean-atomized!) 
 
 ## License
 
