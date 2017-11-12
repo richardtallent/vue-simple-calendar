@@ -211,6 +211,7 @@ Also, any styles not critical to the display are in a static CSS file (`static/c
 | 2017.10.03 | 1.5.1 | Fix issue where months ending in Saturday did not show their last week. Moved mixin to component folder.
 | 2017.10.04 | 1.5.2 | Fix webpack issue with mixin import and Vue warning about non-primitive keys.
 | 2017.11.11 | 1.5.3 | Fix date differences over DST and toBeContinued logic (thanks @houseoftech and @sean-atomized!)
+| 2017.11.12 | 1.6.0 | Fix future/past classes. Tweaks to CSS to fix border render issue, simplify. Change height from aspect ratio to the height of the container (the reason for the minor version increment).
 
 ## License
 
