@@ -246,7 +246,6 @@ I'm open to other suggestions, provided they are easily calculated and there's s
 - [ ] Add support for showing event times
 - [ ] Possibly add a "week" view (no time of day scaling, just 7 taller boxes).
 - [ ] Possibly add modes for a set number of weeks, multiple months, or even a full year.
-- [ ] Handle events with times.
 - [x] Extract date manipulation methods to a separate plugin.
 
 PRs and issues are welcome! Please use the same code style. Use of "Prettier" is encouraged.
