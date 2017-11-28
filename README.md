@@ -79,8 +79,8 @@ Here's a minimal application example for a calendar with no events, but styled w
 	#app {
 		font-family: 'Avenir', Helvetica, Arial, sans-serif;
 		color: #2c3e50;
-		height:67vh;
-		width:90vw;
+		height: 67vh;
+		width: 90vw;
 		margin-left: auto;
 		margin-right: auto;
 	}
