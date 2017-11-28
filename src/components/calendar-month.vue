@@ -328,7 +328,6 @@ All CSS related to colors, border radius, etc. should be part of a theme.
 
 	.calendar-month .day {
 		position: relative;
-		swidth: 14.285714285%;
 		background-color: #fff;
 	}
 

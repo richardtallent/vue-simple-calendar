@@ -24,22 +24,100 @@ https://www.tallent.us/vue-simple-calendar/
 - Emphasizes customization via plain ol' CSS.
 - User events (clicks, drags, etc.) are exposed as Vue events.
 
-## Component parameters
+## Installation and Usage
+*(This assumes you already have a web application set up for using Vue. If you're starting a new project, look up the documentation for the Vue CLI, which will allow you to initialize a new project with webpack, etc.)*
 
-The following attributes can be provided:
+Install the component using npm:
 
-- events: array containing the events to show on the calendar (optional)
-- show-date: the month/year to start the calendar on (the day of the month is ignored). (Optional, defaults to the current month.)
-- enable-drag-drop: whether to enable dragging and dropping of events. (Optional, defaults fo false.)
+```
+npm i --save vue-simple-calendar
+```
+
+In your application, you'll need to:
+- import the component
+- import the default theme and any additional themes you want to apply
+- create the `calendar-month` custom element
+- wire up the element's properties and events
+
+Tips:
+- The component will fill its parent's height and width, so be sure the parent has a minimum height that looks good.
+- This is a pure component, it doesn't change its own state, so clicking the previous/next month or year buttons doesn't do anything unless you provide a `show-date` attribute and update that attribute when the component fires the `setShowDate` event.
+
+Here's a minimal application example for a calendar with no events, but styled with the default theme and the US holidays theme:
+```HTML
+<template>
+	<div id="app">
+		<h1>My Calendar</h1>
+		<calendar-month 
+			:show-date="showDate"
+			@setShowDate="setShowDate"
+			class="holiday-us-traditional holiday-us-official"
+		/>
+	</div>
+</template>
+<script>
+	import CalendarMonth from 'vue-simple-calendar/src/components/calendar-month'
+	require("vue-simple-calendar/static/css/default.css")
+	require("vue-simple-calendar/static/css/holidays-us.css")
+
+	export default {
+		name: 'app',
+		data: function() {
+			return { showDate: new Date() }
+		},
+		components: {
+			CalendarMonth
+		},
+		methods: {
+			setShowDate(d) {
+				this.showDate = d;
+			},
+		}
+	}
+</script>
+<style>
+	#app {
+		font-family: 'Avenir', Helvetica, Arial, sans-serif;
+		color: #2c3e50;
+		height:67vh;
+		width:90vw;
+		margin-left: auto;
+		margin-right: auto;
+	}
+</style>
+```
+
+## Props
+The following properties are supported. Remember to use *kebab-case* when specifying these properties using attributes on the `calendar-month` element (*e.g.*, `<calendar-month month-name-format="long">`:
+
+- `events` - An array of events to show on the calendar. See *Event Attributes* below for more details.
+- `disablePast` - If true, prevents the user from navigating to previous months. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
+- `disableFuture` - If true, prevents the user from navigating to future months. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
+- `enableDragDrop` - If true, events are draggable, and dragging and dropping them emits events you can catch and respond to. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
+- `locale` - The BCP 47 language tag used to determine the month and day names. Defaults to the user's browser language setting.
+- `showDate` - The month to show by default. The day of month is ignored. Defaults to the current month (user local time).
+- `monthNameFormat` - The format to use for the month names. Possible values are `numeric`, `2-digit`, `narrow`, `short`, or `long`, and the default is `long`.
+- `weekdayNameFormat` - The format to use for the names of the days of the week. Possible values are `narrow`, `short`, or `long`, and the default is `short`.
+
+## Event Attributes
+Each event shown on the calendar can have the following attributes. `startDate` is required, and `title` and `id` are strongly recommended.
+
+- `startDate` - The date the event starts on the calendar. Time of day is currently ignored.
+- `endDate` - The date the event ends on the calendar. Defaults to the same date as `startDate`.
+- `title` - The name of the event shown on the calendar. Defaults to "Untitled".
+- `id` - A unique identifier for the event. Defaults to a randomly-generated string.
+- `url` - The URL associated with the event. If provided, clicking the event opens the URL. If not provided, the event is unlinked.
+- `classes` - A String with any additional CSS classes you wish to use for the event.
 
 ## Events
+The following Vue events are raised by the component, which you can catch in your calling application to respond to user actions:
 
-- clickDay(date): fired when user clicks a date
-- clickEvent(event): fired when user clicks on an event
-- setShowDate(date): fired when user goes to a different month. The date passed is the first of the month in view (days before and after the month may also be visible).
-- dragEventEnterDate(event): fires when an event is dragged over a date
-- dragEventLeaveDate(event): fires when an event is dragged out of a date without dropping it there
-- dropEventOnDate(event, date): fired when an event is dropped on a date
+- `clickDay(date)`: fired when user clicks a date
+- `clickEvent(event)`: fired when user clicks on an event
+- `setShowDate(date)`: fired when user goes to a different month. The date passed is the first of the month in view (days before and after the month may also be visible).
+- `dragEventEnterDate(event)`: fires when an event is dragged over a date
+- `dragEventLeaveDate(event)`: fires when an event is dragged out of a date without dropping it there
+- `dropEventOnDate(event, date)`: fired when an event is dropped on a date
 
 ## Customizing the Look and Feel
 
@@ -161,14 +239,15 @@ This is added to an event when it has a `url` attribute (i.e., it is a hyperlink
 I'm open to other suggestions, provided they are easily calculated and there's some reasonable use case for having them.
 
 ## Future plans
-[x] Keep it simple, not a kitchen-sink control.
-[x] Better docs.
-[x] Add optional external stylesheets (keep scoped styling to the basics).
-[] Add a "starts-on-Monday" mode.
-[] Possibly add a "week" view (no time of day, just 7 taller boxes).
-[] Possibly add modes for a set number of weeks, multiple months, or even a full year.
-[] Handle events with times.
-[x] Extract date manipulation methods to a separate plugin.
+- [x] Keep it simple, not a kitchen-sink control.
+- [x] Better docs.
+- [x] Add optional external stylesheets (keep scoped styling to the basics).
+- [] Add a "starts-on-Monday" mode.
+- [] Add support for showing event times
+- [] Possibly add a "week" view (no time of day scaling, just 7 taller boxes).
+- [] Possibly add modes for a set number of weeks, multiple months, or even a full year.
+- [] Handle events with times.
+- [x] Extract date manipulation methods to a separate plugin.
 
 PRs and issues are welcome! Please use the same code style. Use of "Prettier" is encouraged.
 
@@ -176,7 +255,6 @@ PRs and issues are welcome! Please use the same code style. Use of "Prettier" is
 This project was inspired by Monthly.js, a JQuery-based control I've contributed to. Unfortunately, I wasn't able to port the code and still do things the Vue / Vanilla JS way, but I did borrow some of the concepts from that component.
 
 # FAQ
-
 (Ok, not really frequently-asked, but just random stuff.)
 
 #### Why Vue?
@@ -212,16 +290,6 @@ Also, any styles not critical to the display are in a static CSS file (`static/c
 | 2017.10.04 | 1.5.2 | Fix webpack issue with mixin import and Vue warning about non-primitive keys.
 | 2017.11.11 | 1.5.3 | Fix date differences over DST and toBeContinued logic (thanks @houseoftech and @sean-atomized!)
 | 2017.11.12 | 1.6.0 | Fix future/past classes. Tweaks to CSS to fix border render issue, simplify. Change height from aspect ratio to the height of the container (the reason for the minor version increment).
-
-## License
-
-Copyright 2017 Richard S. Tallent, II
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Build Setup
 ``` bash
