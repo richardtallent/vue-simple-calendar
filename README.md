@@ -90,7 +90,7 @@ Here's a minimal application example for a calendar with no events, but styled w
 ## Props
 The following properties are supported. Remember to use *kebab-case* when specifying these properties using attributes on the `calendar-month` element (*e.g.*, `<calendar-month month-name-format="long">`:
 
-- `events` - An array of events to show on the calendar. See *Event Attributes* below for more details.
+- `events` - An array of events to show on the calendar. See *Calendar Event Properties* below for more details.
 - `disablePast` - If true, prevents the user from navigating to previous months. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
 - `disableFuture` - If true, prevents the user from navigating to future months. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
 - `enableDragDrop` - If true, events are draggable, and dragging and dropping them emits events you can catch and respond to. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
