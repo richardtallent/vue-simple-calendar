@@ -99,8 +99,8 @@ The following properties are supported. Remember to use *kebab-case* when specif
 - `monthNameFormat` - The format to use for the month names. Possible values are `numeric`, `2-digit`, `narrow`, `short`, or `long`, and the default is `long`.
 - `weekdayNameFormat` - The format to use for the names of the days of the week. Possible values are `narrow`, `short`, or `long`, and the default is `short`.
 
-## Event Attributes
-Each event shown on the calendar can have the following attributes. `startDate` is required, and `title` and `id` are strongly recommended.
+## Calendar Event Properties
+Each event shown on the calendar can have the following properties. `startDate` is required, and `title` and `id` are strongly recommended.
 
 - `startDate` - The date the event starts on the calendar. Time of day is currently ignored.
 - `endDate` - The date the event ends on the calendar. Defaults to the same date as `startDate`.
@@ -109,7 +109,7 @@ Each event shown on the calendar can have the following attributes. `startDate` 
 - `url` - The URL associated with the event. If provided, clicking the event opens the URL. If not provided, the event is unlinked.
 - `classes` - A String with any additional CSS classes you wish to use for the event.
 
-## Events
+## Component Events
 The following Vue events are raised by the component, which you can catch in your calling application to respond to user actions:
 
 - `clickDay(date)`: fired when user clicks a date
