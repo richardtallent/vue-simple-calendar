@@ -10,7 +10,7 @@
 				it's easy to customize the style to meet your needs. I've purposefully tried to choose defaults that are modern
 				and clean without getting so complicated that they would be difficult to override.</p>
 
-			<h3>{{message}}</h3>
+			<h3>{{ message }}</h3>
 
 			<button @click="clickTestAddEvent" :disabled="alreadyAdded">Add Event on 22nd-23rd</button>
 		</div>
@@ -21,10 +21,9 @@
 			@clickDay="onClickDay"
 			@clickEvent="onClickEvent"
 			@setShowDate="setShowDate"
-			enable-drag-drop=true
+			:enable-drag-drop="true"
 			@dropEventOnDate="onDrop"
-			:events="events">
-		</calendar-month>
+			:events="events"/>
 
 	</div>
 </template>
@@ -34,7 +33,7 @@ import CalendarMonth from './components/calendar-month';
 import CalendarMath from './components/mixin-calendarMath';
 
 export default {
-	name: 'app',
+	name: 'App',
 	components: {
 		CalendarMonth,
 	},

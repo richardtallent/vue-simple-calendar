@@ -18,22 +18,22 @@
 			'y' + displayDate.getFullYear(),
 			'm' + paddedMonth(displayDate),
 			{
-				past:		isPastMonth(displayDate),
-				future:		isFutureMonth(displayDate),
-				noIntl:		!supportsIntl,
+				past: isPastMonth(displayDate),
+				future: isFutureMonth(displayDate),
+				noIntl: !supportsIntl,
 			}]">
 		<div class="header">
-			<div class="previousYear"><button @click="onClickPreviousYear" :disabled="!allowLastYearClick"></button></div>
-			<div class="previousMonth"><button @click="onClickPreviousMonth" :disabled="!allowLastMonthClick"></button></div>
+			<div class="previousYear"><button @click="onClickPreviousYear" :disabled="!allowLastYearClick"/></div>
+			<div class="previousMonth"><button @click="onClickPreviousMonth" :disabled="!allowLastMonthClick"/></div>
 			<div class="thisMonth">
 				<div class="monthLabel">
 					<span class="monthName">{{ monthNames[displayDate.getMonth()] }}</span>
 					<span class="yearNumber">{{ displayDate.getFullYear() }}</span>
 				</div>
-				<div v-if="!isSameMonth(today, displayDate)" class="currentMonth"><button @click="onClickCurrentMonth"></button></div>
+				<div v-if="!isSameMonth(today, displayDate)" class="currentMonth"><button @click="onClickCurrentMonth"/></div>
 			</div>
-			<div class="nextMonth"><button @click="onClickNextMonth" :disabled="!allowNextMonthClick"></button></div>
-			<div class="nextYear"><button @click="onClickNextYear" :disabled="!allowNextYearClick"></button></div>
+			<div class="nextMonth"><button @click="onClickNextMonth" :disabled="!allowNextMonthClick"/></div>
+			<div class="nextYear"><button @click="onClickNextYear" :disabled="!allowNextYearClick"/></div>
 		</div>
 		<div class="dayList">
 			<div v-for="(w, index) in weekdayNames" class="day" :key="index" :class="'dow'+index">{{ w }}</div>
@@ -52,12 +52,12 @@
 						'd' + paddedDay(day),
 						'instance' + instanceOfMonth(day),
 						{
-							outsideOfMonth	: day.getMonth() != displayDate.getMonth(),
-							today			: isSameDate(day, today),
-							past			: isInPast(day),
-							future			: isInFuture(day),
-							last			: isLastDayOfMonth(day),
-							lastInstance	: isLastInstanceOfMonth(day),
+							outsideOfMonth: day.getMonth() != displayDate.getMonth(),
+							today: isSameDate(day, today),
+							past: isInPast(day),
+							future: isInFuture(day),
+							last: isLastDayOfMonth(day),
+							lastInstance: isLastInstanceOfMonth(day),
 						}
 					]"
 					@click="onClickDay(day)"
@@ -77,7 +77,7 @@
 					:title="e.details.title"
 					@dragstart="onDragStart(e, $event)"
 					@click.stop="onClickEvent(e)"
-					v-html="e.details.title"></div>
+					v-html="e.details.title"/>
 				</div>
 		</div>
 	</div>
@@ -89,20 +89,20 @@ import mixinCalendarMath from '../components/mixin-calendarMath';
 
 export default {
 
-	name: 'calendar-month',
+	name: 'CalendarMonth',
 
 	mixins: [mixinCalendarMath],
 
 	props: {
 
-		showDate:			{ type: Date },
-		locale:				{ type: String },
+		showDate:			{ type: Date, default() { return undefined; } },
+		locale:				{ type: String, default() { return undefined; } },
 		monthNameFormat:	{ type: String, default() { return 'long'; } },
 		weekdayNameFormat:	{ type: String, default() { return 'short'; } },
 
-		disablePast:		{ default() { return false; } },
-		disableFuture:		{ default() { return false; } },
-		enableDragDrop:		{ default() { return false; } },
+		disablePast:		{ type: Boolean, default() { return false; } },
+		disableFuture:		{ type: Boolean, default() { return false; } },
+		enableDragDrop:		{ type: Boolean, default() { return false; } },
 
 		events: {
 			type: Array,
