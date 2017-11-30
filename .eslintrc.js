@@ -8,7 +8,7 @@ module.exports = {
     },
     extends: [
       'eslint:recommended',
-      'plugin:vue/recommended'
+	  'plugin:vue/recommended'
     ],
     rules: {
       'vue/html-indent': 'tab',

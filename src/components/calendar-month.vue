@@ -30,7 +30,7 @@
 					<span class="monthName">{{ monthNames[displayDate.getMonth()] }}</span>
 					<span class="yearNumber">{{ displayDate.getFullYear() }}</span>
 				</div>
-				<div v-if="!isSameMonth(today, displayDate)" class="currentMonth"><button @click="onClickCurrentMonth"/></div>
+				<div v-if="!isSameMonth(today(), displayDate)" class="currentMonth"><button @click="onClickCurrentMonth"/></div>
 			</div>
 			<div class="nextMonth"><button @click="onClickNextMonth" :disabled="!allowNextMonthClick"/></div>
 			<div class="nextYear"><button @click="onClickNextYear" :disabled="!allowNextYearClick"/></div>
@@ -53,7 +53,7 @@
 						'instance' + instanceOfMonth(day),
 						{
 							outsideOfMonth: day.getMonth() != displayDate.getMonth(),
-							today: isSameDate(day, today),
+							today: isSameDate(day, today()),
 							past: isInPast(day),
 							future: isInFuture(day),
 							last: isLastDayOfMonth(day),
@@ -115,16 +115,16 @@ export default {
 
 		/* Props cannot default to computed/method returns, so create defaulted versions of the properties that need specific defaults (Vue Issue #6013) */
 		displayLocale()			{ return this.locale || this.getDefaultBrowserLocale(); },
-		displayDate()			{ return this.showDate || this.today; },
+		displayDate()			{ return this.showDate || this.today(); },
 
 		/* Cache the names based on current locale and format settings */
 		monthNames()			{ return this.getFormattedMonthNames(this.displayLocale, this.monthNameFormat); },
 		weekdayNames()			{ return this.getFormattedWeekdayNames(this.displayLocale, this.weekdayNameFormat); },
 
-		allowLastYearClick()	{ return !this.disablePast || (this.aYearBefore(this.displayDate) >= this.today); },
-		allowNextYearClick()	{ return !this.disableFuture || (this.aYearAfter(this.displayDate) <= this.today); },
-		allowLastMonthClick()	{ return !this.disablePast || (this.beginningOfMonth(this.displayDate) > this.today); },
-		allowNextMonthClick()	{ return !this.disableFuture || (this.displayDate < this.beginningOfMonth(this.today)); },
+		allowLastYearClick()	{ return !this.disablePast || (this.aYearBefore(this.displayDate) >= this.today()); },
+		allowNextYearClick()	{ return !this.disableFuture || (this.aYearAfter(this.displayDate) <= this.today()); },
+		allowLastMonthClick()	{ return !this.disablePast || (this.beginningOfMonth(this.displayDate) > this.today()); },
+		allowNextMonthClick()	{ return !this.disableFuture || (this.displayDate < this.beginningOfMonth(this.today())); },
 
 	},
 
@@ -147,7 +147,7 @@ export default {
 		onClickPreviousMonth() { this.$emit('setShowDate', this.monthBefore(this.displayDate)); },
 		onClickNextMonth() { this.$emit('setShowDate', this.monthAfter(this.displayDate)); },
 		onClickNextYear() { this.$emit('setShowDate', this.aYearAfter(this.displayDate)); },
-		onClickCurrentMonth() { this.$emit('setShowDate', this.beginningOfMonth(this.today)); },
+		onClickCurrentMonth() { this.$emit('setShowDate', this.beginningOfMonth(this.today())); },
 
 		onDragStart(calendarEvent, windowEvent) {
 			if (!this.enableDragDrop) return false;
@@ -193,8 +193,8 @@ export default {
 			// Return a list of events that CONTAIN the week starting on a day.
 			// Sorted so the events that start earlier are always shown first.
 			const events = this.events.filter(event =>
-				event.startDate < this.addDays(weekStart, 7)
-				&& (!event.endDate || event.endDate >= weekStart)
+				this.dateOnly(event.startDate) < this.addDays(weekStart, 7)
+				&& (!event.endDate || this.dateOnly(event.endDate) >= weekStart)
 				, this).sort((a, b) => {
 				if (a.startDate < b.startDate) return -1;
 				if (b.startDate < a.startDate) return 1;

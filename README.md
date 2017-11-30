@@ -103,7 +103,7 @@ The following properties are supported. Remember to use *kebab-case* when specif
 Each event shown on the calendar can have the following properties. `startDate` is required, and `title` and `id` are strongly recommended.
 
 - `startDate` - The date the event starts on the calendar. Time of day is currently ignored.
-- `endDate` - The date the event ends on the calendar. Defaults to the same date as `startDate`.
+- `endDate` - The date the event ends on the calendar. Time of day is currently ignored. Defaults to the same date as `startDate`.
 - `title` - The name of the event shown on the calendar. Defaults to "Untitled".
 - `id` - A unique identifier for the event. Defaults to a randomly-generated string.
 - `url` - The URL associated with the event. If provided, clicking the event opens the URL. If not provided, the event is unlinked.
@@ -248,7 +248,7 @@ I'm open to other suggestions, provided they are easily calculated and there's s
 - [ ] Possibly add modes for a set number of weeks, multiple months, or even a full year.
 - [x] Extract date manipulation methods to a separate plugin.
 
-PRs and issues are welcome! Please use the same code style. Use of "Prettier" is encouraged.
+PRs and issues are welcome! Please use the same code style -- there are linter configs included for styles, plain JavaScript, and Vue components.
 
 ## Inspiration
 This project was inspired by Monthly.js, a JQuery-based control I've contributed to. Unfortunately, I wasn't able to port the code and still do things the Vue / Vanilla JS way, but I did borrow some of the concepts from that component.
@@ -267,7 +267,7 @@ But I do have some ideas in mind, such as adding handles to be able to change an
 #### Why not use moment.js?
 Moment.js is great, but I would only need a tiny fraction of its capabilities, and for simplicity, I wanted to not have any dependencies (other than Vue of course).
 
-#### Why is the style so "basic"?
+#### Why is the style so "plain"?
 I purposefully chose a very restrained, clean, and simple set of default styles for the calendar. The fanciest formatting is probably the rounded corners on the events.
 Also, any styles not critical to the display are in a static CSS file (`static/css/default.css`) rather than in the Vue component, making it easier for you to completely override my theme with your own. I also use CSS `content` where possible, so you can override static text in the buttons, etc. using CSS rather than having to modify the component's source or pass more props or slots.
 
@@ -289,6 +289,7 @@ Also, any styles not critical to the display are in a static CSS file (`static/c
 | 2017.10.04 | 1.5.2 | Fix webpack issue with mixin import and Vue warning about non-primitive keys.
 | 2017.11.11 | 1.5.3 | Fix date differences over DST and toBeContinued logic (thanks @houseoftech and @sean-atomized!)
 | 2017.11.12 | 1.6.0 | Fix future/past classes. Tweaks to CSS to fix border render issue, simplify. Change height from aspect ratio to the height of the container (the reason for the minor version increment).
+| 2017.11.12 | 1.6.1 | Fix issues when events have a time other than midnight (they should be ignored). Add stylelint and vue lint, clean up package.json, other minor tweaks. Set browser compatibility to a minimum of IE10. Prevent issues from caching "today" value.
 
 ## Build Setup
 ``` bash

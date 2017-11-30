@@ -9,12 +9,6 @@ export default {
 
 	computed: {
 
-		today() {
-			const d = new Date();
-			d.setHours(0, 0, 0, 0);
-			return d;
-		},
-
 		supportsIntl() {
 			return typeof Intl !== 'undefined';
 		},
@@ -26,6 +20,10 @@ export default {
 		// ******************************
 		// Series
 		// ******************************
+
+		today() {
+			return this.dateOnly(new Date());
+		},
 
 		weeksOfMonth(d) {
 			// Returns an array of object representing the date of the beginning of each week
@@ -41,23 +39,19 @@ export default {
 		},
 
 		// ******************************
-		// Date transforms
+		// Date transforms (all ignore/wipe time of day)
 		// ******************************
 
-		addDays(d, days) {
-			const d2 = new Date(d);
-			d2.setDate(d.getDate() + days);
-			return d2;
-		},
+		addDays(d, days)			{ return new Date(d.getFullYear(), d.getMonth(), d.getDate() + days); },
 
 		endOfMonth(d)				{ return new Date(d.getFullYear(), d.getMonth() + 1, 0); },
 		endOfPreviousMonth(d)		{ return new Date(d.getFullYear(), d.getMonth(), 0); },
 
-		aYearBefore(d)				{ return new Date(d.getFullYear() - 1, d.getMonth(), 1); },
-		aYearAfter(d)				{ return new Date(d.getFullYear() + 1, d.getMonth(), 1); },
+		aYearBefore(d)				{ return new Date(d.getFullYear() - 1, d.getMonth()); },
+		aYearAfter(d)				{ return new Date(d.getFullYear() + 1, d.getMonth()); },
 
-		monthBefore(d)				{ return new Date(d.getFullYear(), d.getMonth() - 1, 1); },
-		monthAfter(d)				{ return new Date(d.getFullYear(), d.getMonth() + 1, 1); },
+		monthBefore(d)				{ return new Date(d.getFullYear(), d.getMonth() - 1); },
+		monthAfter(d)				{ return new Date(d.getFullYear(), d.getMonth() + 1); },
 
 		beginningOfWeek(d)			{ return this.addDays(d, 0 - d.getDay()); },
 		endOfWeek(d)				{ return this.addDays(d, 7 - d.getDay()); },
@@ -65,7 +59,7 @@ export default {
 		beginningOfCalendar(d)		{ return this.beginningOfWeek(this.beginningOfMonth(d)); },
 		endOfCalendar(d)			{ return this.endOfWeek(this.endOfMonth(d)); },
 
-		beginningOfMonth(d)			{ return new Date(d.getFullYear(), d.getMonth(), 1); },
+		beginningOfMonth(d)			{ return new Date(d.getFullYear(), d.getMonth()); },
 		instanceOfMonth(d)			{ return Math.ceil(d.getDate() / 7); },
 
 		// ******************************
@@ -83,20 +77,34 @@ export default {
 		// Date comparisons
 		// ******************************
 
-		// Number of days between two dates (times must be 0). Rounding to account for potential DST change offests.
-		dayDiff(d1, d2)				{ return Math.round((d2 - d1) / 86400000); },
+		// Number of whole days between two dates. If present, time of day is ignored.
+		// Cannot use setHours / dateOnly(), as this would not properly ranges including a DST changeover. 
+		// setHours mutates, so must create a copy.
+		dayDiff(d1, d2)				{
+			const endDate = new Date(d2), startDate = new Date(d1);
+			endDate.setUTCHours(0,0,0,0);
+			startDate.setUTCHours(0,0,0,0);
+			return (endDate - startDate) / 86400000;
+		},
 
 		// http://stackoverflow.com/questions/492994/compare-two-dates-with-javascript
-		isSameDate(d1, d2)			{ return d1.getTime() === d2.getTime(); },
+		isSameDate(d1, d2)			{ return this.dayDiff(d1, d2) === 0; },
 		isSameMonth(d1, d2)			{ return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth(); },
 
-		isPastMonth(d)				{ return this.beginningOfMonth(d) < this.beginningOfMonth(this.today); },
-		isFutureMonth(d)			{ return this.beginningOfMonth(d) > this.beginningOfMonth(this.today); },
+		isPastMonth(d)				{ return this.beginningOfMonth(d) < this.beginningOfMonth(this.today()); },
+		isFutureMonth(d)			{ return this.beginningOfMonth(d) > this.beginningOfMonth(this.today()); },
 
-		isInFuture(d)				{ return d > this.today; },
-		isInPast(d)					{ return d < this.today; },
+		isInFuture(d)				{ return this.dateOnly(d) > this.today(); },
+		isInPast(d)					{ return this.dateOnly(d) < this.today(); },
 		isLastInstanceOfMonth(d)	{ return d.getMonth() !== this.addDays(d, 7).getMonth(); },
 		isLastDayOfMonth(d)			{ return d.getMonth() !== this.addDays(d, 1).getMonth(); },
+
+		dateOnly(d)					{
+			// setHours mutates argument, work on a copy.
+			const d2 = new Date(d);
+			d2.setHours(0,0,0,0);
+			return d2;
+		},
 
 		// ******************************
 		// Localization
