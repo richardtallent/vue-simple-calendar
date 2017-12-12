@@ -39,7 +39,7 @@
 			<div v-for="(w, index) in weekdayNames" class="day" :key="index" :class="'dow'+index">{{ w }}</div>
 		</div>
 		<div class="month">
-			<div v-for="(weekStart, weekIndex) in weeksOfMonth(displayDate)"
+			<div v-for="(weekStart, weekIndex) in weeksOfMonth(displayDate, startingDayOfWeek)"
 				class="week"
 				:key="weekIndex"
 				:class="['week' + (weekIndex+1), 'ws' + isoYearMonthDay(weekStart)]">
@@ -103,6 +103,7 @@ export default {
 		disablePast:		{ type: Boolean, default() { return false; } },
 		disableFuture:		{ type: Boolean, default() { return false; } },
 		enableDragDrop:		{ type: Boolean, default() { return false; } },
+		startingDayOfWeek:	{ type: Number, default() { return 0; } },
 
 		events: {
 			type: Array,
@@ -119,7 +120,7 @@ export default {
 
 		/* Cache the names based on current locale and format settings */
 		monthNames()			{ return this.getFormattedMonthNames(this.displayLocale, this.monthNameFormat); },
-		weekdayNames()			{ return this.getFormattedWeekdayNames(this.displayLocale, this.weekdayNameFormat); },
+		weekdayNames()			{ return this.getFormattedWeekdayNames(this.displayLocale, this.weekdayNameFormat, this.startingDayOfWeek); },
 
 		allowLastYearClick()	{ return !this.disablePast || (this.aYearBefore(this.displayDate) >= this.today()); },
 		allowNextYearClick()	{ return !this.disableFuture || (this.aYearAfter(this.displayDate) <= this.today()); },

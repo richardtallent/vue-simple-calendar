@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<div class="app-description">
-			<h1>vue-calendar-month 1.6.1</h1>
+			<h1>vue-calendar-month 1.7.0</h1>
 
 			<p>Below is an example of vue-calendar-month. You can drag and drop events to change the start date (this
 				functionality is optional and controlled by the calling app).</p>
@@ -13,6 +13,14 @@
 			<h3>{{ message }}</h3>
 
 			<button @click="clickTestAddEvent" :disabled="alreadyAdded">Add Event on 22nd-23rd</button>
+
+			<p>Starting day of the week: <select v-model="startingDayOfWeek">
+				<option
+					v-for="(d, index) in dayNames"
+					:value="index"
+					:key="index">{{ d }}</option>
+			</select></p>
+
 		</div>
 		
 		<calendar-month
@@ -22,6 +30,7 @@
 			@clickEvent="onClickEvent"
 			@setShowDate="setShowDate"
 			:enable-drag-drop="true"
+			:starting-day-of-week="startingDayOfWeek"
 			@dropEventOnDate="onDrop"
 			:events="events"/>
 
@@ -43,6 +52,7 @@ export default {
 			showDate: this.thisMonth(1),
 			message: 'Click a date or event...',
 			alreadyAdded: false,
+			startingDayOfWeek: 0,
 			events: [
 				{ id: 'e1', startDate: this.thisMonth(15), endDate: this.thisMonth(15), title: 'Single-day event with a long title' },
 				{ id: 'e2', startDate: this.thisMonth(7), endDate: this.thisMonth(10), title: 'Multi-day event with a long title' },
@@ -57,6 +67,10 @@ export default {
 				{ id: 'e11', startDate: this.thisMonth(29), endDate: this.thisMonth(29), title: 'Same day 7' },
 			],
 		};
+	},
+	computed: {
+		userLocale(){ return CalendarMath.methods.getDefaultBrowserLocale(); },
+		dayNames() { return CalendarMath.methods.getFormattedWeekdayNames(this.userLocale, 'long', 0); },
 	},
 	methods: {
 		thisMonth: (d) => { const t = new Date(); return new Date(t.getFullYear(), t.getMonth(), d); },

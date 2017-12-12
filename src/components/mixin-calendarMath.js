@@ -7,14 +7,6 @@ than the caching of the computed properties.
 */
 export default {
 
-	computed: {
-
-		supportsIntl() {
-			return typeof Intl !== 'undefined';
-		},
-
-	},
-
 	methods: {
 
 		// ******************************
@@ -25,11 +17,11 @@ export default {
 			return this.dateOnly(new Date());
 		},
 
-		weeksOfMonth(d) {
+		weeksOfMonth(d, startDow) {
 			// Returns an array of object representing the date of the beginning of each week
 			// included in the view (which, by default, consists of an entire month).
-			const firstDate = this.beginningOfCalendar(d);
-			const lastDate = this.endOfCalendar(d);
+			const firstDate = this.beginningOfCalendar(d, startDow);
+			const lastDate = this.endOfCalendar(d, startDow);
 			const numWeeks = Math.floor((this.dayDiff(firstDate, lastDate) + 1) / 7);
 			return Array(numWeeks).fill().map((_, i) => this.addDays(firstDate, i * 7));
 		},
@@ -53,11 +45,11 @@ export default {
 		monthBefore(d)				{ return new Date(d.getFullYear(), d.getMonth() - 1); },
 		monthAfter(d)				{ return new Date(d.getFullYear(), d.getMonth() + 1); },
 
-		beginningOfWeek(d)			{ return this.addDays(d, 0 - d.getDay()); },
-		endOfWeek(d)				{ return this.addDays(d, 7 - d.getDay()); },
+		beginningOfWeek(d, startDow)		{ return this.addDays(d, (startDow - d.getDay() - 7) % -7); },
+		endOfWeek(d, startDow)				{ return this.addDays(this.beginningOfWeek(d, startDow), 7); },
 
-		beginningOfCalendar(d)		{ return this.beginningOfWeek(this.beginningOfMonth(d)); },
-		endOfCalendar(d)			{ return this.endOfWeek(this.endOfMonth(d)); },
+		beginningOfCalendar(d, startDow)	{ return this.beginningOfWeek(this.beginningOfMonth(d), startDow); },
+		endOfCalendar(d, startDow)			{ return this.endOfWeek(this.endOfMonth(d), startDow); },
 
 		beginningOfMonth(d)			{ return new Date(d.getFullYear(), d.getMonth()); },
 		instanceOfMonth(d)			{ return Math.ceil(d.getDate() / 7); },
@@ -114,20 +106,24 @@ export default {
 			return l.substring(0, 2);
 		},
 
+		supportsIntl() {
+			return typeof Intl !== 'undefined';
+		},
+
 		getFormattedMonthNames(locale, format) {
 			// Use the provided locale and format if possible to obtain the name of the month
-			if (!this.supportsIntl) return Array(12).fill('');
+			if (!this.supportsIntl()) return Array(12).fill('');
 			const formatter = new Intl.DateTimeFormat(locale, { month: format });
 			// The year doesn't matter, using 2017 for convenience
 			return Array(12).fill().map((_, i) => formatter.format(new Date(2017, i, 1)));
 		},
 
-		getFormattedWeekdayNames(locale, format) {
+		getFormattedWeekdayNames(locale, format, startingDayOfWeek) {
 			// Use the provided locale and format if possible to obtain the name of the days of the week
-			if (!this.supportsIntl) return Array(7).fill('');
+			if (!this.supportsIntl()) return Array(7).fill('');
 			const formatter = new Intl.DateTimeFormat(locale, { weekday: format });
 			// 2017 starts on Sunday, so use it as the baseline date
-			return Array(7).fill().map((_, i) => formatter.format(new Date(2017, 0, i + 1)));
+			return Array(7).fill().map((_, i) => formatter.format(new Date(2017, 0, (i + 1 + startingDayOfWeek) % 7)));
 		},
 
 		getDefaultBrowserLocale() {

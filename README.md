@@ -23,6 +23,7 @@ https://www.tallent.us/vue-simple-calendar/
 - No external dependencies (Moment, JQuery, etc.).
 - Emphasizes customization via plain ol' CSS.
 - User events (clicks, drags, etc.) are exposed as Vue events.
+- Can start on any day of the week (defaults to Sunday)
 
 ## Installation and Usage
 *(This assumes you already have a web application set up for using Vue. If you're starting a new project, look up the documentation for the Vue CLI, which will allow you to initialize a new project with webpack, etc.)*
@@ -96,6 +97,8 @@ The following properties are supported. Remember to use *kebab-case* when specif
 - `enableDragDrop` - If true, events are draggable, and dragging and dropping them emits events you can catch and respond to. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
 - `locale` - The BCP 47 language tag used to determine the month and day names. Defaults to the user's browser language setting.
 - `showDate` - The month to show by default. The day of month is ignored. Defaults to the current month (user local time).
+- `startingDayOfWeek` - The day of the week that starts each week. Defaults to `0` (Sunday), valid range is 0-6. Common non-default values would be
+`1` (Monday) for Europe or `6` (Saturday) for much of the Middle East.
 - `monthNameFormat` - The format to use for the month names. Possible values are `numeric`, `2-digit`, `narrow`, `short`, or `long`, and the default is `long`.
 - `weekdayNameFormat` - The format to use for the names of the days of the week. Possible values are `narrow`, `short`, or `long`, and the default is `short`.
 
@@ -242,7 +245,7 @@ I'm open to other suggestions, provided they are easily calculated and there's s
 - [x] Keep it simple, not a kitchen-sink control.
 - [x] Better docs.
 - [x] Add optional external stylesheets (keep scoped styling to the basics).
-- [ ] Add a "starts-on-Monday" mode.
+- [x] Add a "starts-on-Monday" mode.
 - [ ] Add support for showing event times
 - [ ] Possibly add a "week" view (no time of day scaling, just 7 taller boxes).
 - [ ] Possibly add modes for a set number of weeks, multiple months, or even a full year.
@@ -290,6 +293,7 @@ Also, any styles not critical to the display are in a static CSS file (`static/c
 | 2017.11.11 | 1.5.3 | Fix date differences over DST and toBeContinued logic (thanks @houseoftech and @sean-atomized!)
 | 2017.11.12 | 1.6.0 | Fix future/past classes. Tweaks to CSS to fix border render issue, simplify. Change height from aspect ratio to the height of the container (the reason for the minor version increment).
 | 2017.11.12 | 1.6.1 | Fix issues when events have a time other than midnight (they should be ignored). Add stylelint and vue lint, clean up package.json, other minor tweaks. Set browser compatibility to a minimum of IE10. Prevent issues from caching "today" value.
+| 2017.12.12 | 1.7.0 | Add `startingDayOfWeek` property to allow the calendar to optionally start on any desired day of the week
 
 ## Build Setup
 ``` bash
