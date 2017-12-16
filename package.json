@@ -1,6 +1,6 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "1.7.0",
+	"version": "1.7.1",
 	"description": "Simple calendar event control",
 	"author": "richardtallent <richard@tallent.us>",
 	"license": "MIT",
@@ -18,10 +18,8 @@
 		"babel-core": "^6.26.0",
 		"babel-eslint": "^8.0.2",
 		"babel-loader": "^7.1.2",
-		"babel-plugin-istanbul": "^4.1.5",
 		"babel-plugin-transform-runtime": "^6.23.0",
 		"babel-preset-env": "^1.6.1",
-		"babel-preset-stage-2": "^6.24.1",
 		"babel-register": "^6.26.0",
 		"chalk": "^2.1.0",
 		"connect-history-api-fallback": "^1.5.0",
@@ -71,5 +69,10 @@
 		"> 1%",
 		"last 2 versions",
 		"not ie <= 10"
-	]
+	],
+	"babel": {
+		"presets": [
+			"env"
+		]
+	}
 }

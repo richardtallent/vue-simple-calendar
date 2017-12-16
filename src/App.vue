@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<div class="app-description">
-			<h1>vue-calendar-month 1.7.0</h1>
+			<h1>vue-calendar-month 1.7.1</h1>
 
 			<p>Below is an example of vue-calendar-month. You can drag and drop events to change the start date (this
 				functionality is optional and controlled by the calling app).</p>

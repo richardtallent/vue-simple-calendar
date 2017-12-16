@@ -294,6 +294,7 @@ Also, any styles not critical to the display are in a static CSS file (`static/c
 | 2017.11.12 | 1.6.0 | Fix future/past classes. Tweaks to CSS to fix border render issue, simplify. Change height from aspect ratio to the height of the container (the reason for the minor version increment).
 | 2017.11.12 | 1.6.1 | Fix issues when events have a time other than midnight (they should be ignored). Add stylelint and vue lint, clean up package.json, other minor tweaks. Set browser compatibility to a minimum of IE10. Prevent issues from caching "today" value.
 | 2017.12.12 | 1.7.0 | Add `startingDayOfWeek` property to allow the calendar to optionally start on any desired day of the week
+| 2017.12.15 | 1.7.1 | Hopefully resolve reported babel preset error
 
 ## Build Setup
 ``` bash
