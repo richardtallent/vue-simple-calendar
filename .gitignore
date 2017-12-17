@@ -4,3 +4,5 @@ dist/
 npm-debug.log*
 package-lock.json
 debug.log
+.editorconfig
+*.tgz
