@@ -64,4 +64,15 @@ module.exports = [
 			umdNamedDefine: true,
 		},
 	}),
+
+	// Config 3: Separate export of the mixin for external node use
+	merge(commonConfig, {
+		entry: path.resolve(__dirname + "/src/CalendarMathMixin.js"),
+		output: {
+			filename: "calendar-math-mixin.js",
+			libraryTarget: "umd",
+			library: "CalendarMathMixin",
+			umdNamedDefine: true,
+		},
+	}),
 ]
