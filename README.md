@@ -63,7 +63,7 @@ Here's a minimal application example for a calendar with no events, but styled w
 	</div>
 </template>
 <script>
-	import CalendarMonth from 'vue-simple-calendar/src/components/calendar-month'
+	import CalendarMonth from "vue-simple-calendar"
 	require("vue-simple-calendar/dist/static/css/default.css")
 	require("vue-simple-calendar/dist/static/css/holidays-us.css")
 
