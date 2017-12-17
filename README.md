@@ -64,8 +64,8 @@ Here's a minimal application example for a calendar with no events, but styled w
 </template>
 <script>
 	import CalendarMonth from 'vue-simple-calendar/src/components/calendar-month'
-	require("vue-simple-calendar/static/css/default.css")
-	require("vue-simple-calendar/static/css/holidays-us.css")
+	require("vue-simple-calendar/dist/static/css/default.css")
+	require("vue-simple-calendar/dist/static/css/holidays-us.css")
 
 	export default {
 		name: 'app',
@@ -332,7 +332,7 @@ Date       | Version      | Notes
 2017.11.12 | 1.6.1        | Fix issues when events have a time other than midnight (they should be ignored). Add stylelint and vue lint, clean up package.json, other minor tweaks. Set browser compatibility to a minimum of IE10. Prevent issues from caching "today" value.
 2017.12.12 | 1.7.0        | Add `startingDayOfWeek` property to allow the calendar to optionally start on any desired day of the week
 2017.12.15 | 1.7.1        | Hopefully resolve reported babel preset error
-2017.12.18 | 1.8.0-beta.1 | Split sample app to another repo, rebuild build/config scripts from scratch
+2017.12.17 | 1.8.0        | Split sample app to another repo, rebuild build/config scripts from scratch
 
 ## Build Setup
 

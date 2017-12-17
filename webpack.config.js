@@ -3,10 +3,6 @@ const path = require("path")
 const merge = require("webpack-merge")
 const CopyWebpackPlugin = require("copy-webpack-plugin")
 
-function resolve(dir) {
-	return path.join(__dirname, "..", dir)
-}
-
 var commonConfig = {
 	output: {
 		path: path.resolve(__dirname + "/dist/"),
@@ -62,9 +58,9 @@ module.exports = [
 	merge(commonConfig, {
 		entry: path.resolve(__dirname + "/src/CalendarMonth.vue"),
 		output: {
-			filename: "calendar-month.js",
+			filename: "vue-simple-calendar.js",
 			libraryTarget: "umd",
-			library: "calendar-month",
+			library: "CalendarMonth",
 			umdNamedDefine: true,
 		},
 	}),

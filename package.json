@@ -1,9 +1,10 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "1.8.0-beta.1",
+	"version": "1.8.0",
 	"description": "Simple calendar event control",
 	"author": "richardtallent <richard@tallent.us>",
 	"license": "MIT",
+	"main": "dist/vue-simple-calendar.js",
 	"repository": "https://github.com/richardtallent/vue-simple-calendar",
 	"private": false,
 	"scripts": {
