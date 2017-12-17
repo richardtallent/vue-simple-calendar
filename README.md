@@ -333,6 +333,7 @@ Date       | Version      | Notes
 2017.12.12 | 1.7.0        | Add `startingDayOfWeek` property to allow the calendar to optionally start on any desired day of the week
 2017.12.15 | 1.7.1        | Hopefully resolve reported babel preset error
 2017.12.17 | 1.8.0        | Split sample app to another repo, rebuild build/config scripts from scratch
+2017.12.17 | 1.8.1        | Add build for mixin
 
 ## Build Setup
 
