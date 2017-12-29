@@ -24,7 +24,7 @@
 				future: isFutureMonth(displayDate),
 				noIntl: !supportsIntl,
 			}]">
-		<div class="header">
+		<div class="header" v-if="!disableHeader">
 			<div class="previousYear"><button @click="onClickPreviousYear" :disabled="!allowLastYearClick"/></div>
 			<div class="previousMonth"><button @click="onClickPreviousMonth" :disabled="!allowLastMonthClick"/></div>
 			<div class="thisMonth">
@@ -116,6 +116,13 @@ export default {
 			type: String,
 			default() {
 				return "short"
+			},
+		},
+
+		disableHeader: {
+			type: Boolean,
+			default() {
+				return false
 			},
 		},
 

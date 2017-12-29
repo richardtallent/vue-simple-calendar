@@ -99,6 +99,7 @@ Here's a minimal application example for a calendar with no events, but styled w
 The following properties are supported. Remember to use _kebab-case_ when specifying these properties using attributes on the `calendar-month` element (_e.g._, `<calendar-month month-name-format="long">`:
 
 * `events` - An array of events to show on the calendar. See _Calendar Event Properties_ below for more details.
+* `disableHeader` - If true, disable header. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
 * `disablePast` - If true, prevents the user from navigating to previous months. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
 * `disableFuture` - If true, prevents the user from navigating to future months. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
 * `enableDragDrop` - If true, events are draggable, and dragging and dropping them emits events you can catch and respond to. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
