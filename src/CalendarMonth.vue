@@ -24,8 +24,8 @@
 				future: isFutureMonth(displayDate),
 				noIntl: !supportsIntl,
 			}]">
-		<div class="header">
-			<slot name="header">
+		<slot name="header">
+			<div class="header">
 				<div class="previousYear"><button @click="onClickPreviousYear" :disabled="!allowLastYearClick"/></div>
 				<div class="previousMonth"><button @click="onClickPreviousMonth" :disabled="!allowLastMonthClick"/></div>
 				<div class="thisMonth">
@@ -37,11 +37,13 @@
 				</div>
 				<div class="nextMonth"><button @click="onClickNextMonth" :disabled="!allowNextMonthClick"/></div>
 				<div class="nextYear"><button @click="onClickNextYear" :disabled="!allowNextYearClick"/></div>
-			</slot>
-		</div>
-		<div class="dayList">
-			<div v-for="(w, index) in weekdayNames" class="day" :key="index" :class="'dow'+index">{{ w }}</div>
-		</div>
+			</div>
+		</slot>
+		<slot name="dayList">
+			<div class="dayList">
+				<div v-for="(w, index) in weekdayNames" class="day" :key="index" :class="'dow'+index">{{ w }}</div>
+			</div>
+		</slot>
 		<div class="month">
 			<div v-for="(weekStart, weekIndex) in weeksOfMonth(displayDate, startingDayOfWeek)"
 				class="week"
