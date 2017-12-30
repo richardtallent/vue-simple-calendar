@@ -25,19 +25,19 @@
 				noIntl: !supportsIntl,
 			}]">
 		<div class="header">
-                   <slot name="header">
-			<div class="previousYear"><button @click="onClickPreviousYear" :disabled="!allowLastYearClick"/></div>
-			<div class="previousMonth"><button @click="onClickPreviousMonth" :disabled="!allowLastMonthClick"/></div>
-			<div class="thisMonth">
-				<div class="monthLabel">
-					<span class="monthName">{{ monthNames[displayDate.getMonth()] }}</span>
-					<span class="yearNumber">{{ displayDate.getFullYear() }}</span>
+			<slot name="header">
+				<div class="previousYear"><button @click="onClickPreviousYear" :disabled="!allowLastYearClick"/></div>
+				<div class="previousMonth"><button @click="onClickPreviousMonth" :disabled="!allowLastMonthClick"/></div>
+				<div class="thisMonth">
+					<div class="monthLabel">
+						<span class="monthName">{{ monthNames[displayDate.getMonth()] }}</span>
+						<span class="yearNumber">{{ displayDate.getFullYear() }}</span>
+					</div>
+					<div v-if="!isSameMonth(today(), displayDate)" class="currentMonth"><button @click="onClickCurrentMonth"/></div>
 				</div>
-				<div v-if="!isSameMonth(today(), displayDate)" class="currentMonth"><button @click="onClickCurrentMonth"/></div>
-			</div>
-			<div class="nextMonth"><button @click="onClickNextMonth" :disabled="!allowNextMonthClick"/></div>
-			<div class="nextYear"><button @click="onClickNextYear" :disabled="!allowNextYearClick"/></div>
-		  </slot>
+				<div class="nextMonth"><button @click="onClickNextMonth" :disabled="!allowNextMonthClick"/></div>
+				<div class="nextYear"><button @click="onClickNextYear" :disabled="!allowNextYearClick"/></div>
+			</slot>
 		</div>
 		<div class="dayList">
 			<div v-for="(w, index) in weekdayNames" class="day" :key="index" :class="'dow'+index">{{ w }}</div>
