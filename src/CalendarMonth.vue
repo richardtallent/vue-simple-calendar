@@ -271,13 +271,14 @@ export default {
 		// ******************************
 
 		findAndSortEventsInWeek(weekStart) {
-			// Return a list of events that CONTAIN the week starting on a day.
-			// Sorted so the events that start earlier are always shown first.
+			// Return a list of events that INCLUDE any day of a week starting on a
+			// particular day. Sorted so the events that start earlier are always
+			// shown first.
 			const events = this.events
 				.filter(
 					event =>
 						this.dateOnly(event.startDate) < this.addDays(weekStart, 7) &&
-						(!event.endDate || this.dateOnly(event.endDate) >= weekStart),
+						this.dateOnly(event.endDate || event.startDate) >= weekStart,
 					this
 				)
 				.sort((a, b) => {
