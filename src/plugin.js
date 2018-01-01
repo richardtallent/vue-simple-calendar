@@ -1,7 +1,7 @@
-import CalendarMonth from "./CalendarMonth.vue"
+import CalendarView from "./CalendarView.vue"
 
 export default {
 	install: function(Vue) {
-		Vue.component("calendar-month", CalendarMonth)
+		Vue.component("calendar-view", CalendarView)
 	},
 }

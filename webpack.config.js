@@ -50,17 +50,17 @@ module.exports = [
 		output: {
 			filename: "calendar-month.min.js",
 			libraryTarget: "window",
-			library: "CalendarMonth",
+			library: "CalendarView",
 		},
 	}),
 
 	// Config 2: For Node-based development environments
 	merge(commonConfig, {
-		entry: path.resolve(__dirname + "/src/CalendarMonth.vue"),
+		entry: path.resolve(__dirname + "/src/CalendarView.vue"),
 		output: {
 			filename: "vue-simple-calendar.js",
 			libraryTarget: "umd",
-			library: "CalendarMonth",
+			library: "CalendarView",
 			umdNamedDefine: true,
 		},
 	}),

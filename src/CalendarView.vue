@@ -109,7 +109,7 @@
 import CalendarMathMixin from "./CalendarMathMixin"
 
 export default {
-	name: "CalendarMonth",
+	name: "CalendarView",
 
 	mixins: [CalendarMathMixin],
 
