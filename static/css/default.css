@@ -7,66 +7,67 @@ having to override as much.
 **************************************************************
 */
 
-.calendar-month .day.today { background-color: #ffe; }
-.calendar-month .day.past { background-color: #fafafa; }
-.calendar-month .day.outsideOfMonth { background-color: #f0f0f0; }
+/* Header */
 
-.calendar-month .event.purple {
-	background-color: #f0e0ff;
-	border-color: #e7d7f7;
+.calendar-view .header .periodLabel > div {
+	font-size: 1.5em;
 }
 
-.calendar-month .event.orange {
-	background-color: #ffe7d0;
-	border-color: #f7e0c7;
+.calendar-view .header button {
+	color: #7f7f7f;
 }
 
-/* Allows emoji icons or labels (such as holidays) to be added more easily to specific dates by having the margin set already. */
-.calendar-month .day .date::before { margin-right: 0.5em; }
-
-.calendar-month .month,
-.calendar-month .header,
-.calendar-month .week,
-.calendar-month .dayList {
-	border-color: #ddd;
+.calendar-view .header button:disabled {
+	color: #ccc;
+	background-color: #f7f7f7;
 }
 
-.calendar-month .header button {
-	background-color: transparent;
-	border-color: #e7e7e7;
-	color: #808080;
+/* Grid */
+
+.calendar-view .day.today {
+	background-color: #ffe;
 }
 
-.calendar-month .day {
-	border-color: #ddd;
+.calendar-view .day.past {
+	background-color: #fafafa;
 }
 
-.calendar-month .day .content.draghover {
-	border: 0.2em solid yellow;
+.calendar-view .day.outsideOfMonth {
+	background-color: #f7f7f7;
 }
 
-.calendar-month .event {
+/* Events */
+
+.calendar-view .event {
 	border-color: #e0e0f0;
 	border-radius: 0.5em;
 	background-color: #e7e7ff;
 }
 
-.calendar-month .event.continued::before,
-.calendar-month .event.toBeContinued::after {
+.calendar-view .event.purple {
+	background-color: #f0e0ff;
+	border-color: #e7d7f7;
+}
+
+.calendar-view .event.orange {
+	background-color: #ffe7d0;
+	border-color: #f7e0c7;
+}
+
+.calendar-view .event.continued::before,
+.calendar-view .event.toBeContinued::after {
 	content: " \21e2 ";
 	color: #999;
 }
 
-.calendar-month .event.toBeContinued {
+.calendar-view .event.toBeContinued {
 	border-right-style: none;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
 
-/* Button labels */
-.calendar-month .header .previousMonth button::after { content: "\25C0"; }
-.calendar-month .header .nextMonth button::after { content: "\25B6"; }
-.calendar-month .header .previousYear button::after { content: "\25C0\25C0"; }
-.calendar-month .header .nextYear button::after { content: "\25B6\25B6"; }
-.calendar-month.past .header .currentMonth button::after { content: '\21BA'; }
-.calendar-month.future .header .currentMonth button::after { content: '\21BB'; }
+/* Drag and drop */
+
+.calendar-view .day .content.draghover {
+	border: 0.2em solid yellow;
+}
