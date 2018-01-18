@@ -1,3 +1,31 @@
+- [Introduction](#vue-simple-calendar)
+  - [Demo](#demo)
+  - [Version 2.0](#version-2.0-new-features-and-breaking-changes)
+  - [Features](#features)
+  - [Installation and Usage](#installation-and-usage)
+  - [Props](#props)
+    - [In 2.0](#props-new-in-2.0)
+  - [Calendar Event Properties](#calendar-event-properties)
+  - [Component Events](#component-events)
+    - [In 2.0](#component-events-breaking-change-in-2.0)
+  - [Slots](#slots)
+    - [header](#header)dayHeader
+      - [2.0](#header-new-to-2.0)
+    - [dayHeader](#dayHeader)
+    - [dayContent](#dayContent)
+    - [event](#event)
+  - [Customizing the Look and Feel](#customizing-the-look-and-feel)
+  - [Calendar classes](#calendar-classes)
+  - [Week classes](#week-classes)
+  - [Day classes](#day-classes)
+  - [Classes for Events](#classes-for-events)
+  - [Future plans](#future-plans)
+  - [Day classes](#day-classes)
+  - [FAQ](#faq)
+  - [Release History](#release-history)
+  - [Build Setup](#build-setup)
+    
+
 # vue-simple-calendar
 
 This is a calendar component for Vue.
@@ -145,7 +173,7 @@ The following properties are supported. Remember to use _kebab-case_ when specif
 * `monthNameFormat` - The format to use for the month names. Possible values are `numeric`, `2-digit`, `narrow`, `short`, or `long`, and the default is `long`.
 * `weekdayNameFormat` - The format to use for the names of the days of the week. Possible values are `narrow`, `short`, or `long`, and the default is `short`.
 
-**New in 2.0**
+### Props New in 2.0 
 
 * `showEventTimes` - If true, shows the start and/or end time of an event beside the event title. Midnight is not shown, a midnight time is assumed to indicate an all-day or indeterminate time. (If you want to show midnight, use `00:00:01` and don't choose to show seconds.) The default is `false`.
 * `timeFormatOptions` - This takes an object containing `Intl.DateTimeFormat` options to be used to format the event times. The `locale` setting is automatically used. This option is ignored for browsers that don't support `Intl` (they will see the 24-hour, zero-padded time).
@@ -177,7 +205,8 @@ The following Vue events are raised by the component, which you can catch in you
 
 *Note in the above, `event` refers to the calendar "event" involved in the activity, not the DOM "event". The word "event" here is a bit overloaded.*
 
-**Breaking change in 2.0**: Prior to 2.0, `dragEventOverDate` was undocumented and called `dragEventDragOverDate`, and all dragging-related user events emitted the calendar event's *id* as the first argument rather than the calendar event itself. Since not all calendar events will have an ID and the parent will probably want access to the actual calendar event, I changed these Vue events to emit the original calendar event, not just its id.
+### Component Events Breaking change in 2.0
+Prior to 2.0, `dragEventOverDate` was undocumented and called `dragEventDragOverDate`, and all dragging-related user events emitted the calendar event's *id* as the first argument rather than the calendar event itself. Since not all calendar events will have an ID and the parent will probably want access to the actual calendar event, I changed these Vue events to emit the original calendar event, not just its id.
 
 ## Slots
 
@@ -191,7 +220,7 @@ This optional named slot **replaces** the default `div.header` (which contains t
 </calendar-view>
 ```
 
-**New to 2.0**
+### header New to 2.0
 
 ### dayHeader
 
