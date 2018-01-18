@@ -9,7 +9,7 @@
   - [Component Events](#component-events)
     - [In 2.0](#component-events-breaking-change-in-2.0)
   - [Slots](#slots)
-    - [header](#header)dayHeader
+    - [header](#header)
       - [2.0](#header-new-to-2.0)
     - [dayHeader](#dayHeader)
     - [dayContent](#dayContent)
