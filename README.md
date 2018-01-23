@@ -441,6 +441,7 @@ Date       | Version      | Notes
 2017.12.17 | 1.8.1        | Add build for mixin
 2017.12.30 | 1.8.2        | Add header slot (#32), fix display issue (#33)
 2018.01.01 | 2.0.0        | Added week/year and multi-period view options, time of day support, scrolling events overflow, day and event slots, better date string parsing. NOTE: the default component name is now `calendar-view`, 
+2018.01.23 | 2.0.1        | Fixed `outsideOfMonth` logic bug, #38
 
 ## Build Setup
 

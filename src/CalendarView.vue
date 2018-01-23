@@ -67,7 +67,7 @@
 						'd' + paddedDay(day),
 						'instance' + instanceOfMonth(day),
 						{
-							outsideOfMonth: !isSameMonth(day, today()),
+							outsideOfMonth: !isSameMonth(day, defaultedShowDate),
 							today: isSameDate(day, today()),
 							past: isInPast(day),
 							future: isInFuture(day),
@@ -210,12 +210,20 @@ export default {
 		},
 
 		/*
+		ShowDate, but defaulted to today. Needed both for periodStart below and for the
+		"outside of month" class.
+		*/
+		defaultedShowDate() {
+			return this.showDate || this.today()
+		},
+
+		/*
 		Given the showDate, defaulted to today, computes the beginning and end of the period
 		that the date falls within.
 		*/
 		periodStart() {
 			return this.beginningOfPeriod(
-				this.showDate || this.today(),
+				this.defaultedShowDate,
 				this.displayPeriodUom,
 				this.startingDayOfWeek
 			)
@@ -525,14 +533,14 @@ export default {
 			const hasEnd = endTime !== ""
 			return (
 				(hasStart
-					? `<span class="startTime${hasEnd
-							? " hasEndTime"
-							: ""}">${startTime}</span>`
+					? `<span class="startTime${
+							hasEnd ? " hasEndTime" : ""
+						}">${startTime}</span>`
 					: "") +
 				(hasEnd
-					? `<span class="endTime${hasStart
-							? " hasStartTime"
-							: ""}">${endTime}</span>`
+					? `<span class="endTime${
+							hasStart ? " hasStartTime" : ""
+						}">${endTime}</span>`
 					: "")
 			)
 		},
