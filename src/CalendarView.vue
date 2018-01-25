@@ -325,22 +325,23 @@ export default {
 
 		onClickDay(day) {
 			if (this.disablePast && this.isInPast(day)) return
-			this.$emit("clickDay", day)
+			this.$emit("clickDay", day) // Deprecated
+			this.$emit("click-date", day)
 		},
 
 		onClickEvent(e, day) {
-			this.$emit("clickEvent", e.originalEvent, day)
+			this.$emit("clickEvent", e.originalEvent, day) // Deprecated
+			this.$emit("click-event", e.originalEvent, day)
 		},
 
 		onClickCurrentPeriod() {
-			this.$emit(
-				"setShowDate",
-				this.beginningOfPeriod(
-					this.today(),
-					this.displayPeriodUom,
-					this.startingDayOfWeek
-				)
+			const newValue = this.beginningOfPeriod(
+				this.today(),
+				this.displayPeriodUom,
+				this.startingDayOfWeek
 			)
+			this.$emit("setShowDate", newValue) // Deprecated
+			this.$emit("show-date-change", newValue)
 		},
 
 		// ******************************
@@ -374,7 +375,10 @@ export default {
 
 		onIncrementPeriod(count) {
 			const d = this.getIncrementedPeriod(count)
-			if (d != null) this.$emit("setShowDate", d)
+			if (d != null) {
+				this.$emit("setShowDate", d) // Deprecated
+				this.$emit("show-date-change", d)
+			}
 		},
 
 		// ******************************
@@ -387,7 +391,8 @@ export default {
 			// dragged during dragover, dragenter, and dragleave events, and because storing an ID requires an unnecessary
 			// lookup. This does limit the drop zones to areas within this instance of this component.
 			this.currentDragEvent = calendarEvent
-			this.$emit("dragEventStart", calendarEvent.originalEvent, calendarEvent)
+			this.$emit("dragEventStart", calendarEvent.originalEvent, calendarEvent) // Deprecated
+			this.$emit("drag-start", calendarEvent.originalEvent, calendarEvent)
 			return true
 		},
 
@@ -403,21 +408,25 @@ export default {
 		},
 
 		onDragOver(day) {
-			this.handleEvent("dragEventOverDate", day)
+			this.handleEvent("dragEventOverDate", day) // Deprecated
+			this.handleEvent("drag-over-date", day)
 		},
 
 		onDragEnter(day, windowEvent) {
-			if (!this.handleEvent("dragEventEnterDate", day)) return
+			if (!this.handleEvent("dragEventEnterDate", day)) return // Deprecated
+			if (!this.handleEvent("drag-enter-date", day)) return
 			windowEvent.target.classList.add("draghover")
 		},
 
 		onDragLeave(day, windowEvent) {
-			if (!this.handleEvent("dragEventLeaveDate", day)) return
+			if (!this.handleEvent("dragEventLeaveDate", day)) return // Deprecated
+			if (!this.handleEvent("drag-leave-date", day)) return
 			windowEvent.target.classList.remove("draghover")
 		},
 
 		onDrop(day, windowEvent) {
-			if (!this.handleEvent("dropEventOnDate", day)) return
+			if (!this.handleEvent("dropEventOnDate", day)) return // Deprecated
+			if (!this.handleEvent("drop-on-date", day)) return
 			windowEvent.target.classList.remove("draghover")
 		},
 

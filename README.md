@@ -111,7 +111,7 @@ In your application, you'll need to:
 Tips:
 
 * The component will fill its parent's height and width, so be sure the parent has a minimum height that looks good.
-* This is a pure component, it doesn't change its own state, so clicking the previous/next buttons don't do anything unless you provide a `show-date` attribute and update that attribute when the component fires the `setShowDate` event.
+* This is a pure component, it doesn't change its own state, so clicking the previous/next buttons don't do anything unless you provide a `show-date` attribute and update that attribute when the component fires the `show-date-changed` event.
 
 Here's a minimal application example for a calendar with no events, but styled with the default theme and the US holidays theme:
 
@@ -195,18 +195,32 @@ Each event shown on the calendar can have the following properties. `startDate` 
 
 The following Vue events are raised by the component, which you can catch in your calling application to respond to user actions:
 
-* `clickDay(date)`: fired when user clicks a date
-* `clickEvent(event)`: fired when user clicks on an event
-* `setShowDate(date)`: fired when user goes to a different period. The date passed is the first of the period in view (days before and after the period may also be visible).
-* `dragEventEnterDate(event, date)`: fires when an event is dragged over a date
-* `dragEventLeaveDate(event, date)`: fires when an event is dragged out of a date without dropping it there
-* `dragEventOverDate(event, date)`: fires multiple times as an event is hovered over a date
-* `dropEventOnDate(event, date)`: fired when an event is dropped on a date
+* `click-date(date)`: fired when user clicks a date
+* `click-event(event)`: fired when user clicks on an event
+* `show-date-change(date)`: fired when user goes to a different period. The date passed is the first of the period in view (days before and after the period may also be visible).
+* `drag-start(event)`: fires when user starts dragging an event
+* `drag-enter-date(event, date)`: fires when an event is dragged over a date
+* `drag-leave-date(event, date)`: fires when an event is dragged out of a date without dropping it there
+* `drag-over-date(event, date)`: fires multiple times as an event is hovered over a date
+* `drop-on-date(event, date)`: fired when an event is dropped on a date
 
 *Note in the above, `event` refers to the calendar "event" involved in the activity, not the DOM "event". The word "event" here is a bit overloaded.*
 
 ### Component Events Breaking change in 2.0
+
 Prior to 2.0, `dragEventOverDate` was undocumented and called `dragEventDragOverDate`, and all dragging-related user events emitted the calendar event's *id* as the first argument rather than the calendar event itself. Since not all calendar events will have an ID and the parent will probably want access to the actual calendar event, I changed these Vue events to emit the original calendar event, not just its id.
+
+## Changes in 2.1
+
+In 2.1, the events above were renamed to make them kebab-case (for DOM template compatibility) and to refine the wording. The old event names, shown here respectively, have been deprecated and will be removed in 3.0 (until then, the component issues events under both names, for compatibility):
+* `clickDay`
+* `clickEvent`
+* `setShowDate`
+* `dragEventStart`
+* `dragEventEnterDate`
+* `dragEventLeaveDate`
+* `dragEventOverDate`
+* `dropEventOnDate`
 
 ## Slots
 
@@ -471,6 +485,7 @@ Date       | Version      | Notes
 2017.12.30 | 1.8.2        | Add header slot (#32), fix display issue (#33)
 2018.01.01 | 2.0.0        | Added week/year and multi-period view options, time of day support, scrolling events overflow, day and event slots, better date string parsing. NOTE: the default component name is now `calendar-view`, 
 2018.01.23 | 2.0.1        | Fixed `outsideOfMonth` logic bug, #38
+2018.01.24 | 2.1.0        | Renamed events for DOM Vue template compatibility. Old event names deprecated (but will still be emitted as well until 3.0) 
 
 ## Build Setup
 
