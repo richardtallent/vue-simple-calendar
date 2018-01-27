@@ -1,6 +1,6 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "2.1.1",
+	"version": "2.1.2",
 	"description": "Simple calendar event control",
 	"author": "richardtallent <richard@tallent.us>",
 	"license": "MIT",
@@ -50,11 +50,7 @@
 		"node": ">= 6.0.0",
 		"npm": ">= 5.0.0"
 	},
-	"browserslist": [
-		"> 1%",
-		"last 2 versions",
-		"not ie < 11"
-	],
+	"browserslist": ["> 1%", "last 2 versions", "not ie < 11"],
 	"prettier": {
 		"useTabs": true,
 		"semi": false,
@@ -78,19 +74,14 @@
 		"globals": {
 			"Vue": true
 		},
-		"extends": [
-			"eslint:recommended",
-			"plugin:vue/recommended"
-		],
+		"extends": ["eslint:recommended", "plugin:vue/recommended"],
 		"rules": {
 			"vue/html-indent": "tab",
 			"vue/max-attributes-per-line": 3,
 			"no-console": "warn"
 		}
 	},
-	"eslintIgnore": [
-		"node_modules/*.*"
-	],
+	"eslintIgnore": ["node_modules/*.*"],
 	"postcss": {
 		"plugins": {
 			"autoprefixer": {}

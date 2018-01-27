@@ -487,6 +487,7 @@ Date       | Version      | Notes
 2018.01.23 | 2.0.1        | Fixed `outsideOfMonth` logic bug, #38
 2018.01.24 | 2.1.0        | Renamed events for DOM Vue template compatibility. Old event names deprecated (but will still be emitted as well until 3.0) 
 2018.01.25 | 2.1.1        | Forgot to build before publish :(
+2018.01.27 | 2.1.2        | Prevent click-date events for future dates when disableFuture is true (feature parity with disablePast). Fixes #40.
 
 ## Build Setup
 
