@@ -87,7 +87,7 @@
 					</div>
 				</div>
 				<template v-for="e in getWeekEvents(weekStart)">
-					<slot name="event" :event="e.originalEvent" :weekStartDate="weekStart">
+					<slot name="event" :event="e" :weekStartDate="weekStart">
 						<div
 							class="event"
 							:key="e.id"
