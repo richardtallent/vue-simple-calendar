@@ -212,7 +212,7 @@ Prior to 2.0, `dragEventOverDate` was undocumented and called `dragEventDragOver
 
 ## Changes in 2.1
 
-In 2.1, the events above were renamed to make them kebab-case (for DOM template compatibility) and to refine the wording. The old event names, shown here respectively, have been deprecated and will be removed in 3.0 (until then, the component issues events under both names, for compatibility):
+In 2.1, the events above were renamed to make them kebab-case (for DOM template compatibility) and to refine the wording. The old event names, shown here respectively, were removed in 2.2:
 * `clickDay`
 * `clickEvent`
 * `setShowDate`
@@ -254,9 +254,14 @@ This slot passes one scoped variable: `day`, the date associated with the cell.
 
 ### event
 
-This optional named slot **replaces** the `div.event` for each event (not just the contents of the event element, the entire element). Use this if you want to override entirely how events are rendered. For example, on a small mobile device, you may want to show just a thin stripe, dots, or icons to indicate events, without titles or times.
+This optional named slot **replaces** the `div.event` for each event (not just the contents of the event element, the entire element). Use this if you want to override *entirely* how events are rendered. For example, on a small mobile device, you may want to show just a thin stripe, dots, or icons to indicate events, without titles or times.
 
-This slot passes two scoped variables: `event`, the calendar event, and `weekStartDate`, the date of the first day of the week being rendered. Note that `event` is a version of the calendar event **customized** to be shown on that week's row, it's not the bare event pulled from the `events` prop. This customized version parses and defaults the `startDate` and `endDate`, defaults missing `id` to a random number, defaults a blank title to "Untitled", and adds a number of `classes` values based on the position and role of the event as shown for that week (whether it continues from the previous week, etc.). The original event is passed back as `event.originalEvent`.
+This slot passes three scoped variables:
+- `event`: the calendar event
+- `weekStartDate`: the date of the first day of the week being rendered
+- `zIndex`: the `z-index` that you should apply to the style of your event markup so it properly overlaps its own week but not the next
+
+Note that `event` is a version of the calendar event **customized** to be shown on that week's row, it's not the bare event pulled from the `events` prop. This customized version parses and defaults the `startDate` and `endDate`, defaults missing `id` to a random number, defaults a blank title to "Untitled", and adds a number of `classes` values based on the position and role of the event as shown for that week (whether it continues from the previous week, etc.). The original event is passed back as `event.originalEvent`.
 
 ## Customizing the Look and Feel
 
@@ -423,9 +428,11 @@ These classes are applied to the start and end time of an event, respectively.
 * [x] Possibly add a "week" view (no time of day scaling, just 7 taller boxes).
 * [x] Possibly add modes for a set number of weeks, multiple months, or even a full year.
 * [x] Extract date manipulation methods to a separate plugin.
-* [ ] Material theme
-* [ ] Apple Calendar theme
+* [ ] Material theme (would love help with this)
+* [ ] Apple Calendar theme (would love help with this)
+* [ ] Outlook Calendar theme (would love help with this)
 * [ ] I'm not 100% happy with the Intl time format options, especially to show time ranges compactly. Considering a custom formatter or the ability to pass a formatter function as a property.
+* [ ] Rename the primary CSS classes (calendar-view, day, week, etc.) to depend far less on cascades, making it easier to customize the theme (breaking change for themes, targeted for 3.0).
 
 PRs and issues are welcome! For pull requests, please use the same code style -- there are linter configs included for styles, plain JavaScript, and Vue components. Use of Prettier is recommended.
 
@@ -489,6 +496,7 @@ Date       | Version      | Notes
 2018.01.25 | 2.1.1        | Forgot to build before publish :(
 2018.01.27 | 2.1.2        | Prevent click-date events for future dates when disableFuture is true (feature parity with disablePast). Fixes #40.
 2018.01.27 | 2.1.3        | Dammit. Publish after build. Publish after build. Publish after build. I'll learn this one day...
+2018.02.24 | 2.2.0        | Moved some opinionated styles from the baseline (SFC) to the default theme. Added `zIndex` prop to event scoped slot properties. Removed deprecated events.
 
 ## Build Setup
 

@@ -1,22 +1,22 @@
-const webpack = require("webpack")
 const path = require("path")
 const merge = require("webpack-merge")
 const CopyWebpackPlugin = require("copy-webpack-plugin")
 
 var commonConfig = {
-	output: {
-		path: path.resolve(__dirname + "/dist/"),
-	},
 	module: {
-		loaders: [
+		rules: [
 			{
 				test: /\.js$/,
-				loader: "babel-loader",
 				exclude: /node_modules/,
+				use: {
+					loader: "babel-loader",
+				},
 			},
 			{
 				test: /\.vue$/,
-				loader: "vue-loader",
+				use: {
+					loader: "vue-loader",
+				},
 			},
 		],
 	},
@@ -24,14 +24,6 @@ var commonConfig = {
 		vue: "vue",
 	},
 	plugins: [
-		new webpack.optimize.UglifyJsPlugin({
-			minimize: true,
-			sourceMap: false,
-			mangle: true,
-			compress: {
-				warnings: false,
-			},
-		}),
 		// copy custom static assets
 		new CopyWebpackPlugin([
 			{

@@ -9,6 +9,11 @@ having to override as much.
 
 /* Header */
 
+.calendar-view .header,
+.calendar-view .dayList .day {
+	background-color: #f0f0f0;
+}
+
 .calendar-view .header .periodLabel > div {
 	font-size: 1.5em;
 }
@@ -64,6 +69,28 @@ having to override as much.
 	border-right-style: none;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
+}
+
+.calendar-view .event.hasUrl:hover {
+	text-decoration: underline;
+}
+
+.calendar-view .event.continued {
+	border-left-style: none;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.calendar-view .week .event {
+	text-overflow: ellipsis;
+}
+
+/* Event Times */
+
+.calendar-view .event .startTime,
+.calendar-view .event .endTime {
+	font-weight: bold;
+	color: #666;
 }
 
 /* Drag and drop */

@@ -87,14 +87,14 @@
 					</div>
 				</div>
 				<template v-for="e in getWeekEvents(weekStart)">
-					<slot name="event" :event="e.originalEvent" :weekStartDate="weekStart">
+					<slot name="event" :event="e.originalEvent" :weekStartDate="weekStart" :zIndex="getEventZIndex(weekIndex)">
 						<div
 							class="event"
 							:key="e.id"
 							:draggable="enableDragDrop"
 							:class="e.classes"
 							:title="e.title"
-							:style="'z-index:' + ((weekIndex + 1) * 2 + 1)"
+							:style="'z-index:' + getEventZIndex(weekIndex)"
 							@dragstart="onDragStart(e)"
 							@click.stop="onClickEvent(e)"
 							v-html="getEventTitle(e)"/>
@@ -377,7 +377,6 @@ export default {
 		onIncrementPeriod(count) {
 			const d = this.getIncrementedPeriod(count)
 			if (d != null) {
-				this.$emit("setShowDate", d) // Deprecated
 				this.$emit("show-date-change", d)
 			}
 		},
@@ -409,24 +408,20 @@ export default {
 		},
 
 		onDragOver(day) {
-			this.handleEvent("dragEventOverDate", day) // Deprecated
 			this.handleEvent("drag-over-date", day)
 		},
 
 		onDragEnter(day, windowEvent) {
-			if (!this.handleEvent("dragEventEnterDate", day)) return // Deprecated
 			if (!this.handleEvent("drag-enter-date", day)) return
 			windowEvent.target.classList.add("draghover")
 		},
 
 		onDragLeave(day, windowEvent) {
-			if (!this.handleEvent("dragEventLeaveDate", day)) return // Deprecated
 			if (!this.handleEvent("drag-leave-date", day)) return
 			windowEvent.target.classList.remove("draghover")
 		},
 
 		onDrop(day, windowEvent) {
-			if (!this.handleEvent("dropEventOnDate", day)) return // Deprecated
 			if (!this.handleEvent("drop-on-date", day)) return
 			windowEvent.target.classList.remove("draghover")
 		},
@@ -559,6 +554,16 @@ export default {
 			if (!this.showEventTimes) return e.title
 			return this.getFormattedTimeRange(e) + e.title
 		},
+
+		/*
+		Computes the z-index of an event based on which week is being rendered. This ensures
+		that event are on top of the week where they are rendered, but below the week below
+		them. This is essential for being able to handle more events on a given week than
+		there is room to display.
+		*/
+		getEventZIndex(weekIndex) {
+			return (weekIndex + 1) * 2 + 1
+		},
 	},
 }
 </script>
@@ -659,7 +664,6 @@ and decorations like border-radius should be part of a theme.
 
 .calendar-view .week .event {
 	position: absolute;
-	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
 }
@@ -741,11 +745,6 @@ and decorations like border-radius should be part of a theme.
 	background-color: #fff;
 }
 
-.calendar-view .header,
-.calendar-view .dayList .day {
-	background-color: #f0f0f0;
-}
-
 .calendar-view .event {
 	background-color: #f7f7f7;
 }
@@ -761,12 +760,6 @@ and decorations like border-radius should be part of a theme.
 }
 
 /* Event Times */
-
-.calendar-view .event .startTime,
-.calendar-view .event .endTime {
-	font-weight: bold;
-	color: #666;
-}
 
 .calendar-view .event .startTime:not(.hasEndTime),
 .calendar-view .event .endTime {
@@ -816,7 +809,7 @@ and decorations like border-radius should be part of a theme.
 }
 .calendar-view .header {
 	border-style: solid;
-	border-width: 0.05em 0.05em 0 0.05em;
+	border-width: 1px 1px 0 1px;
 }
 .calendar-view .dayList {
 	border-style: solid;
@@ -824,7 +817,7 @@ and decorations like border-radius should be part of a theme.
 }
 .calendar-view .day {
 	border-style: solid;
-	border-width: 0.05em 0.05em 0 0;
+	border-width: 1px 1px 0 0;
 }
 .calendar-view .header button,
 .calendar-view .event {
@@ -953,15 +946,5 @@ and decorations like border-radius should be part of a theme.
 
 .calendar-view .dayList .day {
 	text-align: center;
-}
-
-.calendar-view .event.hasUrl:hover {
-	text-decoration: underline;
-}
-
-.calendar-view .event.continued {
-	border-left-style: none;
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
 }
 </style>
