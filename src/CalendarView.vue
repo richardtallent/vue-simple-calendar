@@ -23,7 +23,13 @@
 				future: isFutureMonth(periodStart),
 				noIntl: !supportsIntl,
 			}]">
-		<slot name="header">
+		<slot
+      :monthNames="monthNames"
+      :onClickCurrentPeriod="onClickCurrentPeriod"
+      :onIncrementPeriod="onIncrementPeriod"
+      :periodEnd="periodEnd"
+      :periodStart="periodStart"
+      name="header">
 			<div class="header">
 				<div class="nav">
 					<button class="previousYear" @click="onIncrementPeriod(-12)" :disabled="!isPeriodIncrementAllowed(-12)"/>
@@ -33,8 +39,8 @@
 					<button class="currentPeriod" @click="onClickCurrentPeriod"/>
 				</div>
 				<div class="periodLabel"
-					:class="{ 
-						singleYear: periodStart.getFullYear() === periodEnd.getFullYear(), 
+					:class="{
+						singleYear: periodStart.getFullYear() === periodEnd.getFullYear(),
 						singleMonth: isSameMonth(periodStart, periodEnd) }">
 					<div class="startMonth">{{ monthNames[periodStart.getMonth()] }}</div>
 					<div class="startDay">{{ periodStart.getDate() }}</div>
@@ -58,7 +64,7 @@
 				class="week"
 				:class="['week' + (weekIndex+1), 'ws' + isoYearMonthDay(weekStart)]"
 				:style="'z-index:' + ((weekIndex + 1) * 2)">
-				<div v-for="(day, dayIndex) in daysOfWeek(weekStart)" class="day" 
+				<div v-for="(day, dayIndex) in daysOfWeek(weekStart)" class="day"
 					:key="dayIndex"
 					:class="[
 						'dow' + day.getDay(),
