@@ -24,14 +24,14 @@
 				noIntl: !supportsIntl,
 			}]">
 		<slot
-      :isPeriodIncrementAllowed="isPeriodIncrementAllowed"
-      :isSameMonth="isSameMonth"
-      :monthNames="monthNames"
-      :onClickCurrentPeriod="onClickCurrentPeriod"
-      :onIncrementPeriod="onIncrementPeriod"
-      :periodEnd="periodEnd"
-      :periodStart="periodStart"
-      name="header">
+		:isPeriodIncrementAllowed="isPeriodIncrementAllowed"
+		:isSameMonth="isSameMonth"
+		:monthNames="monthNames"
+		:onClickCurrentPeriod="onClickCurrentPeriod"
+		:onIncrementPeriod="onIncrementPeriod"
+		:periodEnd="periodEnd"
+		:periodStart="periodStart"
+		name="header">
 			<div class="header">
 				<div class="nav">
 					<button class="previousYear" @click="onIncrementPeriod(-12)" :disabled="!isPeriodIncrementAllowed(-12)"/>
