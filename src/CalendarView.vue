@@ -24,6 +24,8 @@
 				noIntl: !supportsIntl,
 			}]">
 		<slot
+      :isPeriodIncrementAllowed="isPeriodIncrementAllowed"
+      :isSameMonth="isSameMonth"
       :monthNames="monthNames"
       :onClickCurrentPeriod="onClickCurrentPeriod"
       :onIncrementPeriod="onIncrementPeriod"
