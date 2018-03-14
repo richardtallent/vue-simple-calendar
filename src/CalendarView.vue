@@ -610,6 +610,7 @@ and decorations like border-radius should be part of a theme.
 	flex-flow: row nowrap;
 	align-items: center;
 	justify-content: center;
+	text-align: center;
 }
 
 /* The calendar grid should take up the remaining vertical space */
@@ -637,7 +638,7 @@ and decorations like border-radius should be part of a theme.
 
 .calendar-view .weeks::-webkit-scrollbar,
 .calendar-view .week::-webkit-scrollbar {
-	width: 0px; /* remove scrollbar space */
+	width: 0; /* remove scrollbar space */
 	background: transparent; /* optional: just make scrollbar invisible */
 }
 
@@ -649,7 +650,7 @@ and decorations like border-radius should be part of a theme.
 	top: 0;
 }
 
-.calendar-view .week .day .content {
+.calendar-view .day .content {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -657,15 +658,16 @@ and decorations like border-radius should be part of a theme.
 	right: 0;
 }
 
-.calendar-view .week .day .date {
+.calendar-view .day .date {
 	float: right;
 	clear: both;
 }
 
-.calendar-view .week .event {
+.calendar-view .event {
 	position: absolute;
 	white-space: nowrap;
 	overflow: hidden;
+	background-color: #f7f7f7;
 }
 
 /* Header */
@@ -740,17 +742,8 @@ and decorations like border-radius should be part of a theme.
 
 /* Colors */
 
-.calendar-view .period .day,
-.calendar-view .header button {
-	background-color: #fff;
-}
-
-.calendar-view .event {
-	background-color: #f7f7f7;
-}
-
 .calendar-view .header,
-.calendar-view .header button,
+.calendar-view button,
 .calendar-view .dayList,
 .calendar-view .weeks,
 .calendar-view .week,
@@ -807,18 +800,22 @@ and decorations like border-radius should be part of a theme.
 	border-style: solid;
 	border-width: 0 0 1px 1px;
 }
+
 .calendar-view .header {
 	border-style: solid;
 	border-width: 1px 1px 0 1px;
 }
+
 .calendar-view .dayList {
 	border-style: solid;
 	border-width: 0 0 0 1px;
 }
+
 .calendar-view .day {
 	border-style: solid;
 	border-width: 1px 1px 0 0;
 }
+
 .calendar-view .header button,
 .calendar-view .event {
 	border-style: solid;
@@ -830,63 +827,83 @@ and decorations like border-radius should be part of a theme.
 .calendar-view .event.eventRow1 {
 	top: 1.4em;
 }
+
 .calendar-view .event.eventRow2 {
 	top: calc(2 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow3 {
 	top: calc(3 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow4 {
 	top: calc(4 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow5 {
 	top: calc(5 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow6 {
 	top: calc(6 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow7 {
 	top: calc(7 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow8 {
 	top: calc(8 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow9 {
 	top: calc(9 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow10 {
 	top: calc(10 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow11 {
 	top: calc(11 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow12 {
 	top: calc(12 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow13 {
 	top: calc(13 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow14 {
 	top: calc(14 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow15 {
 	top: calc(15 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow16 {
 	top: calc(16 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow17 {
 	top: calc(17 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow18 {
 	top: calc(18 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow19 {
 	top: calc(19 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow20 {
 	top: calc(20 * 1.4em + 0.1em);
 }
+
 .calendar-view .event.eventRow0 {
 	display: none;
 } /* More than 10 eventRows not currently supported */
@@ -894,21 +911,27 @@ and decorations like border-radius should be part of a theme.
 .calendar-view .event.offset0 {
 	left: calc(0.05em);
 }
+
 .calendar-view .event.offset1 {
 	left: calc((100% / 7) + 0.05em);
 }
+
 .calendar-view .event.offset2 {
 	left: calc((200% / 7) + 0.05em);
 }
+
 .calendar-view .event.offset3 {
 	left: calc((300% / 7) + 0.05em);
 }
+
 .calendar-view .event.offset4 {
 	left: calc((400% / 7) + 0.05em);
 }
+
 .calendar-view .event.offset5 {
 	left: calc((500% / 7) + 0.05em);
 }
+
 .calendar-view .event.offset6 {
 	left: calc((600% / 7) + 0.05em);
 }
@@ -918,33 +941,33 @@ and decorations like border-radius should be part of a theme.
 .calendar-view .event.span1 {
 	width: calc((100% / 7) - 0.05em);
 }
+
 .calendar-view .event.span2 {
 	width: calc((200% / 7) - 0.05em);
 }
+
 .calendar-view .event.span3 {
 	width: calc((300% / 7) - 0.05em);
 	text-align: center;
 }
+
 .calendar-view .event.span4 {
 	width: calc((400% / 7) - 0.05em);
 	text-align: center;
 }
+
 .calendar-view .event.span5 {
 	width: calc((500% / 7) - 0.05em);
 	text-align: center;
 }
+
 .calendar-view .event.span6 {
 	width: calc((600% / 7) - 0.05em);
 	text-align: center;
 }
+
 .calendar-view .event.span7 {
 	width: calc((700% / 7) - 0.05em);
-	text-align: center;
-}
-
-/* Misc */
-
-.calendar-view .dayList .day {
 	text-align: center;
 }
 </style>
