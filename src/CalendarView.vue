@@ -909,7 +909,7 @@ and decorations like border-radius should be part of a theme.
 
 .calendar-view .event.eventRow0 {
 	display: none;
-} /* More than 10 eventRows not currently supported */
+} /* More than 20 eventRows not currently supported */
 
 .calendar-view .event.offset0 {
 	left: 0;
