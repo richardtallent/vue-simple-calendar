@@ -13,7 +13,6 @@
 - Upgraded to Webpack 4
 - Moved version history to this CHANGELOG file
 - Moved some opinionated styles from the baseline (SFC) to the default theme.
-- Removed deprecated events.
 - Fixed event slot issue reported in #42 and #50 (thanks @lexuzieel!).
 - Added `zIndex` prop to event scoped slot properties.
 - Formatted to meet newer eslint rules.
