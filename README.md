@@ -19,11 +19,11 @@
   - [Future plans](#future-plans)
   - [Day classes](#day-classes)
   - [FAQ](#faq)
-  - [Release History](#release-history)
   - [Build Setup](#build-setup)
-    
 
 # vue-simple-calendar
+
+**NOTE: The master branch, including this README, is now for version 2.2.0, which is nearing release but is not quite done yet (I'm working through webpack 4 migration). Check the releases page for the source code and README file for the current released version on npm (2.1.3) and past versions. This README is largely the same as the one in 2.1.3, refer to the CHANGELOG.md file for changes.**
 
 This is a calendar component for Vue.
 
@@ -33,11 +33,11 @@ My use case is far simpler--I just wanted a traditional month-grid calendar, wit
 
 PRs, ideas, and issues are welcome.
 
-## Demo
+## Demo (version 2.1.3)
 Here's a live demo page:
 https://www.tallent.us/vue-simple-calendar/
 
-The repository for the demo page is here, you can pull and run it on your own to learn the ropes and test ideas:
+The repository for the demo page is here (2.2.0, unreleased), you can pull and run it on your own to learn the ropes and test ideas:
 https://github.com/richardtallent/vue-simple-calendar-sample
 
 ## Browser compatibility
@@ -340,7 +340,7 @@ These classes are applied to the start and end time of an event, respectively.
 * [ ] Apple Calendar theme (would love help with this)
 * [ ] Outlook Calendar theme (would love help with this)
 * [ ] I'm not 100% happy with the Intl time format options, especially to show time ranges compactly. Considering a custom formatter or the ability to pass a formatter function as a property.
-* [ ] Rename the primary CSS classes (calendar-view, day, week, etc.) to depend far less on cascades, making it easier to customize the theme (breaking change for themes, targeted for 3.0).
+* [ ] Rename the primary CSS classes (calendar-view, day, week, etc.) to depend far less on cascades, making it easier to customize the theme (breaking change for themes, targeted for 3.0.0).
 
 PRs and issues are welcome! For pull requests, please use the same code style -- there are linter configs included for styles, plain JavaScript, and Vue components. Use of Prettier is recommended.
 
@@ -362,41 +362,15 @@ But I do have some ideas in mind, such as adding handles to be able to change an
 Moment.js is great, but I would only need a tiny fraction of its capabilities, and for simplicity, I wanted to not have any dependencies (other than Vue of course).
 
 #### Why is the style so "plain"?
-I purposefully chose a very restrained, clean, and simple set of default styles for the calendar. The fanciest formatting is probably the rounded corners on the events. Also, any styles not critical to the display are in a static CSS file (`static/css/default.css`) rather than in the Vue component, making it easier for you to completely override my theme with your own. I also use CSS `content` where possible, so you can override static text in the buttons, etc. using CSS rather than having to modify the component's source or pass more props or slots.
+The **baseline** style (what you get with no external CSS files imported) is intended to be as bare as possible while still providing full functionality and legibility. The hope here is to minimize the effort of overriding my styles if you decide to create your own theme. (Changes are coming in 3.0 to make this even easier.)
+
+The **default** stylesheet builds on this to provide a restrained, clean, and simple set of default styles for the calendar, and is useful if you don't intend to create your own theme. You can include it from `static/css/default.css`. The sample app uses this stylesheet.
+
+A third stylesheet, `static/css/holidays-us.css`, shows how simple it is to use CSS to style specific days using CSS selectors (it adds emoji characters beside various holidays).
 
 #### What styles can I _not_ override?
-* You can't add a background-image to the entire calendar. Each day block needs a background color so it "hides" events spilling over from the day above it in the previous week. I'm considering some possible solutions. You _could_ put background images on individual days, or weeks, or the header.
-* If you change the event's `font-size` (defaults to `1em`), padding, or border size, the events you'll have to change the `slotX` classes as well to position the events vertically in the right place. (You _can_ change the overall font size, the entire calendar uses the same `1em` font size and will scale everything accordingly.)
+* If you change the event's `font-size` (defaults to `1em`), `padding`, or `border-width`, you'll have to change the `slotX` classes as well to position the events vertically in the right place. (You _can_ change the overall font size, the entire calendar uses the same `1em` font size and will scale everything accordingly.)
 * The `z-index` of the weeks and events are managed using `style` declarations, they ensure that events for one week don't overlap the next week.
-
-## Release History
-
-Date       | Version      | Notes
------------|--------------|--------
-2017.05.11 | 1.0.0        | First version
-2017.05.15 | 1.1.0        | Better demo styling; refactor code; add basic drag/drop capability; fix display issue when events not sorted by start date
-2017.05.20 | 1.2.0        | Redesigned to work around z-index context issue with multi-day events (events now positioned above days, weeks rendered individually). Significant improvements to handling of event slots and clipping when event content exceeds height/width.
-2017.05.21 | 1.3.0        | Fixed IE. Bad IE. Fixed CSS references to emoji. Default style adjustments. Clean up some old code. Add previous/next year buttons.
-2017.05.22 | 1.3.1        | Improved demo, first published to npm.
-2017.05.27 | 1.4.0        | Add new classes, move a few classes up to `calendar` node, rename a few classes to pascalCase for consistency.
-2017.07.16 | 1.5.0        | Clean up code, move date math to a mixin; allow `endDate`, `title`, and `id` to be optional; change so only core CSS (mostly position / metrics) is in the component, a separate CSS file contains the default theme. Reorganized and updated optional US holiday theme CSS file. Tweaked default theme and metrics for consistency and cleaner look. NOTE: the default component name is now `calendar-month`, as is the primary container's CSS class. This was done for possible future expansion to support other views (such as a week view) and to give the CSS a slightly more unique name without resorting to scoped CSS. The name of the npm package, repository, etc. remains vue-simple-calendar.
-2017.10.03 | 1.5.1        | Fix issue where months ending in Saturday did not show their last week. Moved mixin to component folder.
-2017.10.04 | 1.5.2        | Fix webpack issue with mixin import and Vue warning about non-primitive keys.
-2017.11.11 | 1.5.3        | Fix date differences over DST and toBeContinued logic (thanks @houseoftech and @sean-atomized!)
-2017.11.12 | 1.6.0        | Fix future/past classes. Tweaks to CSS to fix border render issue, simplify. Change height from aspect ratio to the height of the container (the reason for the minor version increment).
-2017.11.12 | 1.6.1        | Fix issues when events have a time other than midnight (they should be ignored). Add stylelint and vue lint, clean up package.json, other minor tweaks. Set browser compatibility to a minimum of IE10. Prevent issues from caching "today" value.
-2017.12.12 | 1.7.0        | Add `startingDayOfWeek` property to allow the calendar to optionally start on any desired day of the week
-2017.12.15 | 1.7.1        | Hopefully resolve reported babel preset error
-2017.12.17 | 1.8.0        | Split sample app to another repo, rebuild build/config scripts from scratch
-2017.12.17 | 1.8.1        | Add build for mixin
-2017.12.30 | 1.8.2        | Add header slot (#32), fix display issue (#33)
-2018.01.01 | 2.0.0        | Added week/year and multi-period view options, time of day support, scrolling events overflow, day and event slots, better date string parsing. NOTE: the default component name is now `calendar-view`, 
-2018.01.23 | 2.0.1        | Fixed `outsideOfMonth` logic bug, #38
-2018.01.24 | 2.1.0        | Renamed events for DOM Vue template compatibility. Old event names deprecated (but will still be emitted as well until 3.0) 
-2018.01.25 | 2.1.1        | Forgot to build before publish :(
-2018.01.27 | 2.1.2        | Prevent click-date events for future dates when disableFuture is true (feature parity with disablePast). Fixes #40.
-2018.01.27 | 2.1.3        | Dammit. Publish after build. Publish after build. Publish after build. I'll learn this one day...
-2018.02.24 | 2.2.0        | Moved some opinionated styles from the baseline (SFC) to the default theme. Added `zIndex` prop to event scoped slot properties. Removed deprecated events.
 
 ## Build Setup
 ```bash

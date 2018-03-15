@@ -11,7 +11,7 @@
 
 -->
 <template>
-	<div class="calendar-view" :class="[
+	<div :class="[
 			'locale-' + languageCode(displayLocale),
 			'locale-' + displayLocale,
 			'y' + periodStart.getFullYear(),
@@ -22,20 +22,21 @@
 				past: isPastMonth(periodStart),
 				future: isFutureMonth(periodStart),
 				noIntl: !supportsIntl,
-			}]">
+			}]"
+		class="calendar-view">
 		<slot name="header">
 			<div class="header">
 				<div class="nav">
-					<button class="previousYear" @click="onIncrementPeriod(-12)" :disabled="!isPeriodIncrementAllowed(-12)"/>
-					<button class="previousPeriod" @click="onIncrementPeriod(-displayPeriodCount)" :disabled="!isPeriodIncrementAllowed(-displayPeriodCount)"/>
-					<button class="nextPeriod" @click="onIncrementPeriod(displayPeriodCount)" :disabled="!isPeriodIncrementAllowed(displayPeriodCount)"/>
-					<button class="nextYear" @click="onIncrementPeriod(12)" :disabled="!isPeriodIncrementAllowed(12)"/>
+					<button :disabled="!isPeriodIncrementAllowed(-12)" class="previousYear" @click="onIncrementPeriod(-12)"/>
+					<button :disabled="!isPeriodIncrementAllowed(-displayPeriodCount)" class="previousPeriod" @click="onIncrementPeriod(-displayPeriodCount)"/>
+					<button :disabled="!isPeriodIncrementAllowed(displayPeriodCount)" class="nextPeriod" @click="onIncrementPeriod(displayPeriodCount)"/>
+					<button :disabled="!isPeriodIncrementAllowed(12)" class="nextYear" @click="onIncrementPeriod(12)"/>
 					<button class="currentPeriod" @click="onClickCurrentPeriod"/>
 				</div>
-				<div class="periodLabel"
-					:class="{ 
+				<div :class="{ 
 						singleYear: periodStart.getFullYear() === periodEnd.getFullYear(), 
-						singleMonth: isSameMonth(periodStart, periodEnd) }">
+						singleMonth: isSameMonth(periodStart, periodEnd) }"
+					class="periodLabel">
 					<div class="startMonth">{{ monthNames[periodStart.getMonth()] }}</div>
 					<div class="startDay">{{ periodStart.getDate() }}</div>
 					<div class="startYear">{{ periodStart.getFullYear() }}</div>
@@ -47,18 +48,18 @@
 		</slot>
 		<div class="dayList">
 			<template v-for="(label, index) in weekdayNames">
-				<slot name="dayHeader" :index="index" :label="label">
-					<div class="day" :key="index" :class="'dow'+index">{{ label }}</div>
+				<slot :index="index" :label="label" name="dayHeader">
+					<div :key="index" :class="'dow'+index" class="day">{{ label }}</div>
 				</slot>
 			</template>
 		</div>
 		<div class="weeks">
 			<div v-for="(weekStart, weekIndex) in weeksOfPeriod"
 				:key="weekIndex"
-				class="week"
 				:class="['week' + (weekIndex+1), 'ws' + isoYearMonthDay(weekStart)]"
-				:style="'z-index:' + ((weekIndex + 1) * 2)">
-				<div v-for="(day, dayIndex) in daysOfWeek(weekStart)" class="day" 
+				:style="'z-index:' + ((weekIndex + 1) * 2)"
+				class="week">
+				<div v-for="(day, dayIndex) in daysOfWeek(weekStart)"
 					:key="dayIndex"
 					:class="[
 						'dow' + day.getDay(),
@@ -75,26 +76,27 @@
 							lastInstance: isLastInstanceOfMonth(day),
 						}
 					]"
+					class="day"
 					@click="onClickDay(day)"
 					@drop.prevent="onDrop(day, $event)"
 					@dragover.prevent="onDragOver(day)"
 					@dragenter.prevent="onDragEnter(day, $event)"
 					@dragleave.prevent="onDragLeave(day, $event)">
 					<div class="content">
-						<slot name="dayContent" :day="day">
+						<slot :day="day" name="dayContent">
 							<div class="date">{{ day.getDate() }}</div>
 						</slot>
 					</div>
 				</div>
 				<template v-for="e in getWeekEvents(weekStart)">
-					<slot name="event" :event="e.originalEvent" :weekStartDate="weekStart" :zIndex="getEventZIndex(weekIndex)">
+					<slot :event="e" :weekStartDate="weekStart" :zIndex="getEventZIndex(weekIndex)" name="event">
 						<div
-							class="event"
 							:key="e.id"
 							:draggable="enableDragDrop"
 							:class="e.classes"
 							:title="e.title"
 							:style="'z-index:' + getEventZIndex(weekIndex)"
+							class="event"
 							@dragstart="onDragStart(e)"
 							@click.stop="onClickEvent(e)"
 							v-html="getEventTitle(e)"/>
@@ -618,6 +620,7 @@ and decorations like border-radius should be part of a theme.
 	display: flex;
 	flex: 1 1 auto;
 	flex-flow: column nowrap;
+
 	/* Allow grid to scroll if there are too may weeks to fit in the view */
 	overflow-y: scroll;
 	-ms-overflow-style: none;
@@ -629,6 +632,7 @@ and decorations like border-radius should be part of a theme.
 	flex: 1 1 0;
 	flex-flow: row nowrap;
 	min-height: 3em;
+
 	/* Allow week events to scroll if they are too tall */
 	position: relative;
 	width: 100%;
@@ -645,8 +649,7 @@ and decorations like border-radius should be part of a theme.
 .calendar-view .week .day {
 	display: flex;
 	flex: 1 1 0;
-	/* When week's events are scrolled, keep the day content fixed */
-	position: sticky;
+	position: sticky; /* When week's events are scrolled, keep the day content fixed */
 	top: 0;
 }
 
@@ -749,6 +752,7 @@ and decorations like border-radius should be part of a theme.
 .calendar-view .week,
 .calendar-view .day,
 .calendar-view .event {
+	border-style: solid;
 	border-color: #ddd;
 }
 
@@ -796,30 +800,29 @@ and decorations like border-radius should be part of a theme.
 
 /* Borders */
 
+.calendar-view .week {
+	border-width: 0;
+}
+
 .calendar-view .weeks {
-	border-style: solid;
 	border-width: 0 0 1px 1px;
 }
 
 .calendar-view .header {
-	border-style: solid;
 	border-width: 1px 1px 0 1px;
 }
 
 .calendar-view .dayList {
-	border-style: solid;
 	border-width: 0 0 0 1px;
 }
 
 .calendar-view .day {
-	border-style: solid;
 	border-width: 1px 1px 0 0;
 }
 
 .calendar-view .header button,
 .calendar-view .event {
-	border-style: solid;
-	border-width: 0.05em;
+	border-width: 1px;
 }
 
 /* Positioning for event eventRows */
@@ -829,79 +832,79 @@ and decorations like border-radius should be part of a theme.
 }
 
 .calendar-view .event.eventRow2 {
-	top: calc(2 * 1.4em + 0.1em);
+	top: calc(2 * 1.4em + 2px);
 }
 
 .calendar-view .event.eventRow3 {
-	top: calc(3 * 1.4em + 0.1em);
+	top: calc(3 * 1.4em + 4px);
 }
 
 .calendar-view .event.eventRow4 {
-	top: calc(4 * 1.4em + 0.1em);
+	top: calc(4 * 1.4em + 6px);
 }
 
 .calendar-view .event.eventRow5 {
-	top: calc(5 * 1.4em + 0.1em);
+	top: calc(5 * 1.4em + 8px);
 }
 
 .calendar-view .event.eventRow6 {
-	top: calc(6 * 1.4em + 0.1em);
+	top: calc(6 * 1.4em + 10px);
 }
 
 .calendar-view .event.eventRow7 {
-	top: calc(7 * 1.4em + 0.1em);
+	top: calc(7 * 1.4em + 12px);
 }
 
 .calendar-view .event.eventRow8 {
-	top: calc(8 * 1.4em + 0.1em);
+	top: calc(8 * 1.4em + 14px);
 }
 
 .calendar-view .event.eventRow9 {
-	top: calc(9 * 1.4em + 0.1em);
+	top: calc(9 * 1.4em + 16px);
 }
 
 .calendar-view .event.eventRow10 {
-	top: calc(10 * 1.4em + 0.1em);
+	top: calc(10 * 1.4em + 18px);
 }
 
 .calendar-view .event.eventRow11 {
-	top: calc(11 * 1.4em + 0.1em);
+	top: calc(11 * 1.4em + 20px);
 }
 
 .calendar-view .event.eventRow12 {
-	top: calc(12 * 1.4em + 0.1em);
+	top: calc(12 * 1.4em + 22px);
 }
 
 .calendar-view .event.eventRow13 {
-	top: calc(13 * 1.4em + 0.1em);
+	top: calc(13 * 1.4em + 24px);
 }
 
 .calendar-view .event.eventRow14 {
-	top: calc(14 * 1.4em + 0.1em);
+	top: calc(14 * 1.4em + 26px);
 }
 
 .calendar-view .event.eventRow15 {
-	top: calc(15 * 1.4em + 0.1em);
+	top: calc(15 * 1.4em + 28px);
 }
 
 .calendar-view .event.eventRow16 {
-	top: calc(16 * 1.4em + 0.1em);
+	top: calc(16 * 1.4em + 30px);
 }
 
 .calendar-view .event.eventRow17 {
-	top: calc(17 * 1.4em + 0.1em);
+	top: calc(17 * 1.4em + 32px);
 }
 
 .calendar-view .event.eventRow18 {
-	top: calc(18 * 1.4em + 0.1em);
+	top: calc(18 * 1.4em + 34px);
 }
 
 .calendar-view .event.eventRow19 {
-	top: calc(19 * 1.4em + 0.1em);
+	top: calc(19 * 1.4em + 36px);
 }
 
 .calendar-view .event.eventRow20 {
-	top: calc(20 * 1.4em + 0.1em);
+	top: calc(20 * 1.4em + 38px);
 }
 
 .calendar-view .event.eventRow0 {
@@ -909,31 +912,31 @@ and decorations like border-radius should be part of a theme.
 } /* More than 10 eventRows not currently supported */
 
 .calendar-view .event.offset0 {
-	left: calc(0.05em);
+	left: 0;
 }
 
 .calendar-view .event.offset1 {
-	left: calc((100% / 7) + 0.05em);
+	left: calc((100% / 7));
 }
 
 .calendar-view .event.offset2 {
-	left: calc((200% / 7) + 0.05em);
+	left: calc((200% / 7));
 }
 
 .calendar-view .event.offset3 {
-	left: calc((300% / 7) + 0.05em);
+	left: calc((300% / 7));
 }
 
 .calendar-view .event.offset4 {
-	left: calc((400% / 7) + 0.05em);
+	left: calc((400% / 7));
 }
 
 .calendar-view .event.offset5 {
-	left: calc((500% / 7) + 0.05em);
+	left: calc((500% / 7));
 }
 
 .calendar-view .event.offset6 {
-	left: calc((600% / 7) + 0.05em);
+	left: calc((600% / 7));
 }
 
 /* Metrics for events spanning dates */

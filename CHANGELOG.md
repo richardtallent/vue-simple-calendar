@@ -1,31 +1,42 @@
 
-The basic list of changes for now is in the README file. This is more of a detailed list of changes for migration purposes.
-
-### Coming at some point?
+## Future?
 - Mobile-compatible drag and drop
 - Handles to drag events to make them longer or shorter
 
-### Coming in 2.3.0
+## 3.0.0 (NOT STARTED)
 - CSS reorganization to rely less on complex cascading (easier theming)
 - More flexible header customization
 - IE11 support fix? (I'm losing my ability to test IE11 soon but plan to maintain compatibility for a bit longer, with some help)
 
-### Changes in 2.2.0
+## 2.2.0 (IN PROGRESS)
 - Removed the events deprecated in 2.1.0
 - Upgraded to Webpack 4
+- Moved version history to this CHANGELOG file
+- Moved some opinionated styles from the baseline (SFC) to the default theme.
+- Removed deprecated events.
+- Fixed event slot issue reported in #42 and #50 (thanks @lexuzieel!).
+- Added `zIndex` prop to event scoped slot properties.
+- Formatted to meet newer eslint rules.
+- Corrected some minor positioning issues with events (including removing remaining em-based borders)
 
-### Changes in 2.1.0
-The events above were renamed to make them kebab-case (for DOM template compatibility) and to refine the wording. The old event names, shown here respectively, were removed in 2.2:
-* `clickDay`
-* `clickEvent`
-* `setShowDate`
-* `dragEventStart`
-* `dragEventEnterDate`
-* `dragEventLeaveDate`
-* `dragEventOverDate`
-* `dropEventOnDate`
+## 2.1.2 / 2.1.3 (2018.01.27)
+- Prevent click-date events for future dates when disableFuture is true (feature parity with disablePast). Fixes #40.
 
-### Changes in 2.0.0
+## 2.1.0 / 2.1.1 (2018.01.25)
+The events below were renamed to make them kebab-case (for DOM template compatibility) and to refine the wording. The old event names, shown here, were deprecated in this version and removed in 2.2:
+- `clickDay`
+- `clickEvent`
+- `setShowDate`
+- `dragEventStart`
+- `dragEventEnterDate`
+- `dragEventLeaveDate`
+- `dragEventOverDate`
+- `dropEventOnDate`
+
+## 2.0.1 (2018.01.23)
+- Fixed `outsideOfMonth` logic bug, #38
+
+## 2.0.0 (2018.01.01)
 Version 2.0 includes some major upgrades! Here are the new features:
 
 - Dates passed as strings are interpreted using *browser local* time, not UTC, which prevents the event from showing up on an unexpected date.
@@ -61,6 +72,29 @@ This means there are some breaking changes:
 * `displayPeriodUom` - The period type to show. By default this is `month`, *i.e.*, it shows a calendar in month-sized chunks. Other allowed values are `year` and `week`.
 * `displayPeriodCount` - The *number* of periods to show within the view. For example, if `displayPeriodUom` is `week` and `displayPeriodCount` is 2, the view will show a two-week period.
 
-### Changes in 1.8.2
+## 1.8.2 (2017.12.30)
 - A `dayList` slot was added.
 - A `day` slot was added.
+- A `header` slot was added (#32)
+- Fixed display issue (#33)
+
+## Older changes
+
+Date       | Version      | Notes
+-----------|--------------|--------
+2017.05.11 | 1.0.0        | First version
+2017.05.15 | 1.1.0        | Better demo styling; refactor code; add basic drag/drop capability; fix display issue when events not sorted by start date
+2017.05.20 | 1.2.0        | Redesigned to work around z-index context issue with multi-day events (events now positioned above days, weeks rendered individually). Significant improvements to handling of event slots and clipping when event content exceeds height/width.
+2017.05.21 | 1.3.0        | Fixed IE. Bad IE. Fixed CSS references to emoji. Default style adjustments. Clean up some old code. Add previous/next year buttons.
+2017.05.22 | 1.3.1        | Improved demo, first published to npm.
+2017.05.27 | 1.4.0        | Add new classes, move a few classes up to `calendar` node, rename a few classes to pascalCase for consistency.
+2017.07.16 | 1.5.0        | Clean up code, move date math to a mixin; allow `endDate`, `title`, and `id` to be optional; change so only core CSS (mostly position / metrics) is in the component, a separate CSS file contains the default theme. Reorganized and updated optional US holiday theme CSS file. Tweaked default theme and metrics for consistency and cleaner look. NOTE: the default component name is now `calendar-month`, as is the primary container's CSS class. This was done for possible future expansion to support other views (such as a week view) and to give the CSS a slightly more unique name without resorting to scoped CSS. The name of the npm package, repository, etc. remains vue-simple-calendar.
+2017.10.03 | 1.5.1        | Fix issue where months ending in Saturday did not show their last week. Moved mixin to component folder.
+2017.10.04 | 1.5.2        | Fix webpack issue with mixin import and Vue warning about non-primitive keys.
+2017.11.11 | 1.5.3        | Fix date differences over DST and toBeContinued logic (thanks @houseoftech and @sean-atomized!)
+2017.11.12 | 1.6.0        | Fix future/past classes. Tweaks to CSS to fix border render issue, simplify. Change height from aspect ratio to the height of the container (the reason for the minor version increment).
+2017.11.12 | 1.6.1        | Fix issues when events have a time other than midnight (they should be ignored). Add stylelint and vue lint, clean up package.json, other minor tweaks. Set browser compatibility to a minimum of IE10. Prevent issues from caching "today" value.
+2017.12.12 | 1.7.0        | Add `startingDayOfWeek` property to allow the calendar to optionally start on any desired day of the week
+2017.12.15 | 1.7.1        | Hopefully resolve reported babel preset error
+2017.12.17 | 1.8.0        | Split sample app to another repo, rebuild build/config scripts from scratch
+2017.12.17 | 1.8.1        | Add build for mixin
