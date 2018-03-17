@@ -1,4 +1,4 @@
-- [Introduction](#vue-simple-calendar)
+- [Introduction](#introduction)
   - [Demo](#demo)
   - [Browser Compatibility](#browser-compatibility)
   - [Features](#features)
@@ -21,17 +21,32 @@
   - [FAQ](#faq)
   - [Build Setup](#build-setup)
 
-# vue-simple-calendar
+## Introduction
 
 **NOTE: The master branch, including this README, is now for version 2.2.0, which is nearing release but is not quite done yet (I'm working through webpack 4 migration). Check the releases page for the source code and README file for the current released version on npm (2.1.3) and past versions. This README is largely the same as the one in 2.1.3, refer to the CHANGELOG.md file for changes.**
 
-This is a calendar component for Vue.
+**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue.
 
-There are other Vue calendar components, but they were either focused on date-picking, or the events (such as clicking an event or a date) were too tightly bound to specific views (such as linking to an agenda). The closest I probably found was FullCalendar, but it had _too many_ features.
+There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show events (including multi-day events) on that grid. While the component goes beyond that simple use case, that is still the core focus.
 
-My use case is far simpler--I just wanted a traditional month-grid calendar, with events listed (including multi-day events), that would raise events when the calendar month is changed or the user clicks/taps a date or event. (This has evolved, and now the component supports week, year, multi-week, multi-month, and multi-year grids.)
+Some key features include:
+- Week and month views, including multi-week and multi-month
+- Emits events when users click on a day or an event, drags an event to another day, or clicks buttons in the header to change the date period shown
+- Can start on any day of the week
+- Built-in, automatic internationalization support
+- Flexbox-driven
+- Easy to theme (using CSS) to integrate with your own site
+- Slot support for more complex customization
+- Works on mobile and desktop browsers (though it is primarily intended for desktop use)
+- Supports multiple events per day, multi-day events, and events with start and/or end times
 
-PRs, ideas, and issues are welcome.
+Key *missing* features include:
+- There is no "agenda" view (time-of-day grid). This would require adding too much complexity.
+- There is no interface for managing events. This is far too use-specific.
+- There is no built-in AJAX mechanism. This is also far too use-specific.
+- Only the Gregorian calendar is supported.
+- It is not yet possible to drag events in a way that would add or remove days. This may be added in the future.
+- There is no ability to drag and select a set of days (only single-day clicks are emitted as events). This may be added in the future.
 
 ## Demo (version 2.1.3)
 Here's a live demo page:
@@ -74,7 +89,6 @@ In your application, you'll need to:
 * wire up the element's properties and events
 
 Tips:
-
 * The component will fill its parent's height and width, so be sure the parent has a minimum height that looks good.
 * This is a pure component, it doesn't change its own state, so clicking the previous/next buttons don't do anything unless you provide a `show-date` attribute and update that attribute when the component fires the `show-date-changed` event.
 
