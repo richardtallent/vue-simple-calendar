@@ -10,14 +10,15 @@
 	"scripts": {
 		"build": "rimraf ./dist && webpack --config ./webpack.config.js --mode production"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"babel-polyfill": "^6.26.0"
+	},
 	"devDependencies": {
 		"autoprefixer": "^8.1.0",
 		"babel-core": "^6.26.0",
 		"babel-eslint": "^8.2.2",
 		"babel-loader": "^7.1.4",
 		"babel-plugin-transform-runtime": "^6.23.0",
-		"babel-polyfill": "^6.26.0",
 		"babel-preset-env": "^1.6.1",
 		"babel-register": "^6.26.0",
 		"copy-webpack-plugin": "^4.5.1",

@@ -39,7 +39,9 @@ var commonConfig = {
 module.exports = [
 	// Config 1: For browser environment
 	merge(commonConfig, {
-		entry: path.resolve(__dirname + "/src/plugin.js"),
+		entry: {
+			app: ["babel-polyfill", path.resolve(__dirname + "/src/plugin.js")],
+		},
 		output: {
 			filename: "calendar-month.min.js",
 			libraryTarget: "window",
@@ -60,7 +62,12 @@ module.exports = [
 
 	// Config 3: Separate export of the mixin for external node use
 	merge(commonConfig, {
-		entry: path.resolve(__dirname + "/src/CalendarMathMixin.js"),
+		entry: {
+			app: [
+				"babel-polyfill",
+				path.resolve(__dirname + "/src/CalendarMathMixin.js"),
+			],
+		},
 		output: {
 			filename: "calendar-math-mixin.js",
 			libraryTarget: "umd",
