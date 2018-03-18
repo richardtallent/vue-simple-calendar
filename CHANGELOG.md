@@ -8,7 +8,7 @@
 - More flexible header customization
 - IE11 support fix? (I'm losing my ability to test IE11 soon but plan to maintain compatibility for a bit longer, with some help)
 
-## 2.2.0 (IN PROGRESS)
+## 2.2.0 (2018.03.17)
 - Removed the events deprecated in 2.1.0
 - Upgraded to Webpack 4
 - Moved version history to this CHANGELOG file
@@ -17,6 +17,7 @@
 - Added `zIndex` prop to event scoped slot properties.
 - Formatted to meet newer eslint rules.
 - Corrected some minor positioning issues with events (including removing remaining em-based borders)
+- The `click-event` and `drag-*` events events now passes the **normalized** event (same as the "event" named slot). You can access your original event (*which is the one you should modify*) using the `originalEvent` attribute. While this is a minor breaking change, I wasn't quite ready to move up to 3.0, and this does make the API more consistent in how it passes events back to the caller.
 
 ## 2.1.2 / 2.1.3 (2018.01.27)
 - Prevent click-date events for future dates when disableFuture is true (feature parity with disablePast). Fixes #40.
@@ -65,7 +66,7 @@ This means there are some breaking changes:
 - Some basic colors, borders, etc. have been moved from the default theme into the component's core CSS, allowing the component to have a more appealing look with no theme in place and a better starting point for custom themes.
 - Reversed the circle-arrow labels to return to the current period. These are now clockwise to "go forward" to return to the current period, counter-clockwise to "go back" to return to the current period.
 
-#### Props Added in 2.0 
+#### Props Added in 2.0
 * `showEventTimes` - If true, shows the start and/or end time of an event beside the event title. Midnight is not shown, a midnight time is assumed to indicate an all-day or indeterminate time. (If you want to show midnight, use `00:00:01` and don't choose to show seconds.) The default is `false`.
 * `timeFormatOptions` - This takes an object containing `Intl.DateTimeFormat` options to be used to format the event times. The `locale` setting is automatically used. This option is ignored for browsers that don't support `Intl` (they will see the 24-hour, zero-padded time).
 * `displayPeriodUom` - The period type to show. By default this is `month`, *i.e.*, it shows a calendar in month-sized chunks. Other allowed values are `year` and `week`.

@@ -1,15 +1,3 @@
-<!--
-
-	Note on Internationalization:
-
-	Intl is not supported for Safari 9.1, iOS 9.3, and Opera Mini. For these browsers, the month
-	names and weekday names will be blank and the calendar will have a `nointl` class. Use CSS
-	content to provide the appropriate month and weekday names for the languages you support.
-
-	E.g.:
-		.calendar.nointl.locale-en.m01 .monthName::after { content: 'January' }
-
--->
 <template>
 	<div :class="[
 			'locale-' + languageCode(displayLocale),
@@ -329,12 +317,10 @@ export default {
 			if (this.disablePast && this.isInPast(day)) return
 			if (this.disableFuture && this.isInFuture(day)) return
 			this.$emit("click-date", day)
-			this.$emit("clickDay", day) // Deprecated
 		},
 
 		onClickEvent(e, day) {
-			this.$emit("clickEvent", e.originalEvent, day) // Deprecated
-			this.$emit("click-event", e.originalEvent, day)
+			this.$emit("click-event", e, day)
 		},
 
 		onClickCurrentPeriod() {
@@ -343,7 +329,6 @@ export default {
 				this.displayPeriodUom,
 				this.startingDayOfWeek
 			)
-			this.$emit("setShowDate", newValue) // Deprecated
 			this.$emit("show-date-change", newValue)
 		},
 
@@ -393,19 +378,14 @@ export default {
 			// dragged during dragover, dragenter, and dragleave events, and because storing an ID requires an unnecessary
 			// lookup. This does limit the drop zones to areas within this instance of this component.
 			this.currentDragEvent = calendarEvent
-			this.$emit("dragEventStart", calendarEvent.originalEvent, calendarEvent) // Deprecated
-			this.$emit("drag-start", calendarEvent.originalEvent, calendarEvent)
+			this.$emit("drag-start", calendarEvent)
 			return true
 		},
 
 		handleEvent(bubbleEventName, bubbleParam) {
 			if (!this.enableDragDrop) return false
 			if (!this.currentDragEvent) return false // shouldn't happen
-			this.$emit(
-				bubbleEventName,
-				this.currentDragEvent.originalEvent,
-				bubbleParam
-			)
+			this.$emit(bubbleEventName, this.currentDragEvent, bubbleParam)
 			return true
 		},
 
