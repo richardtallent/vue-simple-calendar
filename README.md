@@ -23,7 +23,7 @@
 
 ## Introduction
 
-**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue.
+**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **2.2.0**.
 
 There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show events (including multi-day events) on that grid. While the component goes beyond that simple use case, that is still the core focus.
 
@@ -56,8 +56,14 @@ What this component *doesn't* try to do:
 * There is no ability to drag and select a set of days (only single-day clicks are emitted as events). This may be added in the future.
 
 ## Browser compatibility
-The *intent* is to maintain compatibility with Chrome, Firefox, IE11, Edge, OS X Safari, iOS Safari, and the Android Silk browser. Note that this component is designed first for desktop web applications, not mobile, so while the component may *operate* on a mobile device, the limited resolution may not allow for much in the way of useful functionality. Note: I'm losing my ability to test IE11 soon, so I'll be relying on the community to continue supporting it.
+The *intent* is to maintain compatibility with Chrome, Firefox, IE11, Edge, OS X Safari, iOS Safari, and the Android Silk browser. Note that this component is designed first for desktop web applications, not mobile, so while the component may *operate* on a mobile device, the limited resolution may not allow for much in the way of useful functionality.
 
+### IE11 Support
+IE11 is not currently working in 2.2.0. Something is "off" with my babel configuration, and despite my best efforts, I can't seem to find an incantation that actually transpiles to IE11-compatible code. I'm looking for someone with more webpack/babel experience to take a look.
+
+I will be losing my ability to test in IE11 very soon, so I'll be relying on the community of users who need to support this browser to continue to test and provide feedback.
+
+### Browsers and Localization
 Note that `Intl` is not supported for Safari 9.1, iOS 9.3, and Opera Mini. For these browsers, the month names and weekday names will be blank and the calendar will have a `nointl` class. Use CSS content to provide the appropriate month and weekday names for the languages you support. For example:
 
 ```CSS

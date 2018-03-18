@@ -8,7 +8,7 @@
 - More flexible header customization
 - IE11 support fix? (I'm losing my ability to test IE11 soon but plan to maintain compatibility for a bit longer, with some help)
 
-## 2.2.0 (2018.03.17)
+## 2.2.0 (2018.03.18)
 - Removed the events deprecated in 2.1.0
 - Upgraded to Webpack 4
 - Moved version history to this CHANGELOG file
@@ -18,6 +18,7 @@
 - Formatted to meet newer eslint rules.
 - Corrected some minor positioning issues with events (including removing remaining em-based borders)
 - The `click-event` and `drag-*` events events now passes the **normalized** event (same as the "event" named slot). You can access your original event (*which is the one you should modify*) using the `originalEvent` attribute. While this is a minor breaking change, I wasn't quite ready to move up to 3.0, and this does make the API more consistent in how it passes events back to the caller.
+- **Known issue:** Babel is not currently transpiling correctly to provide IE11 support. Looking for assistance.
 
 ## 2.1.2 / 2.1.3 (2018.01.27)
 - Prevent click-date events for future dates when disableFuture is true (feature parity with disablePast). Fixes #40.
