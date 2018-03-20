@@ -629,6 +629,7 @@ and decorations like border-radius should be part of a theme.
 .calendar-view .week .day {
 	display: flex;
 	flex: 1 1 0;
+	position: relative; /* Fallback for IE11, which doesn't support sticky */
 	position: sticky; /* When week's events are scrolled, keep the day content fixed */
 	top: 0;
 }
