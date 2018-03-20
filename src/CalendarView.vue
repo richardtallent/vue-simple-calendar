@@ -384,7 +384,10 @@ export default {
 
 		handleEvent(bubbleEventName, bubbleParam) {
 			if (!this.enableDragDrop) return false
-			if (!this.currentDragEvent) return false // shouldn't happen
+			if (!this.currentDragEvent) { // shouldn't happen
+				// If current drag event is not set, check if user has set its own slot for events
+				if (!!!this.$scopedSlots['event']) return false
+			} 
 			this.$emit(bubbleEventName, this.currentDragEvent, bubbleParam)
 			return true
 		},
