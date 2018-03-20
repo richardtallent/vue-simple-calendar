@@ -382,7 +382,7 @@ export default {
 			return true
 		},
 
-		handleEvent(bubbleEventName, bubbleParam) {
+		handleDragEvent(bubbleEventName, bubbleParam) {
 			if (!this.enableDragDrop) return false
 			if (!this.currentDragEvent) { // shouldn't happen
 				// If current drag event is not set, check if user has set its own slot for events
@@ -393,21 +393,21 @@ export default {
 		},
 
 		onDragOver(day) {
-			this.handleEvent("drag-over-date", day)
+			this.handleDragEvent("drag-over-date", day)
 		},
 
 		onDragEnter(day, windowEvent) {
-			if (!this.handleEvent("drag-enter-date", day)) return
+			if (!this.handleDragEvent("drag-enter-date", day)) return
 			windowEvent.target.classList.add("draghover")
 		},
 
 		onDragLeave(day, windowEvent) {
-			if (!this.handleEvent("drag-leave-date", day)) return
+			if (!this.handleDragEvent("drag-leave-date", day)) return
 			windowEvent.target.classList.remove("draghover")
 		},
 
 		onDrop(day, windowEvent) {
-			if (!this.handleEvent("drop-on-date", day)) return
+			if (!this.handleDragEvent("drop-on-date", day)) return
 			windowEvent.target.classList.remove("draghover")
 		},
 
