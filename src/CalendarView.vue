@@ -93,6 +93,7 @@
 						<div
 							:key="e.id"
 							:draggable="enableDragDrop"
+							ondragstart="event.dataTransfer.setData('text/plain',null)"
 							:class="e.classes"
 							:title="e.title"
 							:style="'z-index:' + getEventZIndex(weekIndex)"
@@ -622,7 +623,7 @@ and decorations like border-radius should be part of a theme.
 	flex-flow: column nowrap;
 
 	/* Allow grid to scroll if there are too may weeks to fit in the view */
-	overflow-y: scroll;
+	overflow-y: auto;
 	-ms-overflow-style: none;
 }
 
