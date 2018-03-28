@@ -1,7 +1,7 @@
-- [Introduction](#vue-simple-calendar)
+- [Introduction](#introduction)
   - [Demo](#demo)
-  - [Browser Compatibility](#browser-compatibility)
   - [Features](#features)
+  - [Browser Compatibility](#browser-compatibility)
   - [Installation and Usage](#installation-and-usage)
   - [Props](#props)
   - [Calendar Event Properties](#calendar-event-properties)
@@ -21,27 +21,16 @@
   - [FAQ](#faq)
   - [Build Setup](#build-setup)
 
-# vue-simple-calendar
+## Introduction
 
-**NOTE: The master branch, including this README, is now for version 2.2.0, which is nearing release but is not quite done yet (I'm working through webpack 4 migration). Check the releases page for the source code and README file for the current released version on npm (2.1.3) and past versions. This README is largely the same as the one in 2.1.3, refer to the CHANGELOG.md file for changes.**
+**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **2.2.0**.
 
-This is a calendar component for Vue.
+There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show events (including multi-day events) on that grid. While the component goes beyond that simple use case, that is still the core focus.
 
-There are other Vue calendar components, but they were either focused on date-picking, or the events (such as clicking an event or a date) were too tightly bound to specific views (such as linking to an agenda). The closest I probably found was FullCalendar, but it had _too many_ features.
-
-My use case is far simpler--I just wanted a traditional month-grid calendar, with events listed (including multi-day events), that would raise events when the calendar month is changed or the user clicks/taps a date or event. (This has evolved, and now the component supports week, year, multi-week, multi-month, and multi-year grids.)
-
-PRs, ideas, and issues are welcome.
-
-## Demo (version 2.1.3)
-Here's a live demo page:
+## Demo
+Here's a live demo page, and the repo for it:
 https://www.tallent.us/vue-simple-calendar/
-
-The repository for the demo page is here (2.2.0, unreleased), you can pull and run it on your own to learn the ropes and test ideas:
 https://github.com/richardtallent/vue-simple-calendar-sample
-
-## Browser compatibility
-The *intent* is to maintain compatibility with Chrome, Firefox, IE11, Edge, OS X Safari, iOS Safari, and the Android Silk browser. Note that this component is designed first for desktop web applications, not mobile, so while the component may *operate* on a mobile device, the limited resolution may not allow for much in the way of useful functionality.
 
 ## Features
 * Shows a traditional month-grid calendar--or week, or year, or multiples of those.
@@ -53,9 +42,33 @@ The *intent* is to maintain compatibility with Chrome, Firefox, IE11, Edge, OS X
 * Lightweight!
 * Flexbox layout (look ma, no tables!).
 * No external dependencies (Moment, JQuery, etc.).
-* Emphasizes customization via CSS or scoped/named slots.
 * User events (clicks, drags, etc.) are emitted to the parent component.
 * Weeks can start on any day of the week (defaults to Sunday).
+* Easy to theme (using CSS) to integrate with your own site
+* Slot support for more complex customization
+
+What this component *doesn't* try to do:
+* There is no "agenda" view (time-of-day grid). This would require adding too much complexity.
+* There is no interface for managing events. This is far too use-specific.
+* There is no built-in AJAX mechanism. This is also far too use-specific.
+* Only the Gregorian calendar is supported.
+* It is not yet possible to drag events in a way that would add or remove days. This may be added in the future.
+* There is no ability to drag and select a set of days (only single-day clicks are emitted as events). This may be added in the future.
+
+## Browser compatibility
+The *intent* is to maintain compatibility with Chrome, Firefox, IE11, Edge, OS X Safari, iOS Safari, and the Android Silk browser. Note that this component is designed first for desktop web applications, not mobile, so while the component may *operate* on a mobile device, the limited resolution may not allow for much in the way of useful functionality.
+
+### IE11 Support
+IE11 is not currently working in 2.2.0. Something is "off" with my babel configuration, and despite my best efforts, I can't seem to find an incantation that actually transpiles to IE11-compatible code. I'm looking for someone with more webpack/babel experience to take a look.
+
+I will be losing my ability to test in IE11 very soon, so I'll be relying on the community of users who need to support this browser to continue to test and provide feedback.
+
+### Browsers and Localization
+Note that `Intl` is not supported for Safari 9.1, iOS 9.3, and Opera Mini. For these browsers, the month names and weekday names will be blank and the calendar will have a `nointl` class. Use CSS content to provide the appropriate month and weekday names for the languages you support. For example:
+
+```CSS
+.calendar.nointl.locale-en.m01 .monthName::after { content: 'January' }
+```
 
 ## Installation and Usage
 _(This assumes you already have a web application set up for using Vue. If you're starting a new project, look up the documentation for the Vue CLI, which will allow you to initialize a new project with webpack, etc.)_
@@ -67,14 +80,12 @@ npm i --save vue-simple-calendar
 ```
 
 In your application, you'll need to:
-
 * import the component
-* import the default theme and any additional themes you want to apply
+* import the default theme or any other theme you want to use (CSS)
 * create the `calendar-view` custom element
 * wire up the element's properties and events
 
 Tips:
-
 * The component will fill its parent's height and width, so be sure the parent has a minimum height that looks good.
 * This is a pure component, it doesn't change its own state, so clicking the previous/next buttons don't do anything unless you provide a `show-date` attribute and update that attribute when the component fires the `show-date-changed` event.
 
@@ -86,7 +97,7 @@ Here's a minimal application example for a calendar with no events, but styled w
 		<h1>My Calendar</h1>
 		<calendar-view
 			:show-date="showDate"
-			@setShowDate="setShowDate"
+			@show-date-change="setShowDate"
 			class="holiday-us-traditional holiday-us-official"
 		/>
 	</div>
@@ -163,7 +174,7 @@ The following Vue events are raised by the component, which you can catch in you
 * `drag-over-date(event, date)`: fires multiple times as an event is hovered over a date
 * `drop-on-date(event, date)`: fired when an event is dropped on a date
 
-*Note in the above, `event` refers to the calendar "event" involved in the activity, not the DOM "event". The word "event" here is a bit overloaded.*
+*Note in the above, `event` refers to the **normalized** version of the calendar "event" involved in the activity. For more information, see the "event" slot below.
 
 ## Slots
 
@@ -182,19 +193,17 @@ This optional named slot **replaces** the default `div.day` elements that appear
 This slot passes two scoped variables: `index`, 0-7, and `label`, the text it would have used in the header based on the current `locale` and `weekdayNameFormat`.
 
 ### dayContent
-This optional named slot **replaces** the *contents* of the `div.content` within each day's cell. By default, this just contains a `div.date` containing the day of the month, but you can use this to override the cell and show anything you like. Events are drawn *on top* of the cells, no within them, so this content appears underneath the events if there are any on that day.
+This optional named slot **replaces** the *contents* of the `div.content` within each day's cell. By default, this just contains a `div.date` containing the day of the month, but you can use this to override the cell and show anything you like. Events are drawn *on top* of the cells, no within them, so this content appears underneath the events if there are any on that day. 
 
 This slot passes one scoped variable: `day`, the date associated with the cell.
 
 ### event
-This optional named slot **replaces** the `div.event` for each event (not just the contents of the event element, the entire element). Use this if you want to override *entirely* how events are rendered. For example, on a small mobile device, you may want to show just a thin stripe, dots, or icons to indicate events, without titles or times.
-
-This slot passes three scoped variables:
-- `event`: the calendar event
+This optional named slot **replaces** the `div.event` for each event (not just the contents of the event element, the entire element). Use this if you want to override *entirely* how events are rendered. For example, on a small mobile device, you may want to show just a thin stripe, dots, or icons to indicate events, without titles or times. This slot passes three scoped variables:
+- `event`: the *normalized* calendar event
 - `weekStartDate`: the date of the first day of the week being rendered
 - `zIndex`: the `z-index` that you should apply to the style of your event markup so it properly overlaps its own week but not the next
 
-Note that `event` is a version of the calendar event **customized** to be shown on that week's row, it's not the bare event pulled from the `events` prop. This customized version parses and defaults the `startDate` and `endDate`, defaults missing `id` to a random number, defaults a blank title to "Untitled", and adds a number of `classes` values based on the position and role of the event as shown for that week (whether it continues from the previous week, etc.). The original event is passed back as `event.originalEvent`.
+Note that `event` is a version of the calendar event *normalized* to be shown on that week's row, it's not the bare event pulled from the `events` prop. This customized version parses and defaults the `startDate` and `endDate`, defaults missing `id` to a random number, defaults a blank title to "Untitled", and adds a number of `classes` values based on the position and role of the event as shown for that week (whether it continues from the previous week, etc.). The original event is passed back as `event.originalEvent`.
 
 ## Customizing the Look and Feel
 In addition to slots, this component is designed to allow for significant customization of the look and feel solely through CSS. Here's the structure of the markup generated by the component. Each line represents a Vue SLOT (all caps) or an HTML element (first word on the line). Indentation represents the hierarchy. Each word *after* the first word is a class applied to the element. Classes in (parenthesis) are conditional. Loops (*i.e.*, `v-for`) are shown in [brackets].
@@ -356,8 +365,6 @@ Because Vue is awesome. I've been using it a few months in production, and I've 
 #### Can you add "X" feature?
 Maybe. Depends if it fits the core functionality of viewing a calendar grid. I don't want to create something that replicates all possible calendar views, and definitely don't want to add functionality for creating or editing events (that should be handled by the application/component hosting the view).
 
-But I do have some ideas in mind, such as adding handles to be able to change an event's width, but I don't have a timetable for any particular new features.
-
 #### Why not use moment.js?
 Moment.js is great, but I would only need a tiny fraction of its capabilities, and for simplicity, I wanted to not have any dependencies (other than Vue of course).
 
@@ -376,9 +383,6 @@ A third stylesheet, `static/css/holidays-us.css`, shows how simple it is to use 
 ```bash
 # install dependencies
 npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
 
 # build for production with minification
 npm run build

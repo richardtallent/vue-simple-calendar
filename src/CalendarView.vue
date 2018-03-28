@@ -1,15 +1,3 @@
-<!--
-
-	Note on Internationalization:
-
-	Intl is not supported for Safari 9.1, iOS 9.3, and Opera Mini. For these browsers, the month
-	names and weekday names will be blank and the calendar will have a `nointl` class. Use CSS
-	content to provide the appropriate month and weekday names for the languages you support.
-
-	E.g.:
-		.calendar.nointl.locale-en.m01 .monthName::after { content: 'January' }
-
--->
 <template>
 	<div :class="[
 			'locale-' + languageCode(displayLocale),
@@ -330,12 +318,10 @@ export default {
 			if (this.disablePast && this.isInPast(day)) return
 			if (this.disableFuture && this.isInFuture(day)) return
 			this.$emit("click-date", day)
-			this.$emit("clickDay", day) // Deprecated
 		},
 
 		onClickEvent(e, day) {
-			this.$emit("clickEvent", e.originalEvent, day) // Deprecated
-			this.$emit("click-event", e.originalEvent, day)
+			this.$emit("click-event", e, day)
 		},
 
 		onClickCurrentPeriod() {
@@ -344,7 +330,6 @@ export default {
 				this.displayPeriodUom,
 				this.startingDayOfWeek
 			)
-			this.$emit("setShowDate", newValue) // Deprecated
 			this.$emit("show-date-change", newValue)
 		},
 
@@ -394,38 +379,36 @@ export default {
 			// dragged during dragover, dragenter, and dragleave events, and because storing an ID requires an unnecessary
 			// lookup. This does limit the drop zones to areas within this instance of this component.
 			this.currentDragEvent = calendarEvent
-			this.$emit("dragEventStart", calendarEvent.originalEvent, calendarEvent) // Deprecated
-			this.$emit("drag-start", calendarEvent.originalEvent, calendarEvent)
+			this.$emit("drag-start", calendarEvent)
 			return true
 		},
 
-		handleEvent(bubbleEventName, bubbleParam) {
+		handleDragEvent(bubbleEventName, bubbleParam) {
 			if (!this.enableDragDrop) return false
-			if (!this.currentDragEvent) return false // shouldn't happen
-			this.$emit(
-				bubbleEventName,
-				this.currentDragEvent.originalEvent,
-				bubbleParam
-			)
+			if (!this.currentDragEvent) { // shouldn't happen
+				// If current drag event is not set, check if user has set its own slot for events
+				if (!!!this.$scopedSlots['event']) return false
+			} 
+			this.$emit(bubbleEventName, this.currentDragEvent, bubbleParam)
 			return true
 		},
 
 		onDragOver(day) {
-			this.handleEvent("drag-over-date", day)
+			this.handleDragEvent("drag-over-date", day)
 		},
 
 		onDragEnter(day, windowEvent) {
-			if (!this.handleEvent("drag-enter-date", day)) return
+			if (!this.handleDragEvent("drag-enter-date", day)) return
 			windowEvent.target.classList.add("draghover")
 		},
 
 		onDragLeave(day, windowEvent) {
-			if (!this.handleEvent("drag-leave-date", day)) return
+			if (!this.handleDragEvent("drag-leave-date", day)) return
 			windowEvent.target.classList.remove("draghover")
 		},
 
 		onDrop(day, windowEvent) {
-			if (!this.handleEvent("drop-on-date", day)) return
+			if (!this.handleDragEvent("drop-on-date", day)) return
 			windowEvent.target.classList.remove("draghover")
 		},
 
@@ -650,6 +633,7 @@ and decorations like border-radius should be part of a theme.
 .calendar-view .week .day {
 	display: flex;
 	flex: 1 1 0;
+	position: relative; /* Fallback for IE11, which doesn't support sticky */
 	position: sticky; /* When week's events are scrolled, keep the day content fixed */
 	top: 0;
 }
