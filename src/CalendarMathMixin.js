@@ -157,7 +157,11 @@ export default {
 		isLastDayOfMonth(d) {
 			return d.getMonth() !== this.addDays(d, 1).getMonth()
 		},
-
+		isSelectedDay(d) {
+			return this.selectedDays.some(day => this.isSameDate(
+				this.fromIsoStringToLocalDate(day), d
+			));
+		},
 		// Courtesy https://stackoverflow.com/questions/33908299/javascript-parse-a-string-to-date-as-local-time-zone/42626876#42626876
 		fromIsoStringToLocalDate(s) {
 			let ds = s.split(/\D/).map(s => Number(s))

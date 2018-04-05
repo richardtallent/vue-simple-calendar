@@ -21,7 +21,7 @@
 					<button :disabled="!isPeriodIncrementAllowed(12)" class="nextYear" @click="onIncrementPeriod(12)"/>
 					<button class="currentPeriod" @click="onClickCurrentPeriod"/>
 				</div>
-				<div :class="{ 
+				<div :class="{
 						singleYear: periodStart.getFullYear() === periodEnd.getFullYear(), 
 						singleMonth: isSameMonth(periodStart, periodEnd) }"
 					class="periodLabel">
@@ -62,6 +62,7 @@
 							future: isInFuture(day),
 							last: isLastDayOfMonth(day),
 							lastInstance: isLastInstanceOfMonth(day),
+							highlight: isSelectedDay(day)
 						}
 					]"
 					class="day"
@@ -182,6 +183,12 @@ export default {
 				return []
 			},
 		},
+		selectedDays: {
+		    type: Array,
+			default() {
+		        return []
+			}
+		}
 	},
 
 	data: function() {
