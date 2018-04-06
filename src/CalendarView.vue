@@ -61,9 +61,9 @@
 							past: isInPast(day),
 							future: isInFuture(day),
 							last: isLastDayOfMonth(day),
-							lastInstance: isLastInstanceOfMonth(day),
-							highlight: isSelectedDay(day)
-						}
+							lastInstance: isLastInstanceOfMonth(day)
+						},
+						...getClassesForSelectedDay(day)
 					]"
 					class="day"
 					@click="onClickDay(day)"
@@ -183,10 +183,10 @@ export default {
 				return []
 			},
 		},
-		selectedDays: {
-		    type: Array,
+        dateClasses: {
+		    type: Object,
 			default() {
-		        return []
+		        return {}
 			}
 		}
 	},
