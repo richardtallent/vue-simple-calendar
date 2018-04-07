@@ -23,7 +23,9 @@
 
 ## Introduction
 
-**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **2.2.0**.
+**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **2.2.1**.
+
+**This is the branch for version 3.0, currently under development. For version 2.2.1, please see the master branch.**
 
 There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show events (including multi-day events) on that grid. While the component goes beyond that simple use case, that is still the core focus.
 
@@ -59,8 +61,6 @@ What this component *doesn't* try to do:
 The *intent* is to maintain compatibility with Chrome, Firefox, IE11, Edge, OS X Safari, iOS Safari, and the Android Silk browser. Note that this component is designed first for desktop web applications, not mobile, so while the component may *operate* on a mobile device, the limited resolution may not allow for much in the way of useful functionality.
 
 ### IE11 Support
-IE11 is not currently working in 2.2.0. Something is "off" with my babel configuration, and despite my best efforts, I can't seem to find an incantation that actually transpiles to IE11-compatible code. I'm looking for someone with more webpack/babel experience to take a look.
-
 I will be losing my ability to test in IE11 very soon, so I'll be relying on the community of users who need to support this browser to continue to test and provide feedback.
 
 ### Browsers and Localization
@@ -104,6 +104,9 @@ Here's a minimal application example for a calendar with no events, but styled w
 </template>
 <script>
 	import CalendarView from "vue-simple-calendar"
+	// The next two lines are processed by webpack. If you're using the component without webpack compilation,
+	// you should just create <link> elements for these as you would normally for CSS files. Both of these
+	// CSS files are optional, you can create your own theme if you wish.
 	require("vue-simple-calendar/dist/static/css/default.css")
 	require("vue-simple-calendar/dist/static/css/holidays-us.css")
 
@@ -151,6 +154,7 @@ The following properties are supported. Remember to use _kebab-case_ when specif
 * `timeFormatOptions` - This takes an object containing `Intl.DateTimeFormat` options to be used to format the event times. The `locale` setting is automatically used. This option is ignored for browsers that don't support `Intl` (they will see the 24-hour, zero-padded time).
 * `displayPeriodUom` - The period type to show. By default this is `month`, *i.e.*, it shows a calendar in month-sized chunks. Other allowed values are `year` and `week`.
 * `displayPeriodCount` - The *number* of periods to show within the view. For example, if `displayPeriodUom` is `week` and `displayPeriodCount` is 2, the view will show a two-week period.
+* `dateClasses` - Optional object, where the key is a date in ISO form (e.g., "2018-04-15") and the value is a string or array of additional CSS classes that should be applied to the main element for that date. This could be useful for dynamically highlighting selected dates, holidays, blocked-off dates, etc.
 
 ## Calendar Event Properties
 Each event shown on the calendar can have the following properties. `startDate` is required, and `title` and `id` are strongly recommended.

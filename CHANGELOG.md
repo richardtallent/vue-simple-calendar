@@ -3,11 +3,11 @@
 * Mobile-compatible drag and drop
 * Handles to drag events to make them longer or shorter
 
-## 3.0.0 (NOT STARTED)
+## 3.0.0 (IN PROGRESS)
 
-* CSS reorganization to rely less on complex cascading (easier theming)
+* Added `dateClasses` prop (#55)
+* CSS reorganization to rely less on complex cascading for easier theming (#45, #52)
 * More flexible header customization
-* IE11 support fix? (I'm losing my ability to test IE11 soon but plan to maintain compatibility for a bit longer, with some help)
 
 ## 2.2.1 (2018.03.19)
 

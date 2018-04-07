@@ -63,7 +63,7 @@
 							last: isLastDayOfMonth(day),
 							lastInstance: isLastInstanceOfMonth(day)
 						},
-						...getClassesForSelectedDay(day)
+						...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null)
 					]"
 					class="day"
 					@click="onClickDay(day)"
@@ -183,12 +183,12 @@ export default {
 				return []
 			},
 		},
-        dateClasses: {
-		    type: Object,
+		dateClasses: {
+			type: Object,
 			default() {
-		        return {}
-			}
-		}
+				return {}
+			},
+		},
 	},
 
 	data: function() {
@@ -391,10 +391,11 @@ export default {
 
 		handleDragEvent(bubbleEventName, bubbleParam) {
 			if (!this.enableDragDrop) return false
-			if (!this.currentDragEvent) { // shouldn't happen
+			if (!this.currentDragEvent) {
+				// shouldn't happen
 				// If current drag event is not set, check if user has set its own slot for events
-				if (!!!this.$scopedSlots['event']) return false
-			} 
+				if (!this.$scopedSlots["event"]) return false
+			}
 			this.$emit(bubbleEventName, this.currentDragEvent, bubbleParam)
 			return true
 		},
