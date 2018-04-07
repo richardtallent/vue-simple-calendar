@@ -21,7 +21,7 @@
 					<button :disabled="!isPeriodIncrementAllowed(12)" class="nextYear" @click="onIncrementPeriod(12)"/>
 					<button class="currentPeriod" @click="onClickCurrentPeriod"/>
 				</div>
-				<div :class="{ 
+				<div :class="{
 						singleYear: periodStart.getFullYear() === periodEnd.getFullYear(), 
 						singleMonth: isSameMonth(periodStart, periodEnd) }"
 					class="periodLabel">
@@ -61,8 +61,9 @@
 							past: isInPast(day),
 							future: isInFuture(day),
 							last: isLastDayOfMonth(day),
-							lastInstance: isLastInstanceOfMonth(day),
-						}
+							lastInstance: isLastInstanceOfMonth(day)
+						},
+						...getClassesForSelectedDay(day)
 					]"
 					class="day"
 					@click="onClickDay(day)"
@@ -182,6 +183,12 @@ export default {
 				return []
 			},
 		},
+        dateClasses: {
+		    type: Object,
+			default() {
+		        return {}
+			}
+		}
 	},
 
 	data: function() {
@@ -382,29 +389,32 @@ export default {
 			return true
 		},
 
-		handleEvent(bubbleEventName, bubbleParam) {
+		handleDragEvent(bubbleEventName, bubbleParam) {
 			if (!this.enableDragDrop) return false
-			if (!this.currentDragEvent) return false // shouldn't happen
+			if (!this.currentDragEvent) { // shouldn't happen
+				// If current drag event is not set, check if user has set its own slot for events
+				if (!!!this.$scopedSlots['event']) return false
+			} 
 			this.$emit(bubbleEventName, this.currentDragEvent, bubbleParam)
 			return true
 		},
 
 		onDragOver(day) {
-			this.handleEvent("drag-over-date", day)
+			this.handleDragEvent("drag-over-date", day)
 		},
 
 		onDragEnter(day, windowEvent) {
-			if (!this.handleEvent("drag-enter-date", day)) return
+			if (!this.handleDragEvent("drag-enter-date", day)) return
 			windowEvent.target.classList.add("draghover")
 		},
 
 		onDragLeave(day, windowEvent) {
-			if (!this.handleEvent("drag-leave-date", day)) return
+			if (!this.handleDragEvent("drag-leave-date", day)) return
 			windowEvent.target.classList.remove("draghover")
 		},
 
 		onDrop(day, windowEvent) {
-			if (!this.handleEvent("drop-on-date", day)) return
+			if (!this.handleDragEvent("drop-on-date", day)) return
 			windowEvent.target.classList.remove("draghover")
 		},
 
@@ -629,6 +639,7 @@ and decorations like border-radius should be part of a theme.
 .calendar-view .week .day {
 	display: flex;
 	flex: 1 1 0;
+	position: relative; /* Fallback for IE11, which doesn't support sticky */
 	position: sticky; /* When week's events are scrolled, keep the day content fixed */
 	top: 0;
 }
