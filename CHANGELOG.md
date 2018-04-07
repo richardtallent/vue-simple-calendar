@@ -5,8 +5,17 @@
 
 ## 3.0.0 (IN PROGRESS)
 
-* Added `dateClasses` prop (#55)
-* CSS reorganization to rely less on complex cascading for easier theming (#45, #52)
+Done:
+* Added `dateClasses` prop to allow easy dynamic styling of specific dates (#55,  thanks @LTroya!)
+* Massive CSS reorganization to rely less on complex cascading for easier theming (#45, #52)
+* Removed need for complex z-index on week and event elements (`zIndex` no longer passed in event slot)
+* Removed need for eventRowX class. Top position CSS is now computed dynamically based on the row and passed to the event slot as "top".
+* Removed limitation of 20 event rows per week
+* Default header buttons no longer use CSS content for their labels
+* The `dayContent` slot now does **not** contain the `cv-date-number` div, making it easier to provide your own content without having to duplicate the day number.
+* The `content` element within each day has been removed, as it is no longer needed. The default theme now uses box-shadow rather than border to highlight the date when dragging an event.
+
+Not done:
 * More flexible header customization
 
 ## 2.2.1 (2018.03.19)

@@ -1,5 +1,6 @@
 <template>
 	<div :class="[
+			'cv-wrapper',
 			'locale-' + languageCode(displayLocale),
 			'locale-' + displayLocale,
 			'y' + periodStart.getFullYear(),
@@ -10,16 +11,17 @@
 				past: isPastMonth(periodStart),
 				future: isFutureMonth(periodStart),
 				noIntl: !supportsIntl,
-			}]"
-		class="calendar-view">
+			}]">
 		<slot name="header">
-			<div class="header">
-				<div class="nav">
-					<button :disabled="!isPeriodIncrementAllowed(-12)" class="previousYear" @click="onIncrementPeriod(-12)"/>
-					<button :disabled="!isPeriodIncrementAllowed(-displayPeriodCount)" class="previousPeriod" @click="onIncrementPeriod(-displayPeriodCount)"/>
-					<button :disabled="!isPeriodIncrementAllowed(displayPeriodCount)" class="nextPeriod" @click="onIncrementPeriod(displayPeriodCount)"/>
-					<button :disabled="!isPeriodIncrementAllowed(12)" class="nextYear" @click="onIncrementPeriod(12)"/>
-					<button class="currentPeriod" @click="onClickCurrentPeriod"/>
+			<div class="cv-header">
+				<div class="cv-header-nav">
+					<button :disabled="!isPeriodIncrementAllowed(-12)" class="previousYear" @click="onIncrementPeriod(-12)">&lt;&lt;</button>
+					<button :disabled="!isPeriodIncrementAllowed(-displayPeriodCount)" class="previousPeriod" @click="onIncrementPeriod(-displayPeriodCount)">&lt;</button>
+					<button :disabled="!isPeriodIncrementAllowed(displayPeriodCount)" class="nextPeriod" @click="onIncrementPeriod(displayPeriodCount)">&gt;</button>
+					<button :disabled="!isPeriodIncrementAllowed(12)" class="nextYear" @click="onIncrementPeriod(12)">&gt;&gt;</button>
+					<button class="currentPeriod" @click="onClickCurrentPeriod">
+						{{ isPastMonth(periodStart) ? '\u21BB': isFutureMonth(periodStart) ? '\u21BA' : '' }}
+					</button>
 				</div>
 				<div :class="{
 						singleYear: periodStart.getFullYear() === periodEnd.getFullYear(), 
@@ -34,22 +36,21 @@
 				</div>
 			</div>
 		</slot>
-		<div class="dayList">
+		<div class="cv-header-days">
 			<template v-for="(label, index) in weekdayNames">
 				<slot :index="index" :label="label" name="dayHeader">
-					<div :key="index" :class="'dow'+index" class="day">{{ label }}</div>
+					<div :key="index" :class="'dow'+index" class="cv-header-day">{{ label }}</div>
 				</slot>
 			</template>
 		</div>
-		<div class="weeks">
+		<div class="cv-weeks">
 			<div v-for="(weekStart, weekIndex) in weeksOfPeriod"
 				:key="weekIndex"
-				:class="['week' + (weekIndex+1), 'ws' + isoYearMonthDay(weekStart)]"
-				:style="'z-index:' + ((weekIndex + 1) * 2)"
-				class="week">
+				:class="['cv-week', 'week' + (weekIndex+1), 'ws' + isoYearMonthDay(weekStart)]">
 				<div v-for="(day, dayIndex) in daysOfWeek(weekStart)"
 					:key="dayIndex"
 					:class="[
+						'cv-day',
 						'dow' + day.getDay(),
 						'd' + isoYearMonthDay(day),
 						'd' + isoMonthDay(day),
@@ -65,27 +66,23 @@
 						},
 						...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null)
 					]"
-					class="day"
 					@click="onClickDay(day)"
 					@drop.prevent="onDrop(day, $event)"
 					@dragover.prevent="onDragOver(day)"
 					@dragenter.prevent="onDragEnter(day, $event)"
 					@dragleave.prevent="onDragLeave(day, $event)">
-					<div class="content">
-						<slot :day="day" name="dayContent">
-							<div class="date">{{ day.getDate() }}</div>
-						</slot>
-					</div>
+						<div class="cv-day-number">{{ day.getDate() }}</div>
+						<slot :day="day" name="dayContent" />
 				</div>
 				<template v-for="e in getWeekEvents(weekStart)">
-					<slot :event="e" :weekStartDate="weekStart" :zIndex="getEventZIndex(weekIndex)" name="event">
+					<slot :event="e" :weekStartDate="weekStart" name="event">
 						<div
 							:key="e.id"
 							:draggable="enableDragDrop"
 							:class="e.classes"
 							:title="e.title"
-							:style="'z-index:' + getEventZIndex(weekIndex)"
-							class="event"
+							:style="'top:' + getEventTop(e)"
+							class="cv-event"
 							@dragstart="onDragStart(e)"
 							@click.stop="onClickEvent(e)"
 							v-html="getEventTitle(e)"/>
@@ -449,29 +446,7 @@ export default {
 			// Sorted so the events that start earlier are always shown first.
 			const events = this.findAndSortEventsInWeek(weekStart)
 			const results = []
-			// Surely there's a better way, Prettier?
-			const eventRows = [
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-			]
+			const eventRows = [[], [], [], [], [], [], []]
 			for (let i = 0; i < events.length; i++) {
 				const ep = Object.assign({}, events[i], {
 					classes: [...events[i].classes],
@@ -491,20 +466,16 @@ export default {
 				if (ep.originalEvent.url) ep.classes.push("hasUrl")
 				for (let d = 0; d < 7; d++) {
 					if (d === startOffset) {
-						for (let s = 0; s < 20; s++) {
-							if (!eventRows[d][s]) {
-								ep.eventRow = s
-								eventRows[d][s] = true
-								break
-							}
-						}
+						let s = 0
+						while (eventRows[d][s]) s++
+						ep.eventRow = s
+						eventRows[d][s] = true
 					} else if (d < startOffset + span) {
 						eventRows[d][ep.eventRow] = true
 					}
 				}
 				ep.classes.push(`offset${startOffset}`)
 				ep.classes.push(`span${span}`)
-				ep.classes.push(`eventRow${ep.eventRow + 1}`)
 				results.push(ep)
 			}
 			return results
@@ -548,14 +519,10 @@ export default {
 			return this.getFormattedTimeRange(e) + e.title
 		},
 
-		/*
-		Computes the z-index of an event based on which week is being rendered. This ensures
-		that event are on top of the week where they are rendered, but below the week below
-		them. This is essential for being able to handle more events on a given week than
-		there is room to display.
-		*/
-		getEventZIndex(weekIndex) {
-			return (weekIndex + 1) * 2 + 1
+		getEventTop(e) {
+			// Compute the top position of the event based on its assigned row within the given week.
+			const r = e.eventRow
+			return `calc(${r + 1} * 1.4em + ${r * 2}px)`
 		},
 	},
 }
@@ -571,12 +538,12 @@ and decorations like border-radius should be part of a theme.
 /* Position/Flex */
 
 /* Make the calendar flex vertically */
-.calendar-view {
+.cv-wrapper {
 	display: flex;
 	flex-direction: column;
 }
 
-.calendar-view .header {
+.cv-header {
 	display: flex;
 	flex: 0 1 auto;
 	flex-flow: row nowrap;
@@ -584,20 +551,20 @@ and decorations like border-radius should be part of a theme.
 	min-height: 2.5em;
 }
 
-.calendar-view .header .periodLabel {
+.cv-header .periodLabel {
 	display: flex;
 	flex: 1 1 auto;
 	flex-flow: row nowrap;
 	min-height: 1.2em;
 }
 
-.calendar-view .dayList {
+.cv-header-days {
 	display: flex;
 	flex: 0 0 auto;
 	flex-flow: row nowrap;
 }
 
-.calendar-view .dayList .day {
+.cv-header-day {
 	display: flex;
 	flex: 1 1 0;
 	flex-flow: row nowrap;
@@ -607,7 +574,7 @@ and decorations like border-radius should be part of a theme.
 }
 
 /* The calendar grid should take up the remaining vertical space */
-.calendar-view .weeks {
+.cv-weeks {
 	display: flex;
 	flex: 1 1 auto;
 	flex-flow: column nowrap;
@@ -618,7 +585,7 @@ and decorations like border-radius should be part of a theme.
 }
 
 /* Use flex basis of 0 on week row so all weeks will be same height regardless of content */
-.calendar-view .week {
+.cv-week {
 	display: flex;
 	flex: 1 1 0;
 	flex-flow: row nowrap;
@@ -631,13 +598,7 @@ and decorations like border-radius should be part of a theme.
 	-ms-overflow-style: none;
 }
 
-.calendar-view .weeks::-webkit-scrollbar,
-.calendar-view .week::-webkit-scrollbar {
-	width: 0; /* remove scrollbar space */
-	background: transparent; /* optional: just make scrollbar invisible */
-}
-
-.calendar-view .week .day {
+.cv-day {
 	display: flex;
 	flex: 1 1 0;
 	position: relative; /* Fallback for IE11, which doesn't support sticky */
@@ -645,20 +606,12 @@ and decorations like border-radius should be part of a theme.
 	top: 0;
 }
 
-.calendar-view .day .content {
+.cv-day-number {
 	position: absolute;
-	left: 0;
-	top: 0;
-	bottom: 0;
 	right: 0;
 }
 
-.calendar-view .day .date {
-	float: right;
-	clear: both;
-}
-
-.calendar-view .event {
+.cv-event {
 	position: absolute;
 	white-space: nowrap;
 	overflow: hidden;
@@ -667,302 +620,200 @@ and decorations like border-radius should be part of a theme.
 
 /* Header */
 
-.calendar-view .periodLabel .startDay::before,
-.calendar-view .periodLabel .endDay::before,
-.calendar-view.period-month .periodLabel .startYear::before,
-.calendar-view.period-month .periodLabel .endYear::before,
-.calendar-view.period-year .periodLabel .endYear::before {
+.cv-wrapper .periodLabel .startDay::before,
+.cv-wrapper .periodLabel .endDay::before,
+.cv-wrapper.period-month .periodLabel .startYear::before,
+.cv-wrapper.period-month .periodLabel .endYear::before,
+.cv-wrapper.period-year .periodLabel .endYear::before {
 	content: "\00A0";
 }
 
-.calendar-view .periodLabel .endMonth::before,
-.calendar-view.period-year:not(.periodCount-1) .periodLabel .endYear::before,
-.calendar-view.period-week .periodLabel.singleMonth .endDay::before {
+.cv-wrapper .periodLabel .endMonth::before,
+.cv-wrapper.period-year:not(.periodCount-1) .periodLabel .endYear::before,
+.cv-wrapper.period-week .periodLabel.singleMonth .endDay::before {
 	content: "\00A0\2013\00A0";
 }
 
-.calendar-view.period-week .periodLabel .startYear::before,
-.calendar-view.period-week .periodLabel .endYear::before {
+.cv-wrapper.period-week .periodLabel .startYear::before,
+.cv-wrapper.period-week .periodLabel .endYear::before {
 	content: ",\00A0";
 }
 
-.calendar-view .periodLabel.singleYear .startYear,
-.calendar-view .periodLabel.singleMonth .endMonth,
-.calendar-view.period-month .periodLabel .startDay,
-.calendar-view.period-month .periodLabel .endDay,
-.calendar-view.period-year .periodLabel .startDay,
-.calendar-view.period-year .periodLabel .endDay,
-.calendar-view.period-year .periodLabel .startMonth,
-.calendar-view.period-year .periodLabel .endMonth,
-.calendar-view.period-month.periodCount-1 .periodLabel .endMonth,
-.calendar-view.period-month.periodCount-1 .periodLabel .startYear,
-.calendar-view.period-year.periodCount-1 .periodLabel .startYear {
+.cv-wrapper .periodLabel.singleYear .startYear,
+.cv-wrapper .periodLabel.singleMonth .endMonth,
+.cv-wrapper.period-month .periodLabel .startDay,
+.cv-wrapper.period-month .periodLabel .endDay,
+.cv-wrapper.period-year .periodLabel .startDay,
+.cv-wrapper.period-year .periodLabel .endDay,
+.cv-wrapper.period-year .periodLabel .startMonth,
+.cv-wrapper.period-year .periodLabel .endMonth,
+.cv-wrapper.period-month.periodCount-1 .periodLabel .endMonth,
+.cv-wrapper.period-month.periodCount-1 .periodLabel .startYear,
+.cv-wrapper.period-year.periodCount-1 .periodLabel .startYear {
 	display: none;
 }
 
 /* Header navigation buttons */
-
-.calendar-view .header .nav .previousPeriod::after {
-	content: "<";
-}
-
-.calendar-view .header .nav .nextPeriod::after {
-	content: ">";
-}
-
-.calendar-view .header .nav .previousYear::after {
-	content: "<<";
-}
-
-.calendar-view .header .nav .nextYear::after {
-	content: ">>";
-}
-
-.calendar-view .header .nav .currentPeriod {
+.cv-header-nav .currentPeriod {
 	display: none;
 }
 
-.calendar-view.past .header .nav .currentPeriod,
-.calendar-view.future .header .nav .currentPeriod {
+.cv-wrapper.past .cv-header-nav .currentPeriod,
+.cv-wrapper.future .cv-header-nav .currentPeriod {
 	display: inline-block;
-}
-
-.calendar-view.past .header .nav .currentPeriod::after {
-	content: "\21BB";
-}
-
-.calendar-view.future .header .nav .currentPeriod::after {
-	content: "\21BA";
 }
 
 /* Colors */
 
-.calendar-view .header,
-.calendar-view button,
-.calendar-view .dayList,
-.calendar-view .weeks,
-.calendar-view .week,
-.calendar-view .day,
-.calendar-view .event {
+.cv-header,
+.cv-wrapper button,
+.cv-header-days,
+.cv-weeks,
+.cv-week,
+.cv-header-day,
+.cv-day,
+.cv-event {
 	border-style: solid;
 	border-color: #ddd;
 }
 
 /* Event Times */
 
-.calendar-view .event .startTime:not(.hasEndTime),
-.calendar-view .event .endTime {
+.cv-event .startTime:not(.hasEndTime),
+.cv-event .endTime {
 	margin-right: 0.4em;
 }
 
-.calendar-view .event .endTime::before {
+.cv-event .endTime::before {
 	content: "-";
 }
 
 /* Internal Metrics */
 
-.calendar-view,
-.calendar-view div,
-.calendar-view button {
+.cv-wrapper,
+.cv-wrapper div,
+.cv-wrapper button {
 	box-sizing: border-box;
 	line-height: 1em;
 	font-size: 1em;
 }
 
-.calendar-view .dayList div,
-.calendar-view .date,
-.calendar-view .event {
+.cv-header-day,
+.cv-day-number,
+.cv-event {
 	padding: 0.2em;
 }
 
-.calendar-view .header .nav,
-.calendar-view .header .periodLabel {
+.cv-header-nav,
+.cv-header .periodLabel {
 	margin: 0.4em 0.6em;
 }
 
-.calendar-view .header .nav button,
-.calendar-view .header .periodLabel {
+.cv-header-nav button,
+.cv-header .periodLabel {
 	padding: 0.4em 0.6em;
 }
 
 /* Allows emoji icons or labels (such as holidays) to be added more easily to specific dates by having the margin set already. */
-.calendar-view .day .date::before {
+.cv-day-number::before {
 	margin-right: 0.5em;
 }
 
 /* Borders */
 
-.calendar-view .week {
+.cv-week {
 	border-width: 0;
 }
 
-.calendar-view .weeks {
+.cv-weeks {
 	border-width: 0 0 1px 1px;
 }
 
-.calendar-view .header {
+.cv-header {
 	border-width: 1px 1px 0 1px;
 }
 
-.calendar-view .dayList {
+.cv-header-days {
 	border-width: 0 0 0 1px;
 }
 
-.calendar-view .day {
+.cv-header-day,
+.cv-day {
 	border-width: 1px 1px 0 0;
 }
 
-.calendar-view .header button,
-.calendar-view .event {
+.cv-header button,
+.cv-event {
 	border-width: 1px;
 }
 
-/* Positioning for event eventRows */
-
-.calendar-view .event.eventRow1 {
-	top: 1.4em;
-}
-
-.calendar-view .event.eventRow2 {
-	top: calc(2 * 1.4em + 2px);
-}
-
-.calendar-view .event.eventRow3 {
-	top: calc(3 * 1.4em + 4px);
-}
-
-.calendar-view .event.eventRow4 {
-	top: calc(4 * 1.4em + 6px);
-}
-
-.calendar-view .event.eventRow5 {
-	top: calc(5 * 1.4em + 8px);
-}
-
-.calendar-view .event.eventRow6 {
-	top: calc(6 * 1.4em + 10px);
-}
-
-.calendar-view .event.eventRow7 {
-	top: calc(7 * 1.4em + 12px);
-}
-
-.calendar-view .event.eventRow8 {
-	top: calc(8 * 1.4em + 14px);
-}
-
-.calendar-view .event.eventRow9 {
-	top: calc(9 * 1.4em + 16px);
-}
-
-.calendar-view .event.eventRow10 {
-	top: calc(10 * 1.4em + 18px);
-}
-
-.calendar-view .event.eventRow11 {
-	top: calc(11 * 1.4em + 20px);
-}
-
-.calendar-view .event.eventRow12 {
-	top: calc(12 * 1.4em + 22px);
-}
-
-.calendar-view .event.eventRow13 {
-	top: calc(13 * 1.4em + 24px);
-}
-
-.calendar-view .event.eventRow14 {
-	top: calc(14 * 1.4em + 26px);
-}
-
-.calendar-view .event.eventRow15 {
-	top: calc(15 * 1.4em + 28px);
-}
-
-.calendar-view .event.eventRow16 {
-	top: calc(16 * 1.4em + 30px);
-}
-
-.calendar-view .event.eventRow17 {
-	top: calc(17 * 1.4em + 32px);
-}
-
-.calendar-view .event.eventRow18 {
-	top: calc(18 * 1.4em + 34px);
-}
-
-.calendar-view .event.eventRow19 {
-	top: calc(19 * 1.4em + 36px);
-}
-
-.calendar-view .event.eventRow20 {
-	top: calc(20 * 1.4em + 38px);
-}
-
-.calendar-view .event.eventRow0 {
-	display: none;
-} /* More than 20 eventRows not currently supported */
-
-.calendar-view .event.offset0 {
+.cv-event.offset0 {
 	left: 0;
 }
 
-.calendar-view .event.offset1 {
+.cv-event.offset1 {
 	left: calc((100% / 7));
 }
 
-.calendar-view .event.offset2 {
+.cv-event.offset2 {
 	left: calc((200% / 7));
 }
 
-.calendar-view .event.offset3 {
+.cv-event.offset3 {
 	left: calc((300% / 7));
 }
 
-.calendar-view .event.offset4 {
+.cv-event.offset4 {
 	left: calc((400% / 7));
 }
 
-.calendar-view .event.offset5 {
+.cv-event.offset5 {
 	left: calc((500% / 7));
 }
 
-.calendar-view .event.offset6 {
+.cv-event.offset6 {
 	left: calc((600% / 7));
 }
 
 /* Metrics for events spanning dates */
 
-.calendar-view .event.span1 {
+.cv-event.span1 {
 	width: calc((100% / 7) - 0.05em);
 }
 
-.calendar-view .event.span2 {
+.cv-event.span2 {
 	width: calc((200% / 7) - 0.05em);
 }
 
-.calendar-view .event.span3 {
+.cv-event.span3 {
 	width: calc((300% / 7) - 0.05em);
 	text-align: center;
 }
 
-.calendar-view .event.span4 {
+.cv-event.span4 {
 	width: calc((400% / 7) - 0.05em);
 	text-align: center;
 }
 
-.calendar-view .event.span5 {
+.cv-event.span5 {
 	width: calc((500% / 7) - 0.05em);
 	text-align: center;
 }
 
-.calendar-view .event.span6 {
+.cv-event.span6 {
 	width: calc((600% / 7) - 0.05em);
 	text-align: center;
 }
 
-.calendar-view .event.span7 {
+.cv-event.span7 {
 	width: calc((700% / 7) - 0.05em);
 	text-align: center;
+}
+
+/* Hide scrollbars for the grid and the week */
+.cv-weeks::-webkit-scrollbar,
+.cv-week::-webkit-scrollbar {
+	width: 0; /* remove scrollbar space */
+	background: transparent; /* optional: just make scrollbar invisible */
 }
 </style>

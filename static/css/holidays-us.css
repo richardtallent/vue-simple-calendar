@@ -17,49 +17,49 @@ Traditional US Holidays
 */
 
 /* Easter: example of a holiday that changes each year. Easy to pre-populate for a reasonable number of years. */
-.calendar-view.holiday-us-traditional .d2015-04-05 .date::before {
+.cv-wrapper.holiday-us-traditional .d2015-04-05 .cv-day-number::before {
 	content: "\271D";
 }
 
-.calendar-view.holiday-us-traditional .d2016-03-27 .date::before {
+.cv-wrapper.holiday-us-traditional .d2016-03-27 .cv-day-number::before {
 	content: "\271D";
 }
 
-.calendar-view.holiday-us-traditional .d2017-04-16 .date::before {
+.cv-wrapper.holiday-us-traditional .d2017-04-16 .cv-day-number::before {
 	content: "\271D";
 }
 
-.calendar-view.holiday-us-traditional .d2018-04-01 .date::before {
+.cv-wrapper.holiday-us-traditional .d2018-04-01 .cv-day-number::before {
 	content: "\271D";
 }
 
-.calendar-view.holiday-us-traditional .d2019-04-21 .date::before {
+.cv-wrapper.holiday-us-traditional .d2019-04-21 .cv-day-number::before {
 	content: "\271D";
 }
 
-.calendar-view.holiday-us-traditional .d2020-04-12 .date::before {
+.cv-wrapper.holiday-us-traditional .d2020-04-12 .cv-day-number::before {
 	content: "\271D";
 }
 
-.calendar-view.holiday-us-traditional .d2021-04-04 .date::before {
+.cv-wrapper.holiday-us-traditional .d2021-04-04 .cv-day-number::before {
 	content: "\271D";
 }
 
-.calendar-view.holiday-us-traditional .d2022-04-17 .date::before {
+.cv-wrapper.holiday-us-traditional .d2022-04-17 .cv-day-number::before {
 	content: "\271D";
 }
 
-.calendar-view.holiday-us-traditional .d2023-04-09 .date::before {
+.cv-wrapper.holiday-us-traditional .d2023-04-09 .cv-day-number::before {
 	content: "\271D";
 }
 
 /* Cinco de Mayo */
-.calendar-view.holiday-us-traditional .d05-05 .date::before {
+.cv-wrapper.holiday-us-traditional .d05-05 .cv-day-number::before {
 	content: "\1F1F2\1F1FD";
 }
 
 /* Halloween - October 31 */
-.calendar-view.holiday-us-traditional .d10-31 .date::before {
+.cv-wrapper.holiday-us-traditional .d10-31 .cv-day-number::before {
 	content: "\1F383";
 }
 
@@ -72,53 +72,53 @@ Official US Holidays
 /**** Same date every year ****/
 
 /* New Year's Day - January 1 */
-.calendar-view.holiday-us-official .d01-01 .date::before {
+.cv-wrapper.holiday-us-official .d01-01 .cv-day-number::before {
 	content: "\1F37E";
 }
 
 /* Independence Day - July 4 */
-.calendar-view.holiday-us-official .d07-04 .date::before {
+.cv-wrapper.holiday-us-official .d07-04 .cv-day-number::before {
 	content: "\1F1FA\1F1F8";
 }
 
 /* Veteran's Day - November 11 */
-.calendar-view.holiday-us-official .d11-11 .date::before {
+.cv-wrapper.holiday-us-official .d11-11 .cv-day-number::before {
 	content: "\1F396";
 }
 
 /* Christmas Day - December 25 */
-.calendar-view.holiday-us-official .d12-25 .date::before {
+.cv-wrapper.holiday-us-official .d12-25 .cv-day-number::before {
 	content: "\1F384";
 }
 
 /**** Same month position every year ****/
 
 /* Martin Luther King, Jr. Day - 3rd Monday of January */
-.calendar-view.holiday-us-official.m01 .day.dow1.instance3 .date::before {
+.cv-wrapper.holiday-us-official.m01 .day.dow1.instance3 .cv-day-number::before {
 	content: "\270C\1F3FE";
 }
 
 /* Washington's Birthday - 3rd Monday in February */
-.calendar-view.holiday-us-official.m02 .day.dow1.instance3 .date::before {
+.cv-wrapper.holiday-us-official.m02 .day.dow1.instance3 .cv-day-number::before {
 	content: "\1F34E";
 }
 
 /* Memorial Day - last Monday in May */
-.calendar-view.holiday-us-official.m05 .day.dow1.lastInstance .date::before {
+.cv-wrapper.holiday-us-official.m05 .day.dow1.lastInstance .cv-day-number::before {
 	content: "\1F1FA\1F1F8";
 }
 
 /* Labor Day - 1st Monday in September */
-.calendar-view.holiday-us-official.m09 .day.dow1.instance1 .date::before {
+.cv-wrapper.holiday-us-official.m09 .day.dow1.instance1 .cv-day-number::before {
 	content: "\1F4AA";
 }
 
 /* Columbus Day - 2nd Monday in October */
-.calendar-view.holiday-us-official.m10 .day.dow1.instance2 .date::before {
+.cv-wrapper.holiday-us-official.m10 .day.dow1.instance2 .cv-day-number::before {
 	content: "\2388";
 }
 
 /* Thanksgiving Day - 4th Thursday of November */
-.calendar-view.holiday-us-official.m11 .day.dow4.instance4 .date::before {
+.cv-wrapper.holiday-us-official.m11 .day.dow4.instance4 .cv-day-number::before {
 	content: "\1F64F";
 }
