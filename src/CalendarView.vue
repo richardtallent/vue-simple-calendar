@@ -83,7 +83,7 @@
 							:title="e.title"
 							:style="'top:' + getEventTop(e)"
 							class="cv-event"
-							@dragstart="onDragStart(e)"
+							@dragstart="onDragStart(e, $event)"
 							@click.stop="onClickEvent(e)"
 							v-html="getEventTitle(e)"/>
 					</slot>
@@ -376,12 +376,15 @@ export default {
 		// Drag and drop events
 		// ******************************
 
-		onDragStart(calendarEvent) {
+		onDragStart(calendarEvent, windowEvent) {
 			if (!this.enableDragDrop) return false
 			// Not using dataTransfer.setData to store the event ID because it (a) doesn't allow access to the data being
 			// dragged during dragover, dragenter, and dragleave events, and because storing an ID requires an unnecessary
 			// lookup. This does limit the drop zones to areas within this instance of this component.
 			this.currentDragEvent = calendarEvent
+			// Firefox and possibly other browsers require dataTransfer to be set, even if the value is not used. IE11
+			// requires that the first argument be exactly "text" (not "text/plain", etc.).
+			windowEvent.dataTransfer.setData("text", "foo")
 			this.$emit("drag-start", calendarEvent)
 			return true
 		},
