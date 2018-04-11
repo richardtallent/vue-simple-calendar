@@ -14,6 +14,7 @@ Done:
 * Default header buttons no longer use CSS content for their labels
 * The `dayContent` slot now does **not** contain the `cv-date-number` div, making it easier to provide your own content without having to duplicate the day number.
 * The `content` element within each day has been removed, as it is no longer needed. The default theme now uses box-shadow rather than border to highlight the date when dragging an event.
+* Fixed drag and drop issue in Firefox (#57)
 
 Not done:
 * More flexible header customization
