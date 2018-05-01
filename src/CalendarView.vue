@@ -12,29 +12,12 @@
 				future: isFutureMonth(periodStart),
 				noIntl: !supportsIntl,
 			}]">
-		<slot name="header">
-			<div class="cv-header">
-				<div class="cv-header-nav">
-					<button :disabled="!isPeriodIncrementAllowed(-12)" class="previousYear" @click="onIncrementPeriod(-12)">&lt;&lt;</button>
-					<button :disabled="!isPeriodIncrementAllowed(-displayPeriodCount)" class="previousPeriod" @click="onIncrementPeriod(-displayPeriodCount)">&lt;</button>
-					<button :disabled="!isPeriodIncrementAllowed(displayPeriodCount)" class="nextPeriod" @click="onIncrementPeriod(displayPeriodCount)">&gt;</button>
-					<button :disabled="!isPeriodIncrementAllowed(12)" class="nextYear" @click="onIncrementPeriod(12)">&gt;&gt;</button>
-					<button class="currentPeriod" @click="onClickCurrentPeriod">
-						{{ isPastMonth(periodStart) ? '\u21BB': isFutureMonth(periodStart) ? '\u21BA' : '' }}
-					</button>
-				</div>
-				<div :class="{
-						singleYear: periodStart.getFullYear() === periodEnd.getFullYear(), 
-						singleMonth: isSameMonth(periodStart, periodEnd) }"
-					class="periodLabel">
-					<div class="startMonth">{{ monthNames[periodStart.getMonth()] }}</div>
-					<div class="startDay">{{ periodStart.getDate() }}</div>
-					<div class="startYear">{{ periodStart.getFullYear() }}</div>
-					<div class="endMonth">{{ monthNames[periodEnd.getMonth()] }}</div>
-					<div class="endDay">{{ periodEnd.getDate() }}</div>
-					<div class="endYear">{{ periodEnd.getFullYear() }}</div>
-				</div>
-			</div>
+		<slot name="header" :header-props="headerProps">
+			<calendar-view-header
+				:header-props="headerProps"
+				@input="onChangeDate">
+				<template slot="label">{{ periodLabel }}</template>
+			</calendar-view-header>
 		</slot>
 		<div class="cv-header-days">
 			<template v-for="(label, index) in weekdayNames">
@@ -95,9 +78,12 @@
 
 <script>
 import CalendarMathMixin from "./CalendarMathMixin"
+import CalendarViewHeader from "./CalendarViewHeader.vue"
 
 export default {
 	name: "CalendarView",
+
+	components: { CalendarViewHeader },
 
 	mixins: [CalendarMathMixin],
 
@@ -234,6 +220,10 @@ export default {
 			)
 		},
 
+		periodLabel() {
+			return "LABEL GOES HERE"
+		},
+
 		/*
 		For month and year views, the first and last dates displayed in the grid may not
 		be the same as the intended period, since the period may not start and stop evenly
@@ -310,6 +300,30 @@ export default {
 				}
 			})
 		},
+
+		headerProps() {
+			return {
+				// Dates for UI navigation
+				previousYear: this.getIncrementedPeriod(-12),
+				previousPeriod: this.getIncrementedPeriod(-1),
+				nextPeriod: this.getIncrementedPeriod(1),
+				nextYear: this.getIncrementedPeriod(12),
+				currentPeriod: this.beginningOfPeriod(
+					this.today(),
+					this.displayPeriodUom,
+					this.startingDayOfWeek
+				),
+				// Dates for header display
+				periodStart: this.periodStart,
+				periodEnd: this.periodEnd,
+				// Save the header from having to replicate logic
+				displayLocale: this.displayLocale,
+				displayFirstDate: this.displayFirstDate,
+				displayLastDate: this.displayLastDate,
+				monthNames: this.monthNames,
+				fixedEvents: this.fixedEvents,
+			}
+		},
 	},
 
 	methods: {
@@ -327,13 +341,8 @@ export default {
 			this.$emit("click-event", e, day)
 		},
 
-		onClickCurrentPeriod() {
-			const newValue = this.beginningOfPeriod(
-				this.today(),
-				this.displayPeriodUom,
-				this.startingDayOfWeek
-			)
-			this.$emit("show-date-change", newValue)
+		onChangeDate(d) {
+			this.$emit("show-date-change", d)
 		},
 
 		// ******************************
@@ -359,17 +368,6 @@ export default {
 			if (this.disablePast && newEndDate <= this.today()) return null
 			if (this.disableFuture && newStartDate > this.today()) return null
 			return newStartDate
-		},
-
-		isPeriodIncrementAllowed(count) {
-			return this.getIncrementedPeriod(count) !== null
-		},
-
-		onIncrementPeriod(count) {
-			const d = this.getIncrementedPeriod(count)
-			if (d != null) {
-				this.$emit("show-date-change", d)
-			}
 		},
 
 		// ******************************
@@ -534,10 +532,11 @@ export default {
 
 The CSS below represents only the CSS required for proper rendering (positioning, etc.) and
 minimalist default borders and colors. Special-day colors, holiday emoji, event colors,
-and decorations like border-radius should be part of a theme.
+and decorations like border-radius should be part of a theme. Styles related to the default
+header are in that component.
 
 -->
-<style type="text/css">
+<style>
 /* Position/Flex */
 
 /* Make the calendar flex vertically */
@@ -546,25 +545,11 @@ and decorations like border-radius should be part of a theme.
 	flex-direction: column;
 }
 
-.cv-header {
-	display: flex;
-	flex: 0 1 auto;
-	flex-flow: row nowrap;
-	align-items: center;
-	min-height: 2.5em;
-}
-
-.cv-header .periodLabel {
-	display: flex;
-	flex: 1 1 auto;
-	flex-flow: row nowrap;
-	min-height: 1.2em;
-}
-
 .cv-header-days {
 	display: flex;
 	flex: 0 0 auto;
 	flex-flow: row nowrap;
+	border-width: 0 0 0 1px;
 }
 
 .cv-header-day {
@@ -574,6 +559,7 @@ and decorations like border-radius should be part of a theme.
 	align-items: center;
 	justify-content: center;
 	text-align: center;
+	border-width: 1px 1px 0 0;
 }
 
 /* The calendar grid should take up the remaining vertical space */
@@ -581,6 +567,7 @@ and decorations like border-radius should be part of a theme.
 	display: flex;
 	flex: 1 1 auto;
 	flex-flow: column nowrap;
+	border-width: 0 0 1px 1px;
 
 	/* Allow grid to scroll if there are too may weeks to fit in the view */
 	overflow-y: scroll;
@@ -593,6 +580,7 @@ and decorations like border-radius should be part of a theme.
 	flex: 1 1 0;
 	flex-flow: row nowrap;
 	min-height: 3em;
+	border-width: 0;
 
 	/* Allow week events to scroll if they are too tall */
 	position: relative;
@@ -607,6 +595,7 @@ and decorations like border-radius should be part of a theme.
 	position: relative; /* Fallback for IE11, which doesn't support sticky */
 	position: sticky; /* When week's events are scrolled, keep the day content fixed */
 	top: 0;
+	border-width: 1px 1px 0 0;
 }
 
 .cv-day-number {
@@ -619,51 +608,7 @@ and decorations like border-radius should be part of a theme.
 	white-space: nowrap;
 	overflow: hidden;
 	background-color: #f7f7f7;
-}
-
-/* Header */
-
-.cv-wrapper .periodLabel .startDay::before,
-.cv-wrapper .periodLabel .endDay::before,
-.cv-wrapper.period-month .periodLabel .startYear::before,
-.cv-wrapper.period-month .periodLabel .endYear::before,
-.cv-wrapper.period-year .periodLabel .endYear::before {
-	content: "\00A0";
-}
-
-.cv-wrapper .periodLabel .endMonth::before,
-.cv-wrapper.period-year:not(.periodCount-1) .periodLabel .endYear::before,
-.cv-wrapper.period-week .periodLabel.singleMonth .endDay::before {
-	content: "\00A0\2013\00A0";
-}
-
-.cv-wrapper.period-week .periodLabel .startYear::before,
-.cv-wrapper.period-week .periodLabel .endYear::before {
-	content: ",\00A0";
-}
-
-.cv-wrapper .periodLabel.singleYear .startYear,
-.cv-wrapper .periodLabel.singleMonth .endMonth,
-.cv-wrapper.period-month .periodLabel .startDay,
-.cv-wrapper.period-month .periodLabel .endDay,
-.cv-wrapper.period-year .periodLabel .startDay,
-.cv-wrapper.period-year .periodLabel .endDay,
-.cv-wrapper.period-year .periodLabel .startMonth,
-.cv-wrapper.period-year .periodLabel .endMonth,
-.cv-wrapper.period-month.periodCount-1 .periodLabel .endMonth,
-.cv-wrapper.period-month.periodCount-1 .periodLabel .startYear,
-.cv-wrapper.period-year.periodCount-1 .periodLabel .startYear {
-	display: none;
-}
-
-/* Header navigation buttons */
-.cv-header-nav .currentPeriod {
-	display: none;
-}
-
-.cv-wrapper.past .cv-header-nav .currentPeriod,
-.cv-wrapper.future .cv-header-nav .currentPeriod {
-	display: inline-block;
+	border-width: 1px;
 }
 
 /* Colors */
@@ -694,8 +639,7 @@ and decorations like border-radius should be part of a theme.
 /* Internal Metrics */
 
 .cv-wrapper,
-.cv-wrapper div,
-.cv-wrapper button {
+.cv-wrapper div {
 	box-sizing: border-box;
 	line-height: 1em;
 	font-size: 1em;
@@ -707,47 +651,9 @@ and decorations like border-radius should be part of a theme.
 	padding: 0.2em;
 }
 
-.cv-header-nav,
-.cv-header .periodLabel {
-	margin: 0.4em 0.6em;
-}
-
-.cv-header-nav button,
-.cv-header .periodLabel {
-	padding: 0.4em 0.6em;
-}
-
 /* Allows emoji icons or labels (such as holidays) to be added more easily to specific dates by having the margin set already. */
 .cv-day-number::before {
 	margin-right: 0.5em;
-}
-
-/* Borders */
-
-.cv-week {
-	border-width: 0;
-}
-
-.cv-weeks {
-	border-width: 0 0 1px 1px;
-}
-
-.cv-header {
-	border-width: 1px 1px 0 1px;
-}
-
-.cv-header-days {
-	border-width: 0 0 0 1px;
-}
-
-.cv-header-day,
-.cv-day {
-	border-width: 1px 1px 0 0;
-}
-
-.cv-header button,
-.cv-event {
-	border-width: 1px;
 }
 
 .cv-event.offset0 {

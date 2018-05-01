@@ -15,9 +15,11 @@ Done:
 * The `dayContent` slot now does **not** contain the `cv-date-number` div, making it easier to provide your own content without having to duplicate the day number.
 * The `content` element within each day has been removed, as it is no longer needed. The default theme now uses box-shadow rather than border to highlight the date when dragging an event.
 * Fixed drag and drop issue in Firefox (#57)
+* Implemented new custom header capability, and refactored the default header as a separate component with the same interface
 
 Not done:
-* More flexible header customization
+* Fix and test IE11 transpiling/polyfill
+* Refactoring of the header periodLabel.
 
 ## 2.2.1 (2018.03.19)
 

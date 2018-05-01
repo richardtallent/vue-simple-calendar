@@ -1,30 +1,30 @@
 const path = require("path")
 const merge = require("webpack-merge")
 const CopyWebpackPlugin = require("copy-webpack-plugin")
+const { VueLoaderPlugin } = require('vue-loader')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 var commonConfig = {
 	mode: "production",
 	module: {
 		rules: [
 			{
-				test: /\.js$/,
-				exclude: /node_modules/,
-				use: {
-					loader: "babel-loader",
-				},
+				test: /\.vue$/,
+				loader: 'vue-loader',
 			},
 			{
-				test: /\.vue$/,
-				use: {
-					loader: "vue-loader",
-				},
+				test: /\.js$/,
+				loader: 'babel-loader',
+				exclude: /node_modules/,
+			},
+			{
+				test: /\.css$/,
+				use: ["vue-style-loader", "css-loader", "postcss-loader"],
 			},
 		],
 	},
-	externals: {
-		vue: "vue",
-	},
 	plugins: [
+		new VueLoaderPlugin(),
 		// copy custom static assets
 		new CopyWebpackPlugin([
 			{
@@ -76,3 +76,4 @@ module.exports = [
 		},
 	}),
 ]
+

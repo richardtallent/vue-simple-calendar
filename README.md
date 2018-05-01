@@ -191,6 +191,36 @@ This optional named slot **replaces** the default `div.cv-header` (which contain
 </calendar-view>
 ```
 
+In Vue, a child component MUST only receive props and emit events. This presents an issue for developing calendar headers -- the CalendarView component contains the calendar's state and complex date and render logic, while the desire is to allow developers to swap out the header completely without having to do a bunch of date math or additional logic.
+
+Using scoped slots, the header can receive some data from the CalendarView, but it cannot *change* the CalendarView's directly -- the developer must wire this part up. Thus, it's important for the header to receive data in a way that makes it trivial for the developer to do the wiring.
+
+The end result is that CalendarView passes an object with pre-calculated dates to the header, where the dates correspond to the five buttons on a standard calendar:
+- previousYear
+- previousPeriod (period is flexible, but usually 1 week or 1 month)
+- nextPeriod
+- nextYear
+- currentPeriod
+
+Two additional dates are passed: `periodStart` and `periodEnd`, for the current shown period.
+
+Since the CalendarView has some logic around whether the user should be able to navigate to the past or the future, the dates above will be null if the corresponding action is disabled.
+
+The developer implementing her own header simply needs to create a header component that:
+- Receives these dates and displays them with appropriate UI elements
+- Emits an event to change the date (suggested event name: input)
+
+The calling application simply wires the @event of the header slot to modify the data element that it feeds to CalendarView's `showDate` prop. No need for date math in the caller.
+
+The following are also passed, as they may be useful to a custom header and are computed internally by the CaledarView:
+- displayLocale
+- displayFirstDate
+- displayLastDate
+- monthNames
+- fixedEvents
+
+The default header is actually also implemented as a child component, `CalendarViewHeader`. This gives clean separation of concerns, and ensures that custom headers can *at least* do anything the default header can do.
+
 ### dayHeader
 This optional named slot **replaces** the default `div.day` elements that appear in the column headers for each day of the week. If all you need to do is change how the names are shown, it's probably better to override the `locale` and/or `weekdayNameFormat` property. This slot is intended for situations where you need to override the markup within each header cell. For example, if you want each day of the week to be clickable.
 
