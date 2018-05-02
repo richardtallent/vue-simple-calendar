@@ -12,7 +12,7 @@
 				future: isFutureMonth(periodStart),
 				noIntl: !supportsIntl,
 			}]">
-		<slot name="header" :header-props="headerProps">
+		<slot :header-props="headerProps" name="header">
 			<calendar-view-header
 				:header-props="headerProps"
 				@input="onChangeDate">
@@ -498,19 +498,19 @@ export default {
 						e.endDate,
 						this.displayLocale,
 						this.timeFormatOptions
-					)
+				  )
 			const hasStart = startTime !== ""
 			const hasEnd = endTime !== ""
 			return (
 				(hasStart
 					? `<span class="startTime${
 							hasEnd ? " hasEndTime" : ""
-						}">${startTime}</span>`
+					  }">${startTime}</span>`
 					: "") +
 				(hasEnd
 					? `<span class="endTime${
 							hasStart ? " hasStartTime" : ""
-						}">${endTime}</span>`
+					  }">${endTime}</span>`
 					: "")
 			)
 		},

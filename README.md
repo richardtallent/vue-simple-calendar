@@ -60,8 +60,7 @@ What this component *doesn't* try to do:
 ## Browser compatibility
 The *intent* is to maintain compatibility with Chrome, Firefox, IE11, Edge, OS X Safari, iOS Safari, and the Android Silk browser. Note that this component is designed first for desktop web applications, not mobile, so while the component may *operate* on a mobile device, the limited resolution may not allow for much in the way of useful functionality.
 
-### IE11 Support
-I will be losing my ability to test in IE11 very soon, so I'll be relying on the community of users who need to support this browser to continue to test and provide feedback.
+The ES6 language features used in this component are converted to ES5 by Babel during compilation. However, if you're targeting IE11 or another ancient browser, you'll need to import `babel-polyfill` in your webpack entry file so it sets up the additional functions not supported by your browser. These polyfills can't be included in a project more than once, which is why they are not used in the compilation step for this component prior to being published on npm. If you aren't using webpack, you'll need to include the polyfill using a `<script>` tag. The details of using these polyfills is outside the scope of this documentation.
 
 ### Browsers and Localization
 Note that `Intl` is not supported for Safari 9.1, iOS 9.3, and Opera Mini. For these browsers, the month names and weekday names will be blank and the calendar will have a `nointl` class. Use CSS content to provide the appropriate month and weekday names for the languages you support. For example:
