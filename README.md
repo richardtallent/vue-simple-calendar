@@ -25,7 +25,7 @@
 
 **vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **2.2.1**.
 
-**This is the branch for version 3.0, currently under development. For version 2.2.1, please see the master branch.**
+**This is the branch for version 3.0.0, currently under development. For version 2.2.1, please see the master branch.**
 
 There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show events (including multi-day events) on that grid. While the component goes beyond that simple use case, that is still the core focus.
 
@@ -50,7 +50,7 @@ https://github.com/richardtallent/vue-simple-calendar-sample
 * Slot support for more complex customization
 
 What this component *doesn't* try to do:
-* There is no "agenda" view (time-of-day grid). This would require adding too much complexity.
+* There will be no "agenda" view (time-of-day grid). Adding this view would require too much additional complexity.
 * There is no interface for managing events. This is far too use-specific.
 * There is no built-in AJAX mechanism. This is also far too use-specific.
 * Only the Gregorian calendar is supported.
@@ -61,6 +61,8 @@ What this component *doesn't* try to do:
 The *intent* is to maintain compatibility with Chrome, Firefox, IE11, Edge, OS X Safari, iOS Safari, and the Android Silk browser. Note that this component is designed first for desktop web applications, not mobile, so while the component may *operate* on a mobile device, the limited resolution may not allow for much in the way of useful functionality.
 
 The ES6 language features used in this component are converted to ES5 by Babel during compilation. However, if you're targeting IE11 or another ancient browser, you'll need to import `babel-polyfill` in your webpack entry file so it sets up the additional functions not supported by your browser. These polyfills can't be included in a project more than once, which is why they are not used in the compilation step for this component prior to being published on npm. If you aren't using webpack, you'll need to include the polyfill using a `<script>` tag. The details of using these polyfills is outside the scope of this documentation.
+
+Drag and drop only works on desktop browsers -- the drag events on touch devices are very different, I haven't had time to dig into them yet.
 
 ### Browsers and Localization
 Note that `Intl` is not supported for Safari 9.1, iOS 9.3, and Opera Mini. For these browsers, the month names and weekday names will be blank and the calendar will have a `nointl` class. Use CSS content to provide the appropriate month and weekday names for the languages you support. For example:
@@ -162,7 +164,7 @@ Each event shown on the calendar can have the following properties. `startDate` 
 * `endDate` - The date the event ends on the calendar. Defaults to the same date as `startDate`. This must be either passed as a JavaScript date object, or as a string following an ISO-like form of "yyyy-mm-dd HH:MM:SS" (time is optional, and within time, minutes and seconds are both optional).
 * `title` - The name of the event shown on the calendar. Defaults to "Untitled".
 * `id` - A unique identifier for the event. Defaults to a randomly-generated string.
-* `url` - The URL associated with the event. If provided, clicking the event opens the URL. If not provided, the event is unlinked.
+* `url` - The URL associated with the event. The component has no built-in action associated with this, but it does add a "hasUrl" class to the event. To "follow" the URL, you'll need to listen for the `click-event` event and take the appropriate action.
 * `classes` - A String with any additional CSS classes you wish to use for the event.
 
 ## Component Events
@@ -201,9 +203,9 @@ The end result is that CalendarView passes an object with pre-calculated dates t
 - nextYear
 - currentPeriod
 
-Two additional dates are passed: `periodStart` and `periodEnd`, for the current shown period.
-
 Since the CalendarView has some logic around whether the user should be able to navigate to the past or the future, the dates above will be null if the corresponding action is disabled.
+
+Two additional dates are passed: `periodStart` and `periodEnd`, for the current shown period.
 
 The developer implementing her own header simply needs to create a header component that:
 - Receives these dates and displays them with appropriate UI elements

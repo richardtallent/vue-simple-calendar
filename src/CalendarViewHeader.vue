@@ -1,3 +1,4 @@
+
 <template>
 	<div class="cv-header">
 		<div class="cv-header-nav">
@@ -42,67 +43,20 @@ export default {
 	display: flex;
 	flex: 1 1 auto;
 	flex-flow: row nowrap;
-	min-height: 1.2em;
-}
-
-.cv-wrapper .periodLabel .startDay::before,
-.cv-wrapper .periodLabel .endDay::before,
-.cv-wrapper.period-month .periodLabel .startYear::before,
-.cv-wrapper.period-month .periodLabel .endYear::before,
-.cv-wrapper.period-year .periodLabel .endYear::before {
-	content: "\00A0";
-}
-
-.cv-wrapper .periodLabel .endMonth::before,
-.cv-wrapper.period-year:not(.periodCount-1) .periodLabel .endYear::before,
-.cv-wrapper.period-week .periodLabel.singleMonth .endDay::before {
-	content: "\00A0\2013\00A0";
-}
-
-.cv-wrapper.period-week .periodLabel .startYear::before,
-.cv-wrapper.period-week .periodLabel .endYear::before {
-	content: ",\00A0";
-}
-
-.cv-wrapper .periodLabel.singleYear .startYear,
-.cv-wrapper .periodLabel.singleMonth .endMonth,
-.cv-wrapper.period-month .periodLabel .startDay,
-.cv-wrapper.period-month .periodLabel .endDay,
-.cv-wrapper.period-year .periodLabel .startDay,
-.cv-wrapper.period-year .periodLabel .endDay,
-.cv-wrapper.period-year .periodLabel .startMonth,
-.cv-wrapper.period-year .periodLabel .endMonth,
-.cv-wrapper.period-month.periodCount-1 .periodLabel .endMonth,
-.cv-wrapper.period-month.periodCount-1 .periodLabel .startYear,
-.cv-wrapper.period-year.periodCount-1 .periodLabel .startYear {
-	display: none;
-}
-
-/* Header navigation buttons */
-.cv-header-nav .currentPeriod {
-	display: none;
-}
-
-.cv-wrapper.past .cv-header-nav .currentPeriod,
-.cv-wrapper.future .cv-header-nav .currentPeriod {
-	display: inline-block;
+	min-height: 1.5em;
+	line-height: 1;
+	font-size: 1.5em;
 }
 
 .cv-header,
-.cv-wrapper button,
-.cv-header-days,
-.cv-weeks,
-.cv-week,
-.cv-header-day,
-.cv-day,
-.cv-event {
+.cv-header button {
 	border-style: solid;
 	border-color: #ddd;
 }
 
 .cv-header-nav,
 .cv-header .periodLabel {
-	margin: 0.4em 0.6em;
+	margin: 0.1em 0.6em;
 }
 
 .cv-header-nav button,

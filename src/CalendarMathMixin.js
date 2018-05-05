@@ -110,6 +110,49 @@ export default {
 			return d.toLocaleTimeString(locale, options)
 		},
 
+		// Formats a date period in long English style. Examples supported:
+		// May 2018
+		// May – June 2018
+		// December 2018 – January 2019
+		// May 6 – 26, 2018
+		// May 13 – June 2, 2018
+		// December 16, 2018 – January 5, 2019
+		formattedPeriod(startDate, endDate, periodUom, monthNames) {
+			const singleYear = startDate.getFullYear() === endDate.getFullYear()
+			const singleMonth = this.isSameMonth(startDate, endDate)
+			const isYear = periodUom === "year"
+			const isMonth = periodUom === "month"
+			const isWeek = !isYear && !isMonth
+
+			let s = []
+			s.push(monthNames[startDate.getMonth()])
+			if (isWeek) {
+				s.push(" ")
+				s.push(startDate.getDate())
+			}
+			if (!singleYear) {
+				s.push(isWeek ? ", " : " ")
+				s.push(startDate.getFullYear())
+			}
+			if (!singleMonth || !singleYear) {
+				s.push(" \u2013 ")
+				if (!singleMonth) {
+					s.push(monthNames[endDate.getMonth()])
+				}
+				if (isWeek) s.push(" ")
+			} else if (isWeek) {
+				s.push(" \u2013 ")
+			}
+			if (isWeek) {
+				s.push(endDate.getDate())
+				s.push(", ")
+			} else {
+				s.push(" ")
+			}
+			s.push(endDate.getFullYear())
+			return s.join("")
+		},
+
 		// ******************************
 		// Date comparisons
 		// ******************************
@@ -227,5 +270,28 @@ export default {
 				: navigator.language || navigator.browserLanguage
 			).toLowerCase()
 		},
+
+		// ******************************
+		// Events
+		// ******************************
+		normalizeEvent(event) {
+			return {
+				originalEvent: event,
+				startDate: this.toLocalDate(event.startDate),
+				// For an event without an end date, the end date is the start date
+				endDate: this.toLocalDate(event.endDate || event.startDate),
+				// Classes may be a string, an array, or null. Normalize to an array
+				classes: event.classes
+					? Array.isArray(event.classes)
+						? [...event.classes]
+						: [event.classes]
+					: [],
+				// Events without a title are untitled
+				title: event.title || "Untitled",
+				// Events without an id receive an auto-generated ID
+				id: event.id || "e" + Math.random().toString(36).substr(2, 10),
+			}
+		},
+
 	},
 }

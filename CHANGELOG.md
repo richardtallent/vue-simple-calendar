@@ -16,10 +16,12 @@ Done:
 * The `content` element within each day has been removed, as it is no longer needed. The default theme now uses box-shadow rather than border to highlight the date when dragging an event.
 * Fixed drag and drop issue in Firefox (#57)
 * Implemented new custom header capability, and refactored the default header as a separate component with the same interface
+* Upgraded to webpack 4.7
+* Refactored periodLabel from CSS logic into a reusable function
+* Transpilation to ES5 appears to be functioning properly
 
 Not done:
-* Fix and test IE11 transpiling/polyfill
-* Refactoring of the header periodLabel.
+* Fix and test IE11 polyfill in the sample application
 
 ## 2.2.1 (2018.03.19)
 

@@ -88,97 +88,23 @@ export default {
 	mixins: [CalendarMathMixin],
 
 	props: {
-		showDate: {
-			type: Date,
-			default() {
-				return undefined
-			},
-		},
-		displayPeriodUom: {
-			type: String,
-			default() {
-				return "month"
-			},
-		},
-		displayPeriodCount: {
-			type: Number,
-			default() {
-				return 1
-			},
-		},
-		locale: {
-			type: String,
-			default() {
-				return undefined
-			},
-		},
-		monthNameFormat: {
-			type: String,
-			default() {
-				return "long"
-			},
-		},
-		weekdayNameFormat: {
-			type: String,
-			default() {
-				return "short"
-			},
-		},
-		showEventTimes: {
-			type: Boolean,
-			default() {
-				return false
-			},
-		},
-		timeFormatOptions: {
-			type: Object,
-			default() {
-				return {}
-			},
-		},
-		disablePast: {
-			type: Boolean,
-			default() {
-				return false
-			},
-		},
-		disableFuture: {
-			type: Boolean,
-			default() {
-				return false
-			},
-		},
-		enableDragDrop: {
-			type: Boolean,
-			default() {
-				return false
-			},
-		},
-		startingDayOfWeek: {
-			type: Number,
-			default() {
-				return 0
-			},
-		},
-		events: {
-			type: Array,
-			default() {
-				return []
-			},
-		},
-		dateClasses: {
-			type: Object,
-			default() {
-				return {}
-			},
-		},
+		showDate: { type: Date, default: () => undefined },
+		displayPeriodUom: { type: String, default: () => "month" },
+		displayPeriodCount: { type: Number, default: () => 1 },
+		locale: { type: String, default: () => undefined },
+		monthNameFormat: { type: String, default: () => "long" },
+		weekdayNameFormat: { type: String, default: () => "short" },
+		showEventTimes: { type: Boolean, default: () => false },
+		timeFormatOptions: { type: Object, default: () => {} },
+		disablePast: { type: Boolean, default: () => false },
+		disableFuture: { type: Boolean, default: () => false },
+		enableDragDrop: { type: Boolean, default: () => false },
+		startingDayOfWeek: { type: Number, default: () => 0 },
+		events: { type: Array, default: () => [] },
+		dateClasses: { type: Object, default: () => {} },
 	},
 
-	data: function() {
-		return {
-			currentDragEvent: null,
-		}
-	},
+	data: () => ({ currentDragEvent: null }),
 
 	computed: {
 		/*
@@ -220,10 +146,6 @@ export default {
 			)
 		},
 
-		periodLabel() {
-			return "LABEL GOES HERE"
-		},
-
 		/*
 		For month and year views, the first and last dates displayed in the grid may not
 		be the same as the intended period, since the period may not start and stop evenly
@@ -252,7 +174,7 @@ export default {
 				.map((_, i) => this.addDays(this.displayFirstDate, i * 7))
 		},
 
-		/* Cache the names based on current locale and format settings */
+		// Cache the names based on current locale and format settings
 		monthNames() {
 			return this.getFormattedMonthNames(
 				this.displayLocale,
@@ -267,38 +189,19 @@ export default {
 			)
 		},
 
-		/*
-		Before doing with with events, we need a normalized version of each event that has a
-		parsed startDate, a parsed or defaulted endDate, and a defaulted title and id. We
-		also need a guarantee that the `classes` attribute is an array, not a single class
-		string or null. A reference to the original event is kept.
-		*/
+		// Ensure all event properties have suitable default
 		fixedEvents() {
-			var vm = this
-			return this.events.map(function(event) {
-				// Classes may be a string, an array, or null. Coalesce to an array
-				let fixedClasses = []
-				if (event.classes) {
-					if (Array.isArray(event.classes)) {
-						fixedClasses = [...event.classes]
-					} else {
-						fixedClasses = [event.classes]
-					}
-				}
-				return {
-					originalEvent: event,
-					startDate: vm.toLocalDate(event.startDate),
-					endDate: vm.toLocalDate(event.endDate || event.startDate),
-					classes: fixedClasses,
-					title: event.title || "Untitled",
-					id:
-						event.id ||
-						"e" +
-							Math.random()
-								.toString(36)
-								.substr(2, 10),
-				}
-			})
+			return this.events.map(this.normalizeEvent)
+		},
+
+		// Creates the HTML to render the date range for the calendar header.
+		periodLabel() {
+			return this.formattedPeriod(
+				this.periodStart,
+				this.periodEnd,
+				this.displayPeriodUom,
+				this.monthNames
+			)
 		},
 
 		headerProps() {
@@ -316,7 +219,7 @@ export default {
 				// Dates for header display
 				periodStart: this.periodStart,
 				periodEnd: this.periodEnd,
-				// Save the header from having to replicate logic
+				// Extra information that could be useful to a custom header
 				displayLocale: this.displayLocale,
 				displayFirstDate: this.displayFirstDate,
 				displayLastDate: this.displayLastDate,
@@ -492,32 +395,25 @@ export default {
 				this.displayLocale,
 				this.timeFormatOptions
 			)
-			const endTime = this.isSameDateTime(e.startDate, e.endDate)
-				? ""
-				: this.formattedTime(
-						e.endDate,
-						this.displayLocale,
-						this.timeFormatOptions
-				  )
-			const hasStart = startTime !== ""
-			const hasEnd = endTime !== ""
+			let endTime = ""
+			if (!this.isSameDateTime(e.startDate, e.endDate)) {
+				endTime = this.formattedTime(
+					e.endDate,
+					this.displayLocale,
+					this.timeFormatOptions
+				)
+			}
 			return (
-				(hasStart
-					? `<span class="startTime${
-							hasEnd ? " hasEndTime" : ""
-					  }">${startTime}</span>`
+				(startTime !== ""
+					? `<span class="startTime">${startTime}</span>`
 					: "") +
-				(hasEnd
-					? `<span class="endTime${
-							hasStart ? " hasStartTime" : ""
-					  }">${endTime}</span>`
-					: "")
+				(endTime !== "" ? `<span class="endTime">${endTime}</span>` : "")
 			)
 		},
 
 		getEventTitle(e) {
 			if (!this.showEventTimes) return e.title
-			return this.getFormattedTimeRange(e) + e.title
+			return this.getFormattedTimeRange(e) + " " + e.title
 		},
 
 		getEventTop(e) {
@@ -533,7 +429,7 @@ export default {
 The CSS below represents only the CSS required for proper rendering (positioning, etc.) and
 minimalist default borders and colors. Special-day colors, holiday emoji, event colors,
 and decorations like border-radius should be part of a theme. Styles related to the default
-header are in that component.
+header are in the CalendarViewHeader component.
 
 -->
 <style>
@@ -543,6 +439,13 @@ header are in that component.
 .cv-wrapper {
 	display: flex;
 	flex-direction: column;
+}
+
+.cv-wrapper,
+.cv-wrapper div {
+	box-sizing: border-box;
+	line-height: 1em;
+	font-size: 1em;
 }
 
 .cv-header-days {
@@ -613,12 +516,10 @@ header are in that component.
 
 /* Colors */
 
-.cv-header,
-.cv-wrapper button,
 .cv-header-days,
+.cv-header-day,
 .cv-weeks,
 .cv-week,
-.cv-header-day,
 .cv-day,
 .cv-event {
 	border-style: solid;
@@ -626,25 +527,11 @@ header are in that component.
 }
 
 /* Event Times */
-
-.cv-event .startTime:not(.hasEndTime),
-.cv-event .endTime {
-	margin-right: 0.4em;
-}
-
 .cv-event .endTime::before {
 	content: "-";
 }
 
 /* Internal Metrics */
-
-.cv-wrapper,
-.cv-wrapper div {
-	box-sizing: border-box;
-	line-height: 1em;
-	font-size: 1em;
-}
-
 .cv-header-day,
 .cv-day-number,
 .cv-event {
