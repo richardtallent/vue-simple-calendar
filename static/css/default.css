@@ -9,74 +9,74 @@ having to override as much.
 
 /* Header */
 
-.cv-header,
-.cv-header-day {
+.theme-default .cv-header,
+.theme-default .cv-header-day {
 	background-color: #f0f0f0;
 }
 
-.cv-header .periodLabel > div {
+.theme-default .cv-header .periodLabel {
 	font-size: 1.5em;
 }
 
-.cv-header button {
+.theme-default .cv-header button {
 	color: #7f7f7f;
 }
 
-.cv-header button:disabled {
+.theme-default .cv-header button:disabled {
 	color: #ccc;
 	background-color: #f7f7f7;
 }
 
 /* Grid */
 
-.cv-day.today {
+.theme-default .cv-day.today {
 	background-color: #ffe;
 }
 
-.cv-day.past {
+.theme-default .cv-day.past {
 	background-color: #fafafa;
 }
 
-.cv-day.outsideOfMonth {
+.theme-default .cv-day.outsideOfMonth {
 	background-color: #f7f7f7;
 }
 
 /* Events */
 
-.cv-event {
+.theme-default .cv-event {
 	border-color: #e0e0f0;
 	border-radius: 0.5em;
 	background-color: #e7e7ff;
 	text-overflow: ellipsis;
 }
 
-.cv-event.purple {
+.theme-default .cv-event.purple {
 	background-color: #f0e0ff;
 	border-color: #e7d7f7;
 }
 
-.cv-event.orange {
+.theme-default .cv-event.orange {
 	background-color: #ffe7d0;
 	border-color: #f7e0c7;
 }
 
-.cv-event.continued::before,
-.cv-event.toBeContinued::after {
+.theme-default .cv-event.continued::before,
+.theme-default .cv-event.toBeContinued::after {
 	content: " \21e2 ";
 	color: #999;
 }
 
-.cv-event.toBeContinued {
+.theme-default .cv-event.toBeContinued {
 	border-right-style: none;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
 
-.cv-event.hasUrl:hover {
+.theme-default .cv-event.hasUrl:hover {
 	text-decoration: underline;
 }
 
-.cv-event.continued {
+.theme-default .cv-event.continued {
 	border-left-style: none;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
@@ -84,14 +84,14 @@ having to override as much.
 
 /* Event Times */
 
-.cv-event .startTime,
-.cv-event .endTime {
+.theme-default .cv-event .startTime,
+.theme-default .cv-event .endTime {
 	font-weight: bold;
 	color: #666;
 }
 
 /* Drag and drop */
 
-.cv-day.draghover {
+.theme-default .cv-day.draghover {
 	box-shadow: inset 0 0 0.2em 0.2em yellow;
 }

@@ -99,7 +99,7 @@ Here's a minimal application example for a calendar with no events, but styled w
 		<calendar-view
 			:show-date="showDate"
 			@show-date-change="setShowDate"
-			class="holiday-us-traditional holiday-us-official"
+			class="theme-default holiday-us-traditional holiday-us-official"
 		/>
 	</div>
 </template>
@@ -107,7 +107,7 @@ Here's a minimal application example for a calendar with no events, but styled w
 	import CalendarView from "vue-simple-calendar"
 	// The next two lines are processed by webpack. If you're using the component without webpack compilation,
 	// you should just create <link> elements for these as you would normally for CSS files. Both of these
-	// CSS files are optional, you can create your own theme if you wish.
+	// CSS files are optional, you can create your own theme if you prefer.
 	require("vue-simple-calendar/dist/static/css/default.css")
 	require("vue-simple-calendar/dist/static/css/holidays-us.css")
 

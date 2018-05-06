@@ -439,6 +439,9 @@ header are in the CalendarViewHeader component.
 .cv-wrapper {
 	display: flex;
 	flex-direction: column;
+	height: 100%;
+	min-height: 100%;
+	max-height: 100%;
 }
 
 .cv-wrapper,

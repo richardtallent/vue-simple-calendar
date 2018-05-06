@@ -19,6 +19,7 @@ Done:
 * Upgraded to webpack 4.7
 * Refactored periodLabel from CSS logic into a reusable function
 * Transpilation to ES5 appears to be functioning properly
+* Activating the default theme now requires a class ("theme-default")
 
 Not done:
 * Fix and test IE11 polyfill in the sample application
