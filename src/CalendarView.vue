@@ -453,14 +453,18 @@ header are in the CalendarViewHeader component.
 
 .cv-header-days {
 	display: flex;
-	flex: 0 0 auto;
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: auto;
 	flex-flow: row nowrap;
 	border-width: 0 0 0 1px;
 }
 
 .cv-header-day {
 	display: flex;
-	flex: 1 1 0;
+	flex-grow: 1;
+	flex-shrink: 0;
+	flex-basis: 0;
 	flex-flow: row nowrap;
 	align-items: center;
 	justify-content: center;
@@ -471,19 +475,24 @@ header are in the CalendarViewHeader component.
 /* The calendar grid should take up the remaining vertical space */
 .cv-weeks {
 	display: flex;
-	flex: 1 1 auto;
+	flex-grow: 1;
+	flex-shrink: 1;
+	flex-basis: auto;
 	flex-flow: column nowrap;
 	border-width: 0 0 1px 1px;
 
 	/* Allow grid to scroll if there are too may weeks to fit in the view */
-	overflow-y: scroll;
+	overflow-y: auto;
 	-ms-overflow-style: none;
 }
 
 /* Use flex basis of 0 on week row so all weeks will be same height regardless of content */
 .cv-week {
 	display: flex;
-	flex: 1 1 0;
+	/* Shorthand flex: 1 1 0 not supported by IE11 */
+	flex-grow: 1;
+	flex-shrink: 0;
+	flex-basis: 0;
 	flex-flow: row nowrap;
 	min-height: 3em;
 	border-width: 0;
@@ -491,13 +500,16 @@ header are in the CalendarViewHeader component.
 	/* Allow week events to scroll if they are too tall */
 	position: relative;
 	width: 100%;
-	overflow-y: scroll;
+	overflow-y: auto;
 	-ms-overflow-style: none;
 }
 
 .cv-day {
 	display: flex;
-	flex: 1 1 0;
+	/* Shorthand flex: 1 1 0 not supported by IE11 */
+	flex-grow: 1;
+	flex-shrink: 0;
+	flex-basis: 0;
 	position: relative; /* Fallback for IE11, which doesn't support sticky */
 	position: sticky; /* When week's events are scrolled, keep the day content fixed */
 	top: 0;

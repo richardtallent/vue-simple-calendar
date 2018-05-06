@@ -23,9 +23,9 @@
 
 ## Introduction
 
-**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **2.2.1**.
+**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **3.0.0**.
 
-**This is the branch for version 3.0.0, currently under development. For version 2.2.1, please see the master branch.**
+_(For the migration guide from 2.x, please see the CHANGELOG file.)_
 
 There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show events (including multi-day events) on that grid. While the component goes beyond that simple use case, that is still the core focus.
 

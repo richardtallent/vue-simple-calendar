@@ -2,10 +2,10 @@
 
 * Mobile-compatible drag and drop
 * Handles to drag events to make them longer or shorter
+* Add month name to the 1st of the month when viewing multiple months
 
-## 3.0.0 (IN PROGRESS)
+## 3.0.0 (2018-05-05)
 
-Done:
 * Added `dateClasses` prop to allow easy dynamic styling of specific dates (#55,  thanks @LTroya!)
 * Massive CSS reorganization to rely less on complex cascading for easier theming (#45, #52)
 * Removed need for complex z-index on week and event elements (`zIndex` no longer passed in event slot)
@@ -19,15 +19,24 @@ Done:
 * Upgraded to webpack 4.7
 * Refactored periodLabel from CSS logic into a reusable function
 * Transpilation to ES5 appears to be functioning properly
-* Activating the default theme now requires a class ("theme-default")
+* Activating the default theme now requires a class ("theme-default") (#45)
+* Fixed and tested polyfill in the same application in IE11
+* Fixed flexbox rendering issue in IE11
 
-Not done:
-* Fix and test IE11 polyfill in the sample application
+### Migration guide for 3.0.0
+* IE11 support has been fixed! However, you will need to include `babel-polyfill` in your app's entry point, webpack config, or via a script tag, if you aren't already doing so.
+* Any custom themes or other CSS overrides will need to be modified for the upgraded classes and structure.
+* If you use the `dayContent` slot, you no longer need to render the day number, it's outside the slot now.
+* There was a problem in the default height of the calendar (it wasn't 100% of the parent), that has been resolved.
+* Webpack 4 is required to build the component or sample app. If you're just installing and using the component, this won't impact you.
+* Creating and slotting a custom header is now very simple.
+* To activate the default theme, your `<calendar-view>` element will need the `theme-default` class (in addition to importing the CSS file, of course).
 
 ## 2.2.1 (2018.03.19)
 
 * Fix where babel was not transpiling appropriately for IE11 (#46)
 * Fix where "sticky" content was causing issues for IE11, which doesn't support sticky
+* Never published on npm due to continued IE11 issues
 
 ## 2.2.0 (2018.03.18)
 
