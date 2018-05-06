@@ -2,17 +2,41 @@
 
 * Mobile-compatible drag and drop
 * Handles to drag events to make them longer or shorter
+* Add month name to the 1st of the month when viewing multiple months
 
-## 3.0.0 (NOT STARTED)
+## 3.0.0 (2018-05-05)
 
-* CSS reorganization to rely less on complex cascading (easier theming)
-* More flexible header customization
-* IE11 support fix? (I'm losing my ability to test IE11 soon but plan to maintain compatibility for a bit longer, with some help)
+* Added `dateClasses` prop to allow easy dynamic styling of specific dates (#55,  thanks @LTroya!)
+* Massive CSS reorganization to rely less on complex cascading for easier theming (#45, #52)
+* Removed need for complex z-index on week and event elements (`zIndex` no longer passed in event slot)
+* Removed need for eventRowX class. Top position CSS is now computed dynamically based on the row and passed to the event slot as "top".
+* Removed limitation of 20 event rows per week
+* Default header buttons no longer use CSS content for their labels
+* The `dayContent` slot now does **not** contain the `cv-date-number` div, making it easier to provide your own content without having to duplicate the day number.
+* The `content` element within each day has been removed, as it is no longer needed. The default theme now uses box-shadow rather than border to highlight the date when dragging an event.
+* Fixed drag and drop issue in Firefox (#57)
+* Implemented new custom header capability, and refactored the default header as a separate component with the same interface
+* Upgraded to webpack 4.7
+* Refactored periodLabel from CSS logic into a reusable function
+* Transpilation to ES5 appears to be functioning properly
+* Activating the default theme now requires a class ("theme-default") (#45)
+* Fixed and tested polyfill in the same application in IE11
+* Fixed flexbox rendering issue in IE11
+
+### Migration guide for 3.0.0
+* IE11 support has been fixed! However, you will need to include `babel-polyfill` in your app's entry point, webpack config, or via a script tag, if you aren't already doing so.
+* Any custom themes or other CSS overrides will need to be modified for the upgraded classes and structure.
+* If you use the `dayContent` slot, you no longer need to render the day number, it's outside the slot now.
+* There was a problem in the default height of the calendar (it wasn't 100% of the parent), that has been resolved.
+* Webpack 4 is required to build the component or sample app. If you're just installing and using the component, this won't impact you.
+* Creating and slotting a custom header is now very simple.
+* To activate the default theme, your `<calendar-view>` element will need the `theme-default` class (in addition to importing the CSS file, of course).
 
 ## 2.2.1 (2018.03.19)
 
 * Fix where babel was not transpiling appropriately for IE11 (#46)
 * Fix where "sticky" content was causing issues for IE11, which doesn't support sticky
+* Never published on npm due to continued IE11 issues
 
 ## 2.2.0 (2018.03.18)
 

@@ -23,7 +23,9 @@
 
 ## Introduction
 
-**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **2.2.0**.
+**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **3.0.0**.
+
+_(For the migration guide from 2.x, please see the CHANGELOG file.)_
 
 There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show events (including multi-day events) on that grid. While the component goes beyond that simple use case, that is still the core focus.
 
@@ -48,7 +50,7 @@ https://github.com/richardtallent/vue-simple-calendar-sample
 * Slot support for more complex customization
 
 What this component *doesn't* try to do:
-* There is no "agenda" view (time-of-day grid). This would require adding too much complexity.
+* There will be no "agenda" view (time-of-day grid). Adding this view would require too much additional complexity.
 * There is no interface for managing events. This is far too use-specific.
 * There is no built-in AJAX mechanism. This is also far too use-specific.
 * Only the Gregorian calendar is supported.
@@ -58,16 +60,15 @@ What this component *doesn't* try to do:
 ## Browser compatibility
 The *intent* is to maintain compatibility with Chrome, Firefox, IE11, Edge, OS X Safari, iOS Safari, and the Android Silk browser. Note that this component is designed first for desktop web applications, not mobile, so while the component may *operate* on a mobile device, the limited resolution may not allow for much in the way of useful functionality.
 
-### IE11 Support
-IE11 is not currently working in 2.2.0. Something is "off" with my babel configuration, and despite my best efforts, I can't seem to find an incantation that actually transpiles to IE11-compatible code. I'm looking for someone with more webpack/babel experience to take a look.
+The ES6 language features used in this component are converted to ES5 by Babel during compilation. However, if you're targeting IE11 or another ancient browser, you'll need to import `babel-polyfill` in your webpack entry file so it sets up the additional functions not supported by your browser. These polyfills can't be included in a project more than once, which is why they are not used in the compilation step for this component prior to being published on npm. If you aren't using webpack, you'll need to include the polyfill using a `<script>` tag. The details of using these polyfills is outside the scope of this documentation.
 
-I will be losing my ability to test in IE11 very soon, so I'll be relying on the community of users who need to support this browser to continue to test and provide feedback.
+Drag and drop only works on desktop browsers -- the drag events on touch devices are very different, I haven't had time to dig into them yet.
 
 ### Browsers and Localization
 Note that `Intl` is not supported for Safari 9.1, iOS 9.3, and Opera Mini. For these browsers, the month names and weekday names will be blank and the calendar will have a `nointl` class. Use CSS content to provide the appropriate month and weekday names for the languages you support. For example:
 
 ```CSS
-.calendar.nointl.locale-en.m01 .monthName::after { content: 'January' }
+.calendar.nointl.locale-en.m01 .monthName::after { content: 'January'; }
 ```
 
 ## Installation and Usage
@@ -98,12 +99,15 @@ Here's a minimal application example for a calendar with no events, but styled w
 		<calendar-view
 			:show-date="showDate"
 			@show-date-change="setShowDate"
-			class="holiday-us-traditional holiday-us-official"
+			class="theme-default holiday-us-traditional holiday-us-official"
 		/>
 	</div>
 </template>
 <script>
 	import CalendarView from "vue-simple-calendar"
+	// The next two lines are processed by webpack. If you're using the component without webpack compilation,
+	// you should just create <link> elements for these as you would normally for CSS files. Both of these
+	// CSS files are optional, you can create your own theme if you prefer.
 	require("vue-simple-calendar/dist/static/css/default.css")
 	require("vue-simple-calendar/dist/static/css/holidays-us.css")
 
@@ -151,6 +155,7 @@ The following properties are supported. Remember to use _kebab-case_ when specif
 * `timeFormatOptions` - This takes an object containing `Intl.DateTimeFormat` options to be used to format the event times. The `locale` setting is automatically used. This option is ignored for browsers that don't support `Intl` (they will see the 24-hour, zero-padded time).
 * `displayPeriodUom` - The period type to show. By default this is `month`, *i.e.*, it shows a calendar in month-sized chunks. Other allowed values are `year` and `week`.
 * `displayPeriodCount` - The *number* of periods to show within the view. For example, if `displayPeriodUom` is `week` and `displayPeriodCount` is 2, the view will show a two-week period.
+* `dateClasses` - Optional object, where the key is a date in ISO form (e.g., "2018-04-15") and the value is a string or array of additional CSS classes that should be applied to the main element for that date. This could be useful for dynamically highlighting selected dates, holidays, blocked-off dates, etc.
 
 ## Calendar Event Properties
 Each event shown on the calendar can have the following properties. `startDate` is required, and `title` and `id` are strongly recommended.
@@ -159,7 +164,7 @@ Each event shown on the calendar can have the following properties. `startDate` 
 * `endDate` - The date the event ends on the calendar. Defaults to the same date as `startDate`. This must be either passed as a JavaScript date object, or as a string following an ISO-like form of "yyyy-mm-dd HH:MM:SS" (time is optional, and within time, minutes and seconds are both optional).
 * `title` - The name of the event shown on the calendar. Defaults to "Untitled".
 * `id` - A unique identifier for the event. Defaults to a randomly-generated string.
-* `url` - The URL associated with the event. If provided, clicking the event opens the URL. If not provided, the event is unlinked.
+* `url` - The URL associated with the event. The component has no built-in action associated with this, but it does add a "hasUrl" class to the event. To "follow" the URL, you'll need to listen for the `click-event` event and take the appropriate action.
 * `classes` - A String with any additional CSS classes you wish to use for the event.
 
 ## Component Events
@@ -179,7 +184,7 @@ The following Vue events are raised by the component, which you can catch in you
 ## Slots
 
 ### header
-This optional named slot **replaces** the default `div.header` (which contains the navigation buttons and calendar's current period). For example, this would effectively result in an empty span in place of the header (you could also just use `.calendar-view .header {display: none}` in your CSS to hide the default header):
+This optional named slot **replaces** the default `div.cv-header` (which contains the navigation buttons and calendar's current period). For example, this would effectively result in an empty span in place of the header (you could also just use `.cv-header {display: none}` in your CSS to hide the default header):
 
 ```HTML
 <calendar-view>
@@ -187,13 +192,43 @@ This optional named slot **replaces** the default `div.header` (which contains t
 </calendar-view>
 ```
 
+In Vue, a child component MUST only receive props and emit events. This presents an issue for developing calendar headers -- the CalendarView component contains the calendar's state and complex date and render logic, while the desire is to allow developers to swap out the header completely without having to do a bunch of date math or additional logic.
+
+Using scoped slots, the header can receive some data from the CalendarView, but it cannot *change* the CalendarView's directly -- the developer must wire this part up. Thus, it's important for the header to receive data in a way that makes it trivial for the developer to do the wiring.
+
+The end result is that CalendarView passes an object with pre-calculated dates to the header, where the dates correspond to the five buttons on a standard calendar:
+- previousYear
+- previousPeriod (period is flexible, but usually 1 week or 1 month)
+- nextPeriod
+- nextYear
+- currentPeriod
+
+Since the CalendarView has some logic around whether the user should be able to navigate to the past or the future, the dates above will be null if the corresponding action is disabled.
+
+Two additional dates are passed: `periodStart` and `periodEnd`, for the current shown period.
+
+The developer implementing her own header simply needs to create a header component that:
+- Receives these dates and displays them with appropriate UI elements
+- Emits an event to change the date (suggested event name: input)
+
+The calling application simply wires the @event of the header slot to modify the data element that it feeds to CalendarView's `showDate` prop. No need for date math in the caller.
+
+The following are also passed, as they may be useful to a custom header and are computed internally by the CaledarView:
+- displayLocale
+- displayFirstDate
+- displayLastDate
+- monthNames
+- fixedEvents
+
+The default header is actually also implemented as a child component, `CalendarViewHeader`. This gives clean separation of concerns, and ensures that custom headers can *at least* do anything the default header can do.
+
 ### dayHeader
-This optional named slot **replaces** the default `div.day` elements that appear in the column headers for each day of the week. If all you need to do is change how the names are shown, it's probably better to override the `locale` and/or `weekdayNameFormat` property. This slot is intended for situations where you need to override the markup within each header cell. For example, if you want each day of the week to be clickable. 
+This optional named slot **replaces** the default `div.day` elements that appear in the column headers for each day of the week. If all you need to do is change how the names are shown, it's probably better to override the `locale` and/or `weekdayNameFormat` property. This slot is intended for situations where you need to override the markup within each header cell. For example, if you want each day of the week to be clickable.
 
 This slot passes two scoped variables: `index`, 0-7, and `label`, the text it would have used in the header based on the current `locale` and `weekdayNameFormat`.
 
 ### dayContent
-This optional named slot **replaces** the *contents* of the `div.content` within each day's cell. By default, this just contains a `div.date` containing the day of the month, but you can use this to override the cell and show anything you like. Events are drawn *on top* of the cells, no within them, so this content appears underneath the events if there are any on that day. 
+This optional named slot allows you to provide your own contents within the date cell. The day of the month is rendered in a separate (sibling) element with the class `cv-day-number`, so you should use CSS to hide this class if you want your slot to be the only content in the cell. Note that events are rendered *above* the individual date cells, so your slot content will appear below any events on that day.
 
 This slot passes one scoped variable: `day`, the date associated with the cell.
 
@@ -201,7 +236,7 @@ This slot passes one scoped variable: `day`, the date associated with the cell.
 This optional named slot **replaces** the `div.event` for each event (not just the contents of the event element, the entire element). Use this if you want to override *entirely* how events are rendered. For example, on a small mobile device, you may want to show just a thin stripe, dots, or icons to indicate events, without titles or times. This slot passes three scoped variables:
 - `event`: the *normalized* calendar event
 - `weekStartDate`: the date of the first day of the week being rendered
-- `zIndex`: the `z-index` that you should apply to the style of your event markup so it properly overlaps its own week but not the next
+- `top`: the CSS `top` value that you should apply to the style of your event element so it appears in the proper place. Assumes standard metrics for events, so if you have your own metrics, you'll need to compute and apply the top position yourself using the `eventRow` value passed in the event.
 
 Note that `event` is a version of the calendar event *normalized* to be shown on that week's row, it's not the bare event pulled from the `events` prop. This customized version parses and defaults the `startDate` and `endDate`, defaults missing `id` to a random number, defaults a blank title to "Untitled", and adds a number of `classes` values based on the position and role of the event as shown for that week (whether it continues from the previous week, etc.). The original event is passed back as `event.originalEvent`.
 
@@ -211,10 +246,10 @@ In addition to slots, this component is designed to allow for significant custom
 Note that the events are _not_ child nodes of the days, they are children of the week and positioned above the days. This allows events to span multiple days.
 
 ```
-div calendar-view locale-X yYYYY mMM (past|future) period-X periodCount-X
+div cv-wrapper locale-X yYYYY mMM (past|future) period-X periodCount-X
 	HEADER
-		div header
-			div nav
+		div cv-header
+			div cv-header-nav
 				button previousYear
 				button previousPeriod
 				button nextPeriod
@@ -227,16 +262,15 @@ div calendar-view locale-X yYYYY mMM (past|future) period-X periodCount-X
 				div endMonth
 				div endDay
 				div endYear
-	div dayList
-		div day dowX [x7]
-	div weeks
-		div week weekX wsYYYY-MM-DD [x # weeks in visible period]
-			div day dowX dYYYY-MM-DD dMM-DD dDD wmX (past|today|future|last|outsideOfMonth|lastInstance) [x 7]
-				DAY
-					div content
-						div date
+	div cv-header-days
+		div cv-header-day dowX [x7]
+	div cv-weeks
+		div cv-week weekX wsYYYY-MM-DD [x # weeks in visible period]
+			div cv-day dowX dYYYY-MM-DD dMM-DD dDD wmX (past|today|future|last|outsideOfMonth|lastInstance) [x 7]
+				div cv-day-number
+				DAYCONTENT
 			EVENT
-				div event offsetX spanX eventRowX (continued|toBeContinued|hasUrl) [x # of events]
+				div cv-event offsetX spanX (continued|toBeContinued|hasUrl) [x # of events]
 					span startTime (hasEndTime)
 					span endTime (hasStartTime)
 ```
@@ -318,9 +352,6 @@ This class on an event represents the day of the week when the event starts _on 
 #### span<i>X</i>
 This class on an event represents the width of the event display _that week_, in days. For example, if an event spans from a Thursday to the next Wednesday, it would have `span3` on the first week and `span4` on the second week.
 
-#### eventRow<i>X</i>
-This class on an event represents the "row" where the event is drawn that week, starting at `1`. Up to 20 rows are available for display, content is scrollable if thre are too many to see within the week's row. *Prior to 2.0, this was called `slotX`.*
-
 #### continued
 This is added to an event when it is continuing from a previous week. By default, this turns off the rounded corners on the left side of the event box and adds a grey right-arrow before the title.
 
@@ -349,7 +380,7 @@ These classes are applied to the start and end time of an event, respectively.
 * [ ] Apple Calendar theme (would love help with this)
 * [ ] Outlook Calendar theme (would love help with this)
 * [ ] I'm not 100% happy with the Intl time format options, especially to show time ranges compactly. Considering a custom formatter or the ability to pass a formatter function as a property.
-* [ ] Rename the primary CSS classes (calendar-view, day, week, etc.) to depend far less on cascades, making it easier to customize the theme (breaking change for themes, targeted for 3.0.0).
+* [x] Rename the primary CSS classes (calendar-view, day, week, etc.) to depend far less on cascades, making it easier to customize the theme (breaking change for themes, targeted for 3.0.0).
 
 PRs and issues are welcome! For pull requests, please use the same code style -- there are linter configs included for styles, plain JavaScript, and Vue components. Use of Prettier is recommended.
 
@@ -369,9 +400,9 @@ Maybe. Depends if it fits the core functionality of viewing a calendar grid. I d
 Moment.js is great, but I would only need a tiny fraction of its capabilities, and for simplicity, I wanted to not have any dependencies (other than Vue of course).
 
 #### Why is the style so "plain"?
-The **baseline** style (what you get with no external CSS files imported) is intended to be as bare as possible while still providing full functionality and legibility. The hope here is to minimize the effort of overriding my styles if you decide to create your own theme. (Changes are coming in 3.0 to make this even easier.)
+The **baseline** style (what you get with no external CSS files imported) is intended to be as bare as possible while still providing full functionality and legibility. The idea here is to minimize the effort of creating your own theme.
 
-The **default** stylesheet builds on this to provide a restrained, clean, and simple set of default styles for the calendar, and is useful if you don't intend to create your own theme. You can include it from `static/css/default.css`. The sample app uses this stylesheet.
+The **default theme** stylesheet builds on this baseline to provide a restrained, clean, simple theme for the calendar, and is useful if you don't intend to create your own theme. You can include it from `static/css/default.css`. The sample app uses this stylesheet.
 
 A third stylesheet, `static/css/holidays-us.css`, shows how simple it is to use CSS to style specific days using CSS selectors (it adds emoji characters beside various holidays).
 
