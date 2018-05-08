@@ -102,6 +102,9 @@ export default {
 		startingDayOfWeek: { type: Number, default: () => 0 },
 		events: { type: Array, default: () => [] },
 		dateClasses: { type: Object, default: () => {} },
+		eventTop: { type: String, default: () => "1.4em" },
+		eventContentHeight: { type: String, default: () => "1.4em" },
+		eventBorderHeight: { type: String, default: () => "2px" },
 	},
 
 	data: () => ({ currentDragEvent: null }),
@@ -419,7 +422,9 @@ export default {
 		getEventTop(e) {
 			// Compute the top position of the event based on its assigned row within the given week.
 			const r = e.eventRow
-			return `calc(${r + 1} * 1.4em + ${r * 2}px)`
+			return `calc(${this.eventTop} + ${r}*${this.eventContentHeight} + ${r}*${
+				this.eventBorderHeight
+			})`
 		},
 	},
 }
