@@ -4,6 +4,10 @@
 * Handles to drag events to make them longer or shorter
 * Add month name to the 1st of the month when viewing multiple months
 
+## 3.0.1 (2018-05-08)
+
+* Added the `eventTop`, `eventContentHeight`, and `eventBorderHeight` props to allow better theming. (#66)
+
 ## 3.0.0 (2018-05-05)
 
 * Added `dateClasses` prop to allow easy dynamic styling of specific dates (#55,  thanks @LTroya!)

@@ -23,7 +23,7 @@
 
 ## Introduction
 
-**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **3.0.0**.
+**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **3.0.1**.
 
 _(For the migration guide from 2.x, please see the CHANGELOG file.)_
 
@@ -139,23 +139,26 @@ Here's a minimal application example for a calendar with no events, but styled w
 ```
 
 ## Props
-The following properties are supported. Remember to use _kebab-case_ when specifying these properties using attributes on the `calendar-view` element (_e.g._, `<calendar-view month-name-format="long">`:
+The following properties are supported, roughly in order of popularity. Remember to use _kebab-case_ when specifying these properties using attributes on the `calendar-view` element (_e.g._, `<calendar-view month-name-format="long">`:
 
+* `showDate` - The period to show by default. Defaults to today's date (user local time).
+* `displayPeriodUom` - The period type to show. By default this is `month`, *i.e.*, it shows a calendar in month-sized chunks. Other allowed values are `year` and `week`.
+* `displayPeriodCount` - The *number* of periods to show within the view. For example, if `displayPeriodUom` is `week` and `displayPeriodCount` is 2, the view will show a two-week period.
 * `events` - An array of events to show on the calendar. See _Calendar Event Properties_ below for more details.
+* `showEventTimes` - If true, shows the start and/or end time of an event beside the event title. Midnight is not shown, a midnight time is assumed to indicate an all-day or indeterminate time. (If you want to show midnight, use `00:00:01` and don't choose to show seconds.) The default is `false`.
+* `enableDragDrop` - If true, events are draggable, and dragging and dropping them emits events you can catch and respond to. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
 * `disablePast` - If true, prevents the user from navigating to previous periods. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
 * `disableFuture` - If true, prevents the user from navigating to future periods. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
-* `enableDragDrop` - If true, events are draggable, and dragging and dropping them emits events you can catch and respond to. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
 * `locale` - The BCP 47 language tag used to determine the month and day names. Defaults to the user's browser language setting.
-* `showDate` - The period to show by default. Defaults to today's date (user local time).
 * `startingDayOfWeek` - The day of the week that starts each week. Defaults to `0` (Sunday), valid range is 0-6. Common non-default values would be
   `1` (Monday) for Europe or `6` (Saturday) for much of the Middle East.
 * `monthNameFormat` - The format to use for the month names. Possible values are `numeric`, `2-digit`, `narrow`, `short`, or `long`, and the default is `long`.
 * `weekdayNameFormat` - The format to use for the names of the days of the week. Possible values are `narrow`, `short`, or `long`, and the default is `short`.
-* `showEventTimes` - If true, shows the start and/or end time of an event beside the event title. Midnight is not shown, a midnight time is assumed to indicate an all-day or indeterminate time. (If you want to show midnight, use `00:00:01` and don't choose to show seconds.) The default is `false`.
 * `timeFormatOptions` - This takes an object containing `Intl.DateTimeFormat` options to be used to format the event times. The `locale` setting is automatically used. This option is ignored for browsers that don't support `Intl` (they will see the 24-hour, zero-padded time).
-* `displayPeriodUom` - The period type to show. By default this is `month`, *i.e.*, it shows a calendar in month-sized chunks. Other allowed values are `year` and `week`.
-* `displayPeriodCount` - The *number* of periods to show within the view. For example, if `displayPeriodUom` is `week` and `displayPeriodCount` is 2, the view will show a two-week period.
 * `dateClasses` - Optional object, where the key is a date in ISO form (e.g., "2018-04-15") and the value is a string or array of additional CSS classes that should be applied to the main element for that date. This could be useful for dynamically highlighting selected dates, holidays, blocked-off dates, etc.
+* `eventsTop` - Optional string of a CSS height to be used as the baseline for where events are positioned relative the top of the week. By default, this is `1.4em`, the height of the standard `cv-day-number` element.
+* `eventContentHeight` - Optional CSS string of the total height of your events, *not including* borders. The default is `1.4em` (1.0 from the font, 0.2 * 2 from the padding.). You would only set this if you're overriding the event height. This doesn't actually change the event height, it is only used to position the events below one another.
+* `eventBorderHeight` - Optional CSS string of the sum of your events' top and bottom borders. The default is `2px`. You would only set this if you're overriding the event top and/or bottom border width. This doesn't actually change the borders, it is only used to position the events below one another.
 
 ## Calendar Event Properties
 Each event shown on the calendar can have the following properties. `startDate` is required, and `title` and `id` are strongly recommended.
@@ -407,7 +410,9 @@ The **default theme** stylesheet builds on this baseline to provide a restrained
 A third stylesheet, `static/css/holidays-us.css`, shows how simple it is to use CSS to style specific days using CSS selectors (it adds emoji characters beside various holidays).
 
 #### What styles can I _not_ override?
-* If you change the event's `font-size` (defaults to `1em`), `padding`, or `border-width`, you'll have to change the `slotX` classes as well to position the events vertically in the right place. (You _can_ change the overall font size, the entire calendar uses the same `1em` font size and will scale everything accordingly.)
+* If you change the `cv-day-number` height, you'll need to set the `eventTop` property so first event is positioned below the day numbers.
+* If you change the `cv-event` height, you'll need to set the `eventContentHeight` and/or `eventBorderHeight` properties, so each event is positioned below the previous event. Every event must still have the same height.
+* The calendar bases all metrics other than borders (which are in pixels for Reasons) on `em` units, so if you find the font size is not ideal, it's better to change the calendar's parent font size and let the calendar scale accordingly than to try to manually adjust each element within the calendar. It's generally a good web design practice to limit the number of font sizes in use, which is why everything in the calendar (other than the default header label) uses the same relative font size by default (`1.0em`).
 * The `z-index` of the weeks and events are managed using `style` declarations, they ensure that events for one week don't overlap the next week.
 
 ## Build Setup
