@@ -422,9 +422,9 @@ export default {
 		getEventTop(e) {
 			// Compute the top position of the event based on its assigned row within the given week.
 			const r = e.eventRow
-			return `calc(${this.eventTop} + ${r}*${this.eventContentHeight} + ${r}*${
-				this.eventBorderHeight
-			})`
+			const h = this.eventContentHeight
+			const b = this.eventBorderHeight
+			return `calc(${this.eventTop} + ${r}*${h} + ${r}*${b})`
 		},
 	},
 }

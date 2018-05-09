@@ -6,7 +6,7 @@
 
 ## 3.0.1 (2018-05-08)
 
-* Added the `eventTop`, `eventContentHeight`, and `eventBorderHeight` props to allow better theming.
+* Added the `eventTop`, `eventContentHeight`, and `eventBorderHeight` props to allow better theming. (#66)
 
 ## 3.0.0 (2018-05-05)
 
