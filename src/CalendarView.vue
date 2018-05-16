@@ -58,7 +58,7 @@
 						<slot :day="day" name="dayContent" />
 				</div>
 				<template v-for="e in getWeekEvents(weekStart)">
-					<slot :event="e" :weekStartDate="weekStart" name="event">
+					<slot :event="e" :weekStartDate="weekStart" :top="getEventTop(e)" name="event">
 						<div
 							:key="e.id"
 							:draggable="enableDragDrop"
