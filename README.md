@@ -87,8 +87,14 @@ In your application, you'll need to:
 * wire up the element's properties and events
 
 Tips:
-* The component will fill its parent's height and width, so be sure the parent has a minimum height that looks good.
-* This is a pure component, it doesn't change its own state, so clicking the previous/next buttons don't do anything unless you provide a `show-date` attribute and update that attribute when the component fires the `show-date-changed` event.
+* The component will fill its parent's height and width, so be sure the parent has a minimum height that is appropriate for the number of weeks and average events per week being shown.
+* The calendar component's default header does not change the calendar's state, but it will listen for the header's `input` event and emit a `show-date-changed` event. The parent component/page should bind a listener to this event and use it to update the `show-date` prop (the new date is passed as the event's argument).
+* To minimize impact of ancestor element layout on the calendar's functionality, it is **recommended** that the parent of the `<calendar-view>` component *only* contain the component, and that the parent have the following styles (#71):
+```CSS
+display: flex;
+flex-direction: column;
+flex-grow: 1;
+```
 
 Here's a minimal application example for a calendar with no events, but styled with the default theme and the US holidays theme:
 

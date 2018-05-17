@@ -21,17 +21,17 @@
 		</slot>
 		<div class="cv-header-days">
 			<template v-for="(label, index) in weekdayNames">
-				<slot :index="index" :label="label" name="dayHeader">
-					<div :key="index" :class="'dow'+index" class="cv-header-day">{{ label }}</div>
+				<slot :index="`${index}-dow`" :label="label" name="dayHeader">
+					<div :key="`${index}-dow`" :class="'dow'+index" class="cv-header-day">{{ label }}</div>
 				</slot>
 			</template>
 		</div>
 		<div class="cv-weeks">
 			<div v-for="(weekStart, weekIndex) in weeksOfPeriod"
-				:key="weekIndex"
+				:key="`${weekIndex}-week`"
 				:class="['cv-week', 'week' + (weekIndex+1), 'ws' + isoYearMonthDay(weekStart)]">
 				<div v-for="(day, dayIndex) in daysOfWeek(weekStart)"
-					:key="dayIndex"
+					:key="`${dayIndex}-day`"
 					:class="[
 						'cv-day',
 						'dow' + day.getDay(),
@@ -444,9 +444,12 @@ header are in the CalendarViewHeader component.
 .cv-wrapper {
 	display: flex;
 	flex-direction: column;
+	flex-grow: 1;
 	height: 100%;
 	min-height: 100%;
 	max-height: 100%;
+	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 .cv-wrapper,

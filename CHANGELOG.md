@@ -1,12 +1,19 @@
 ## Future?
 
-* Mobile-compatible drag and drop
+* Mobile-compatible drag and drop (#21)
 * Handles to drag events to make them longer or shorter
 * Add month name to the 1st of the month when viewing multiple months
+* Provide better information to parent about visible date range (#69)
+
+## 3.0.2 (2018-05-16)
+
+* Added `top` scoped property to the `event` slot (#66, thanks @lochstar!)
+* Tweak CSS for scrolling when ancestor uses `flex-direction: column` (#71)
+* Ensure keys used internally for weeks and days don't collide with numeric event `id` values (#65)
 
 ## 3.0.1 (2018-05-08)
 
-* Added the `eventTop`, `eventContentHeight`, and `eventBorderHeight` props to allow better theming. (#66)
+* Added the `eventTop`, `eventContentHeight`, and `eventBorderHeight` props to allow better theming (#66)
 
 ## 3.0.0 (2018-05-05)
 
