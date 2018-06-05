@@ -537,6 +537,10 @@ header are in the CalendarViewHeader component.
 	background-color: #f7f7f7;
 	border-width: 1px;
 }
+.cv-event:hover {
+	cursor: pointer;
+	width:fit-content !important;
+}
 
 /* Colors */
 
@@ -598,34 +602,41 @@ header are in the CalendarViewHeader component.
 /* Metrics for events spanning dates */
 
 .cv-event.span1 {
+	min-width: calc((100% / 7) - 0.05em);
 	width: calc((100% / 7) - 0.05em);
 }
 
 .cv-event.span2 {
+	min-width: calc((200% / 7) - 0.05em);
 	width: calc((200% / 7) - 0.05em);
 }
 
 .cv-event.span3 {
+	min-width: calc((300% / 7) - 0.05em);
 	width: calc((300% / 7) - 0.05em);
 	text-align: center;
 }
 
 .cv-event.span4 {
+	min-width: calc((400% / 7) - 0.05em);
 	width: calc((400% / 7) - 0.05em);
 	text-align: center;
 }
 
 .cv-event.span5 {
+	min-width: calc((500% / 7) - 0.05em);
 	width: calc((500% / 7) - 0.05em);
 	text-align: center;
 }
 
 .cv-event.span6 {
+	min-width: calc((600% / 7) - 0.05em);
 	width: calc((600% / 7) - 0.05em);
 	text-align: center;
 }
 
 .cv-event.span7 {
+	min-width: calc((700% / 7) - 0.05em);
 	width: calc((700% / 7) - 0.05em);
 	text-align: center;
 }
