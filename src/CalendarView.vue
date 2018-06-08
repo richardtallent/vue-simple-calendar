@@ -540,6 +540,7 @@ header are in the CalendarViewHeader component.
 .cv-event:hover {
 	cursor: pointer;
 	width:fit-content !important;
+	z-index: 1;
 }
 
 /* Colors */
