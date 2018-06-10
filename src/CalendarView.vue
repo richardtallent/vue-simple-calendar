@@ -538,6 +538,12 @@ header are in the CalendarViewHeader component.
 	border-width: 1px;
 }
 
+/* Wrap to show entire event title on hover */
+.cv-wrapper.wrap-event-title-on-hover .cv-event:hover {
+	white-space: normal;
+	z-index: 1;
+}
+
 /* Colors */
 
 .cv-header-days,

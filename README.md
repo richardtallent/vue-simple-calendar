@@ -256,7 +256,7 @@ In addition to slots, this component is designed to allow for significant custom
 Note that the events are _not_ child nodes of the days, they are children of the week and positioned above the days. This allows events to span multiple days.
 
 ```
-div cv-wrapper locale-X yYYYY mMM (past|future) period-X periodCount-X
+div cv-wrapper locale-X yYYYY mMM (past|future) period-X periodCount-X wrap-event-title-on-hover
 	HEADER
 		div cv-header
 			div cv-header-nav
@@ -318,6 +318,9 @@ Each week is numbered, starting with the first week of the visible period.
 
 #### ws<i>YYYY-MM-DD</i>
 Each week also has a class representing the date of the Sunday starting that week. This could be used to style entire weeks that have some special importance.
+
+#### wrap-event-title-on-hover
+If an even title is truncated, this enables an *optional* behavior that will wrap the event to show the entire title when the user hovers over it.
 
 ### Day classes
 
