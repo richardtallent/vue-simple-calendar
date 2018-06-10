@@ -64,7 +64,7 @@
 							:draggable="enableDragDrop"
 							:class="e.classes"
 							:title="e.title"
-                            :style="'top:' + getEventTop(e) + ';' + e.originalEvent.css"
+                            :style="`top:${getEventTop(e)};${e.originalEvent.style}`"
 							class="cv-event"
 							@dragstart="onDragStart(e, $event)"
 							@click.stop="onClickEvent(e)"

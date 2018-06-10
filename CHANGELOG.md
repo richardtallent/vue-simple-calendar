@@ -5,6 +5,10 @@
 * Add month name to the 1st of the month when viewing multiple months
 * Provide better information to parent about visible date range (#69)
 
+## Committed, not released
+
+* Added `style` property to events to allow pass-through of arbitrary CSS attributes (thanks @apalethorpe!)
+
 ## 3.0.2 (2018-05-16)
 
 * Added `top` scoped property to the `event` slot (#66, thanks @lochstar!)
