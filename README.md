@@ -174,7 +174,8 @@ Each event shown on the calendar can have the following properties. `startDate` 
 * `title` - The name of the event shown on the calendar. Defaults to "Untitled".
 * `id` - A unique identifier for the event. Defaults to a randomly-generated string.
 * `url` - The URL associated with the event. The component has no built-in action associated with this, but it does add a "hasUrl" class to the event. To "follow" the URL, you'll need to listen for the `click-event` event and take the appropriate action.
-* `classes` - A String with any additional CSS classes you wish to use for the event.
+* `classes` - A String with any additional CSS classes you wish to assign to the event.
+* **UNRELEASED** `style` - A String with any additional CSS styles you wish to apply to the event.
 
 ## Component Events
 The following Vue events are raised by the component, which you can catch in your calling application to respond to user actions:
@@ -222,7 +223,7 @@ The developer implementing her own header simply needs to create a header compon
 
 The calling application simply wires the @event of the header slot to modify the data element that it feeds to CalendarView's `showDate` prop. No need for date math in the caller.
 
-The following are also passed, as they may be useful to a custom header and are computed internally by the CaledarView:
+The following are also passed, as they may be useful to a custom header and are computed internally by the CalendarView:
 - displayLocale
 - displayFirstDate
 - displayLastDate

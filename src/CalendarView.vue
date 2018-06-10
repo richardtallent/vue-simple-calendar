@@ -64,7 +64,7 @@
 							:draggable="enableDragDrop"
 							:class="e.classes"
 							:title="e.title"
-							:style="'top:' + getEventTop(e)"
+                            :style="`top:${getEventTop(e)};${e.originalEvent.style}`"
 							class="cv-event"
 							@dragstart="onDragStart(e, $event)"
 							@click.stop="onClickEvent(e)"
@@ -370,6 +370,7 @@ export default {
 				if (continued) ep.classes.push("continued")
 				if (this.dayDiff(weekStart, ep.endDate) > 6)
 					ep.classes.push("toBeContinued")
+				if (this.isInPast(ep.endDate)) ep.classes.push("past")
 				if (ep.originalEvent.url) ep.classes.push("hasUrl")
 				for (let d = 0; d < 7; d++) {
 					if (d === startOffset) {
