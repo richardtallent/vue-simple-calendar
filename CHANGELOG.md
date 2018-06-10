@@ -8,6 +8,7 @@
 ## Committed, not released
 
 * Added `style` property to events to allow pass-through of arbitrary CSS attributes (thanks @apalethorpe!)
+* Added optional behavior to wrap to show entire event title on hover (thanks @jiujiuwen!)
 
 ## 3.0.2 (2018-05-16)
 

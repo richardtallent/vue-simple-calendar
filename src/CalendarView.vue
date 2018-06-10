@@ -539,7 +539,7 @@ header are in the CalendarViewHeader component.
 }
 
 /* Wrap to show entire event title on hover */
-.cv-event:hover {
+.cv-wrapper.wrap-event-title-on-hover .cv-event:hover {
 	white-space: normal;
 	z-index: 1;
 }
