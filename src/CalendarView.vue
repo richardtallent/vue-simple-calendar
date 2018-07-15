@@ -120,10 +120,11 @@ export default {
 
 		/*
 		ShowDate, but defaulted to today. Needed both for periodStart below and for the
-		"outside of month" class.
+		"outside of month" class. Any time component passed as part of showDate is discarded.
 		*/
 		defaultedShowDate() {
-			return this.showDate || this.today()
+			if (this.showDate) return this.dateOnly(this.showDate)
+			return this.today()
 		},
 
 		/*
@@ -213,6 +214,8 @@ export default {
 				previousYear: this.getIncrementedPeriod(-12),
 				previousPeriod: this.getIncrementedPeriod(-1),
 				nextPeriod: this.getIncrementedPeriod(1),
+				previousFullPeriod: this.getIncrementedPeriod(-this.displayPeriodCount),
+				nextFullPeriod: this.getIncrementedPeriod(this.displayPeriodCount),
 				nextYear: this.getIncrementedPeriod(12),
 				currentPeriod: this.beginningOfPeriod(
 					this.today(),

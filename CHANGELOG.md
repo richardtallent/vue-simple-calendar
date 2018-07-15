@@ -9,6 +9,8 @@
 
 * Added `style` property to events to allow pass-through of arbitrary CSS attributes (thanks @apalethorpe!)
 * Added optional behavior to wrap to show entire event title on hover (thanks @jiujiuwen!)
+* Fixed where if the passed showDate value has a time component, events on the first of the week on a one-week calendar are not shown. #80 (thanks @MrSnoozles!)
+* Added `previousFullPeriod`/`nextFullPeriod` to `headerProps` to provide more flexibility to how the previous/next buttons operats. #79 (thanks @lochstar!)
 
 ## 3.0.2 (2018-05-16)
 

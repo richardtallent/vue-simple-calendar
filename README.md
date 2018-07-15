@@ -25,6 +25,8 @@
 
 **vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **3.0.2**.
 
+**This repo includes unreleased changes. See release tags for the current version.**
+
 _(For the migration guide from 2.x, please see the CHANGELOG file.)_
 
 There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show events (including multi-day events) on that grid. While the component goes beyond that simple use case, that is still the core focus.
@@ -147,7 +149,7 @@ Here's a minimal application example for a calendar with no events, but styled w
 ## Props
 The following properties are supported, roughly in order of popularity. Remember to use _kebab-case_ when specifying these properties using attributes on the `calendar-view` element (_e.g._, `<calendar-view month-name-format="long">`:
 
-* `showDate` - The period to show by default. Defaults to today's date (user local time).
+* `showDate` - The period to show by default. Defaults to today's date (user local time). Any time component is ignored.
 * `displayPeriodUom` - The period type to show. By default this is `month`, *i.e.*, it shows a calendar in month-sized chunks. Other allowed values are `year` and `week`.
 * `displayPeriodCount` - The *number* of periods to show within the view. For example, if `displayPeriodUom` is `week` and `displayPeriodCount` is 2, the view will show a two-week period.
 * `events` - An array of events to show on the calendar. See _Calendar Event Properties_ below for more details.
@@ -206,16 +208,24 @@ In Vue, a child component MUST only receive props and emit events. This presents
 
 Using scoped slots, the header can receive some data from the CalendarView, but it cannot *change* the CalendarView's directly -- the developer must wire this part up. Thus, it's important for the header to receive data in a way that makes it trivial for the developer to do the wiring.
 
-The end result is that CalendarView passes an object with pre-calculated dates to the header, where the dates correspond to the five buttons on a standard calendar:
-- previousYear
-- previousPeriod (period is flexible, but usually 1 week or 1 month)
-- nextPeriod
-- nextYear
-- currentPeriod
+CalendarView passes an object to the header with a number of values that are useful for rendering a header and date navigation buttons. Here's what the object contains:
 
-Since the CalendarView has some logic around whether the user should be able to navigate to the past or the future, the dates above will be null if the corresponding action is disabled.
+- periodStart: the first date of the `displayPeriodUom` containing `showDate`
+- periodEnd: the last date of the `displayPeriodUom` containing `showDate` (the `displayPeriodCount` setting impacts this)
+- previousYear: one year before `periodStart`
+- previousPeriod: one `displayPeriodUom` before `periodStart` (*regardless* of the `displayPeriodCount` setting)
+- nextPeriod: one `displayPeriodUom` after `periodStart` (*regardless* of the `displayPeriodCount` setting)
+- **UNRELEASED** previousFullPeriod: one `displayPeriodUom` before `periodStart` (takes the `displayPeriodCount` setting into consideration)
+- **UNRELEASED** nextFullPeriod: one `displayPeriodUom` after `periodStart` (takes the `displayPeriodCount` setting into consideration)
+- nextYear: one year after `periodStart`
+- currentPeriod: the date at the beginning of the `displayPeriodUom` containing today's date (user local time)
+- displayLocale: the user's locale setting
+- displayFirstDate: the first date shown in the calendar (may differ from `periodStart`--*e.g.*, if periodStart is June 1, 2018, displayFirstDate will be May 27, 2018)
+- displayLastDate: the last date shown in the calendar (ditto)
+- monthNames: an array of the formatted names of the months to use based on the locale and month format settings
+- fixedEvents: an copy of the `events` property, normalized to all have start/end dates, "Untitled" if there is no title, etc.
 
-Two additional dates are passed: `periodStart` and `periodEnd`, for the current shown period.
+Since the CalendarView has some logic around whether the user should be able to navigate to the past or the future, some of these dates will be null if the corresponding action is disabled.
 
 The developer implementing her own header simply needs to create a header component that:
 - Receives these dates and displays them with appropriate UI elements
@@ -223,14 +233,9 @@ The developer implementing her own header simply needs to create a header compon
 
 The calling application simply wires the @event of the header slot to modify the data element that it feeds to CalendarView's `showDate` prop. No need for date math in the caller.
 
-The following are also passed, as they may be useful to a custom header and are computed internally by the CalendarView:
-- displayLocale
-- displayFirstDate
-- displayLastDate
-- monthNames
-- fixedEvents
-
 The default header is actually also implemented as a child component, `CalendarViewHeader`. This gives clean separation of concerns, and ensures that custom headers can *at least* do anything the default header can do.
+
+**UNRELEASED** Note above that both `previousPeriod` and `previousFullPeriod` are provided, as well as `nextPeriod` and `nextFullPeriod`. The reason for this distinction is to allow the developer to decide how the calendar's Previous and Next buttons should move through time if `displayPeriodCount` is greater than 1. My personal preference is to move forward and backward by one week / month, allowing the user to pinpoint the exact date window they wish to see. But in some applications (a "quarterly" calednar, for example, or a calendar with set two-week periods), it may be better for the buttons to jump backward and forward based on the `displayPeriodCount` setting. This gives the developer both options -- just choose which interaction you want to use, and use those dates to set the new `showDate`.
 
 ### dayHeader
 This optional named slot **replaces** the default `div.day` elements that appear in the column headers for each day of the week. If all you need to do is change how the names are shown, it's probably better to override the `locale` and/or `weekdayNameFormat` property. This slot is intended for situations where you need to override the markup within each header cell. For example, if you want each day of the week to be clickable.
