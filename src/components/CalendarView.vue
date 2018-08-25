@@ -1,24 +1,19 @@
 <template>
 	<div :class="[
-			'cv-wrapper',
-			'locale-' + languageCode(displayLocale),
-			'locale-' + displayLocale,
-			'y' + periodStart.getFullYear(),
-			'm' + paddedMonth(periodStart),
-			'period-' + displayPeriodUom,
-			'periodCount-' + displayPeriodCount,
-			{
-				past: isPastMonth(periodStart),
-				future: isFutureMonth(periodStart),
-				noIntl: !supportsIntl,
-			}]">
-		<slot :header-props="headerProps" name="header">
-			<calendar-view-header
-				:header-props="headerProps"
-				@input="onChangeDate">
-				<template slot="label">{{ periodLabel }}</template>
-			</calendar-view-header>
-		</slot>
+		'cv-wrapper',
+		'locale-' + languageCode(displayLocale),
+		'locale-' + displayLocale,
+		'y' + periodStart.getFullYear(),
+		'm' + paddedMonth(periodStart),
+		'period-' + displayPeriodUom,
+		'periodCount-' + displayPeriodCount,
+		{
+			past: isPastMonth(periodStart),
+			future: isFutureMonth(periodStart),
+			noIntl: !supportsIntl,
+		}
+	]">
+		<slot :header-props="headerProps" name="header" />
 		<div class="cv-header-days">
 			<template v-for="(label, index) in weekdayNames">
 				<slot :index="`${index}-dow`" :label="label" name="dayHeader">
@@ -53,9 +48,10 @@
 					@drop.prevent="onDrop(day, $event)"
 					@dragover.prevent="onDragOver(day)"
 					@dragenter.prevent="onDragEnter(day, $event)"
-					@dragleave.prevent="onDragLeave(day, $event)">
-						<div class="cv-day-number">{{ day.getDate() }}</div>
-						<slot :day="day" name="dayContent" />
+					@dragleave.prevent="onDragLeave(day, $event)"
+				>
+					<div class="cv-day-number">{{ day.getDate() }}</div>
+					<slot :day="day" name="dayContent" />
 				</div>
 				<template v-for="e in getWeekEvents(weekStart)">
 					<slot :event="e" :weekStartDate="weekStart" :top="getEventTop(e)" name="event">
@@ -64,7 +60,7 @@
 							:draggable="enableDragDrop"
 							:class="e.classes"
 							:title="e.title"
-                            :style="`top:${getEventTop(e)};${e.originalEvent.style}`"
+							:style="`top:${getEventTop(e)};${e.originalEvent.style}`"
 							class="cv-event"
 							@dragstart="onDragStart(e, $event)"
 							@click.stop="onClickEvent(e)"
@@ -88,26 +84,27 @@ export default {
 	mixins: [CalendarMathMixin],
 
 	props: {
-		showDate: { type: Date, default: () => undefined },
-		displayPeriodUom: { type: String, default: () => "month" },
-		displayPeriodCount: { type: Number, default: () => 1 },
-		locale: { type: String, default: () => undefined },
-		monthNameFormat: { type: String, default: () => "long" },
-		weekdayNameFormat: { type: String, default: () => "short" },
-		showEventTimes: { type: Boolean, default: () => false },
+		showDate: { type: Date, default: undefined },
+		displayPeriodUom: { type: String, default: "month" },
+		displayPeriodCount: { type: Number, default: 1 },
+		locale: { type: String, default: undefined },
+		monthNameFormat: { type: String, default: "long" },
+		weekdayNameFormat: { type: String, default: "short" },
+		showEventTimes: { type: Boolean, default: false },
 		timeFormatOptions: { type: Object, default: () => {} },
-		disablePast: { type: Boolean, default: () => false },
-		disableFuture: { type: Boolean, default: () => false },
-		enableDragDrop: { type: Boolean, default: () => false },
-		startingDayOfWeek: { type: Number, default: () => 0 },
+		disablePast: { type: Boolean, default: false },
+		disableFuture: { type: Boolean, default: false },
+		enableDragDrop: { type: Boolean, default: false },
+		startingDayOfWeek: { type: Number, default: 0 },
 		events: { type: Array, default: () => [] },
 		dateClasses: { type: Object, default: () => {} },
-		eventTop: { type: String, default: () => "1.4em" },
-		eventContentHeight: { type: String, default: () => "1.4em" },
-		eventBorderHeight: { type: String, default: () => "2px" },
+		eventTop: { type: String, default: "1.4em" },
+		eventContentHeight: { type: String, default: "1.4em" },
+		eventBorderHeight: { type: String, default: "2px" },
+		onPeriodChange: { type: Function, default: undefined },
 	},
 
-	data: () => ({ currentDragEvent: null }),
+	data: () => ({ currentDragEvent: null, sentInitialPeriodChangeEvent: false }),
 
 	computed: {
 		/*
@@ -207,7 +204,6 @@ export default {
 				this.monthNames
 			)
 		},
-
 		headerProps() {
 			return {
 				// Dates for UI navigation
@@ -231,8 +227,32 @@ export default {
 				displayLastDate: this.displayLastDate,
 				monthNames: this.monthNames,
 				fixedEvents: this.fixedEvents,
+				periodLabel: this.periodLabel,
 			}
 		},
+		periodRange() {
+			return {
+				periodStart: this.periodStart,
+				periodEnd: this.periodEnd,
+				displayFirstDate: this.displayFirstDate,
+				displayLastDate: this.displayLastDate,
+			}
+		},
+	},
+
+	watch: {
+		periodRange(newVal) {
+			if (this.onPeriodChange) this.onPeriodChange(newVal)
+		},
+	},
+
+	updated() {
+		// watch doesn't send an event on initial computed property computation, and mounted()
+		// and updated() can't emit an event properly, so we hack a notification to the parent
+		// with the computed period in view.
+		if (this.sentInitialPeriodChangeEvent) return
+		this.sentInitialPeriodChangeEvent = true
+		if (this.onPeriodChange) this.onPeriodChange(this.periodRange)
 	},
 
 	methods: {
@@ -250,9 +270,9 @@ export default {
 			this.$emit("click-event", e, day)
 		},
 
-		onChangeDate(d) {
-			this.$emit("show-date-change", d)
-		},
+		//onChangeDate(d) {
+		//	this.$emit("show-date-change", d)
+		//},
 
 		// ******************************
 		// Date Periods

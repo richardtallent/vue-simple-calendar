@@ -23,11 +23,11 @@
 
 ## Introduction
 
-**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **3.0.2**.
+**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **4.0.0**.
 
 **This repo includes unreleased changes. See release tags for the current version.**
 
-_(For the migration guide from 2.x, please see the CHANGELOG file.)_
+_(For the migration guide from 3.x, please see the CHANGELOG.)_
 
 There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show events (including multi-day events) on that grid. While the component goes beyond that simple use case, that is still the core focus.
 
@@ -42,27 +42,27 @@ https://github.com/richardtallent/vue-simple-calendar-sample
 * If there are too many events to see in a week, you can scroll to see the others.
 * If there are too many weeks to see in the calendar component, you can scroll to see the others.
 * Optional support for dragging and dropping events between dates.
-* Localized automatically (overridable).
+* Automatic localization / internationalization (can be overridden).
 * Lightweight!
 * Flexbox layout (look ma, no tables!).
 * No external dependencies (Moment, JQuery, etc.).
 * User events (clicks, drags, etc.) are emitted to the parent component.
 * Weeks can start on any day of the week (defaults to Sunday).
 * Easy to theme (using CSS) to integrate with your own site
-* Slot support for more complex customization
+* Easy to customize using Vue slots
 
 What this component *doesn't* try to do:
 * There will be no "agenda" view (time-of-day grid). Adding this view would require too much additional complexity.
 * There is no interface for managing events. This is far too use-specific.
 * There is no built-in AJAX mechanism. This is also far too use-specific.
-* Only the Gregorian calendar is supported.
+* Only the Gregorian calendar is supported (7-day weeks, etc.).
 * It is not yet possible to drag events in a way that would add or remove days. This may be added in the future.
 * There is no ability to drag and select a set of days (only single-day clicks are emitted as events). This may be added in the future.
 
 ## Browser compatibility
 The *intent* is to maintain compatibility with Chrome, Firefox, IE11, Edge, OS X Safari, iOS Safari, and the Android Silk browser. Note that this component is designed first for desktop web applications, not mobile, so while the component may *operate* on a mobile device, the limited resolution may not allow for much in the way of useful functionality.
 
-The ES6 language features used in this component are converted to ES5 by Babel during compilation. However, if you're targeting IE11 or another ancient browser, you'll need to import `babel-polyfill` in your webpack entry file so it sets up the additional functions not supported by your browser. These polyfills can't be included in a project more than once, which is why they are not used in the compilation step for this component prior to being published on npm. If you aren't using webpack, you'll need to include the polyfill using a `<script>` tag. The details of using these polyfills is outside the scope of this documentation.
+The ES6 language features used in this component are converted to ES5 by Babel using webpack. However, if you're targeting IE11 or another ancient browser, you'll need to import `babel-polyfill` in your webpack entry file so it sets up the additional functions not supported by your browser. These polyfills can't be included in a project more than once, which is why they are not used in the compilation step for this component prior to being published on npm. If you aren't using webpack, you'll need to include the polyfill using a `<script>` tag. The details of using these polyfills is outside the scope of this documentation.
 
 Drag and drop only works on desktop browsers -- the drag events on touch devices are very different, I haven't had time to dig into them yet.
 
@@ -78,19 +78,19 @@ _(This assumes you already have a web application set up for using Vue. If you'r
 
 Install the component using npm:
 
-```
+```JavaScript
 npm i --save vue-simple-calendar
 ```
 
 In your application, you'll need to:
 * import the component
 * import the default theme or any other theme you want to use (CSS)
-* create the `calendar-view` custom element
-* wire up the element's properties and events
+* create the `calendar-view` and `calendar-view-header` components
+* wire up the properties and events
 
 Tips:
 * The component will fill its parent's height and width, so be sure the parent has a minimum height that is appropriate for the number of weeks and average events per week being shown.
-* The calendar component's default header does not change the calendar's state, but it will listen for the header's `input` event and emit a `show-date-changed` event. The parent component/page should bind a listener to this event and use it to update the `show-date` prop (the new date is passed as the event's argument).
+* The default calendar header emits an `input` event when a user clicks a button in the header to move the calendar backward or forward through time. The event's argument is the new date to be shown. You have to handle this event and pass the date back to the calendar to change the view.
 * To minimize impact of ancestor element layout on the calendar's functionality, it is **recommended** that the parent of the `<calendar-view>` component *only* contain the component, and that the parent have the following styles (#71):
 ```CSS
 display: flex;
@@ -106,9 +106,13 @@ Here's a minimal application example for a calendar with no events, but styled w
 		<h1>My Calendar</h1>
 		<calendar-view
 			:show-date="showDate"
-			@show-date-change="setShowDate"
-			class="theme-default holiday-us-traditional holiday-us-official"
-		/>
+			class="theme-default holiday-us-traditional holiday-us-official">
+			<calendar-view-header
+				slot="header"
+				slot-scope="t"
+				:header-props="t.headerProps"
+				@input="setShowDate" />
+		</calendar-view>
 	</div>
 </template>
 <script>
@@ -167,6 +171,7 @@ The following properties are supported, roughly in order of popularity. Remember
 * `eventTop` - Optional string of a CSS height to be used as the baseline for where events are positioned relative the top of the week. By default, this is `1.4em`, the height of the standard `cv-day-number` element.
 * `eventContentHeight` - Optional CSS string of the total height of your events, *not including* borders. The default is `1.4em` (1.0 from the font, 0.2 * 2 from the padding.). You would only set this if you're overriding the event height. This doesn't actually change the event height, it is only used to position the events below one another.
 * `eventBorderHeight` - Optional CSS string of the sum of your events' top and bottom borders. The default is `2px`. You would only set this if you're overriding the event top and/or bottom border width. This doesn't actually change the borders, it is only used to position the events below one another.
+* **NEW IN 4.0** `onPeriodChange` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `events` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
 
 ## Calendar Event Properties
 Each event shown on the calendar can have the following properties. `startDate` is required, and `title` and `id` are strongly recommended.
@@ -177,14 +182,13 @@ Each event shown on the calendar can have the following properties. `startDate` 
 * `id` - A unique identifier for the event. Defaults to a randomly-generated string.
 * `url` - The URL associated with the event. The component has no built-in action associated with this, but it does add a "hasUrl" class to the event. To "follow" the URL, you'll need to listen for the `click-event` event and take the appropriate action.
 * `classes` - A String with any additional CSS classes you wish to assign to the event.
-* **UNRELEASED** `style` - A String with any additional CSS styles you wish to apply to the event.
+* **NEW IN 4.0** `style` - A String with any additional CSS styles you wish to apply to the event.
 
 ## Component Events
 The following Vue events are raised by the component, which you can catch in your calling application to respond to user actions:
 
 * `click-date(date)`: fired when user clicks a date
 * `click-event(event)`: fired when user clicks on an event
-* `show-date-change(date)`: fired when user goes to a different period. The date passed is the first of the period in view (days before and after the period may also be visible).
 * `drag-start(event)`: fires when user starts dragging an event
 * `drag-enter-date(event, date)`: fires when an event is dragged over a date
 * `drag-leave-date(event, date)`: fires when an event is dragged out of a date without dropping it there
@@ -196,27 +200,23 @@ The following Vue events are raised by the component, which you can catch in you
 ## Slots
 
 ### header
-This optional named slot **replaces** the default `div.cv-header` (which contains the navigation buttons and calendar's current period). For example, this would effectively result in an empty span in place of the header (you could also just use `.cv-header {display: none}` in your CSS to hide the default header):
+This named slot contains the component you want to use as the calendar's header. Generally, this would show the current date range, and allow the user to navigate back and forth through time. If you don't provide a component for this slot, there will be no header, just the calendar grid. This component comes with a nice default header component, `CalendarViewHeader`, which you can either use directly, or use as a template for creating your own. (Prior to 4.0, if you didn't provide a component, a default header would be shown. That is no longer the case for reasons explained in the CHANGELOG.)
 
 ```HTML
-<calendar-view>
-	<span slot="header"/>
+<calendar-view :show-date="myShowDate">
+	<calendar-view-header slot="header" slot-scope="{ headerProps }" :header-props="headerProps" @input="setMyShowDate" />
 </calendar-view>
 ```
 
-In Vue, a child component MUST only receive props and emit events. This presents an issue for developing calendar headers -- the CalendarView component contains the calendar's state and complex date and render logic, while the desire is to allow developers to swap out the header completely without having to do a bunch of date math or additional logic.
-
-Using scoped slots, the header can receive some data from the CalendarView, but it cannot *change* the CalendarView's directly -- the developer must wire this part up. Thus, it's important for the header to receive data in a way that makes it trivial for the developer to do the wiring.
-
-CalendarView passes an object to the header with a number of values that are useful for rendering a header and date navigation buttons. Here's what the object contains:
+The parent `calendar-view` passes a property called `headerProps` to the header component. This property includes all of these values (basically, anything you would normally need to render a calendar header):
 
 - periodStart: the first date of the `displayPeriodUom` containing `showDate`
 - periodEnd: the last date of the `displayPeriodUom` containing `showDate` (the `displayPeriodCount` setting impacts this)
 - previousYear: one year before `periodStart`
 - previousPeriod: one `displayPeriodUom` before `periodStart` (*regardless* of the `displayPeriodCount` setting)
 - nextPeriod: one `displayPeriodUom` after `periodStart` (*regardless* of the `displayPeriodCount` setting)
-- **UNRELEASED** previousFullPeriod: one `displayPeriodUom` before `periodStart` (takes the `displayPeriodCount` setting into consideration)
-- **UNRELEASED** nextFullPeriod: one `displayPeriodUom` after `periodStart` (takes the `displayPeriodCount` setting into consideration)
+- **NEW IN 4.0** previousFullPeriod: one `displayPeriodUom` before `periodStart` (takes the `displayPeriodCount` setting into consideration)
+- **NEW IN 4.0** nextFullPeriod: one `displayPeriodUom` after `periodStart` (takes the `displayPeriodCount` setting into consideration)
 - nextYear: one year after `periodStart`
 - currentPeriod: the date at the beginning of the `displayPeriodUom` containing today's date (user local time)
 - displayLocale: the user's locale setting
@@ -225,17 +225,13 @@ CalendarView passes an object to the header with a number of values that are use
 - monthNames: an array of the formatted names of the months to use based on the locale and month format settings
 - fixedEvents: an copy of the `events` property, normalized to all have start/end dates, "Untitled" if there is no title, etc.
 
-Since the CalendarView has some logic around whether the user should be able to navigate to the past or the future, some of these dates will be null if the corresponding action is disabled.
+Since `CalendarView` has some logic around whether the user should be able to navigate to the past or the future, some of these dates will be null if the corresponding action is disabled.
 
-The developer implementing her own header simply needs to create a header component that:
-- Receives these dates and displays them with appropriate UI elements
-- Emits an event to change the date (suggested event name: input)
+The developer implementing her own header simply needs to create a header component that, like the default header component:
+- Receives this information and displays it with appropriate UI elements (suggested property name: `headerProps`)
+- Emits an event when the user wants to change the calendar period (suggested event name: `input`)
 
-The calling application simply wires the @event of the header slot to modify the data element that it feeds to CalendarView's `showDate` prop. No need for date math in the caller.
-
-The default header is actually also implemented as a child component, `CalendarViewHeader`. This gives clean separation of concerns, and ensures that custom headers can *at least* do anything the default header can do.
-
-**UNRELEASED** Note above that both `previousPeriod` and `previousFullPeriod` are provided, as well as `nextPeriod` and `nextFullPeriod`. The reason for this distinction is to allow the developer to decide how the calendar's Previous and Next buttons should move through time if `displayPeriodCount` is greater than 1. My personal preference is to move forward and backward by one week / month, allowing the user to pinpoint the exact date window they wish to see. But in some applications (a "quarterly" calednar, for example, or a calendar with set two-week periods), it may be better for the buttons to jump backward and forward based on the `displayPeriodCount` setting. This gives the developer both options -- just choose which interaction you want to use, and use those dates to set the new `showDate`.
+**NEW IN 4.0** Note above that both `previousPeriod` and `previousFullPeriod` are provided, as well as `nextPeriod` and `nextFullPeriod`. The reason for this distinction is to allow the developer to decide how the calendar's Previous and Next buttons should move through time if `displayPeriodCount` is greater than 1. My personal preference is to move forward and backward by one week / month, allowing the user to pinpoint the exact date window they wish to see. But in some applications (a "quarterly" calednar, for example, or a calendar with set two-week periods), it may be better for the buttons to jump backward and forward based on the `displayPeriodCount` setting. This gives the developer both options -- just choose which interaction you want to use, and use those dates to set the new `showDate`.
 
 ### dayHeader
 This optional named slot **replaces** the default `div.day` elements that appear in the column headers for each day of the week. If all you need to do is change how the names are shown, it's probably better to override the `locale` and/or `weekdayNameFormat` property. This slot is intended for situations where you need to override the markup within each header cell. For example, if you want each day of the week to be clickable.

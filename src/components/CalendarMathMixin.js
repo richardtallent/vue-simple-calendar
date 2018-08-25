@@ -201,11 +201,10 @@ export default {
 			return d.getMonth() !== this.addDays(d, 1).getMonth()
 		},
 		isSelectedDay(d) {
-			var day = Object.keys(this.dateClasses).find(day => this.isSameDate(
-				this.fromIsoStringToLocalDate(day), d
-			));
-
-			return day ? this.dateClasses[day] : undefined;
+			var day = Object.keys(this.dateClasses).find(day =>
+				this.isSameDate(this.fromIsoStringToLocalDate(day), d)
+			)
+			return day ? this.dateClasses[day] : undefined
 		},
 		// Courtesy https://stackoverflow.com/questions/33908299/javascript-parse-a-string-to-date-as-local-time-zone/42626876#42626876
 		fromIsoStringToLocalDate(s) {
@@ -289,9 +288,13 @@ export default {
 				// Events without a title are untitled
 				title: event.title || "Untitled",
 				// Events without an id receive an auto-generated ID
-				id: event.id || "e" + Math.random().toString(36).substr(2, 10),
+				id:
+					event.id ||
+					"e" +
+						Math.random()
+							.toString(36)
+							.substr(2, 10),
 			}
 		},
-
 	},
 }

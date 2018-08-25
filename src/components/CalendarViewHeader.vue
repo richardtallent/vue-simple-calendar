@@ -1,4 +1,3 @@
-
 <template>
 	<div class="cv-header">
 		<div class="cv-header-nav">
@@ -9,7 +8,9 @@
 			<button class="currentPeriod" @click="onInput(headerProps.currentPeriod)">Today</button>
 		</div>
 		<div class="periodLabel">
-			<slot name="label"/>
+			<slot name="label">
+				{{ headerProps.periodLabel }}
+			</slot>
 		</div>
 	</div>
 </template>

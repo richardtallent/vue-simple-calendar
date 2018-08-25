@@ -5,12 +5,63 @@
 * Add month name to the 1st of the month when viewing multiple months
 * Provide better information to parent about visible date range (#69)
 
-## Committed, not released
+## 4.0.0 (committed, but not released on npm yet)
+
+### Breaking changes
+
+#### Upgraded to vue-cli 3
+This involved some changes to the source folder structure, as well as to the compiled files in the "dist" folder. Webpack-based imports of the components should be unaffected, same with CSS files. However, if you reference files directly in the dist folder (such as working in a non-webpack environment), the filenames have changed. Also, CalendarMathMixin is now part of the exported module, so if you're using webpack, you shouldn't need to reference the distribution file directly anymore. (And due to other changes, you may not need it anyway!)
+
+#### A header component is *REQUIRED* if you want a header
+This is the biggest change. Many users want to heavily customize the header using slots, and to ensure feature parity and minimize edge cases, I decided to make the default header component *opt-in*. This library still includes the same default header component (CalendarViewHeader), but to see it, you should put it in the `header` named slot. Then, if you decide to create your own header, you can swap it out with ease.
+
+Here's a minimal example:
+
+```HTML
+<calendar-view :show-date="dt">
+	<calendar-view-header slot="header" slot-scope="{ headerProps }" :header-props="headerProps" @input="setShowDate" />
+</calendar-view>
+```
+
+```JavaScript
+import CalendarView from "vue-simple-calendar"
+import CalendarViewHeader from "vue-simple-calendar"
+
+export default {
+	name: "App",
+	data: () ({ dt: new Date() })
+	components: {
+		CalendarView,
+		CalendarViewHeader,
+	},
+	methods: {
+		setShowDate(newValue) {
+			this.dt = newValue
+		}
+	}
+	[...]
+}
+```
+
+The example above uses ES6 concepts and webpack's `import` statement, so some adjustments are needed if you're instantiating this component in a file that isn't compiled via webpack and babel.
+
+#### The show-date-change event no longer exists
+The `show-date-change` event was emitted by `CalendarView` *on behalf of* the default header. Since `CalendarView` is now decoupled from the default header, the purpose of this event is now moot. If you're using the default header component, put an `@input` listener on it instead. If you are using your own header component, you can decide how it should communicate with your app if the header includes UI components the user can interact with.
+
+#### New property: onPeriodChange
+This property sounds like an event, and it is, *sort of*. It's an optional `prop` that takes a *function* as its argument. The function is invoked whenever the date range being shown by the calendar has changed. It passes a single argument to the function, an object with the keys `periodStart` and `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). The intent of this property is to let the parent know what is being shown on the calendar, which the parent can then use to, for example, query a back-end database to update the event list, or update another component with information about the same period.
+
+This was the solution I landed on in response to the question I had on issue #69. I tried just emitting an event, but the initial calculation of a computed property doesn't fire `watch` (even with the "immediate" flag). I tried to use `mounted` or `updated` as well, but they initially fire before events can fire properly. Functional properties is an oft-ignored feature of Vue, but in this case I believe it was the right call. It is fired once after the component updates the first time, and anytime thereafter that a change to any of the other props results in a change in the calendar's current date range.
+
+Note that these properties are also passed to the header slot as part of `headerProps`, so you don't need to wire them to your header.
+
+### Bug fixes and non-breaking changes
 
 * Added `style` property to events to allow pass-through of arbitrary CSS attributes (thanks @apalethorpe!)
 * Added optional behavior to wrap to show entire event title on hover (thanks @jiujiuwen!)
 * Fixed where if the passed showDate value has a time component, events on the first of the week on a one-week calendar are not shown. #80 (thanks @MrSnoozles!)
 * Added `previousFullPeriod`/`nextFullPeriod` to `headerProps` to provide more flexibility to how the previous/next buttons operats. #79 (thanks @lochstar!)
+* Added `label` to `headerProps`, as part of the move to get rid of th default header and require use of the header slot.
 
 ## 3.0.2 (2018-05-16)
 
