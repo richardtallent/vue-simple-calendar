@@ -2,10 +2,9 @@
 
 * Mobile-compatible drag and drop (#21)
 * Handles to drag events to make them longer or shorter
-* Add month name to the 1st of the month when viewing multiple months
-* Provide better information to parent about visible date range (#69)
+* Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
 
-## 4.0.0 (committed, but not released on npm yet)
+## 4.0.0 (2018-08-25)
 
 ### Breaking changes
 
