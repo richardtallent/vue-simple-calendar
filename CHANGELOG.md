@@ -28,8 +28,7 @@ Here's a minimal example:
 ```
 
 ```JavaScript
-import CalendarView from "vue-simple-calendar"
-import CalendarViewHeader from "vue-simple-calendar"
+import { CalendarView, CalendarViewHeader } from "vue-simple-calendar"
 
 export default {
 	name: "App",
@@ -58,6 +57,16 @@ This property sounds like an event, and it is, *sort of*. It's an optional `prop
 This was the solution I landed on in response to the question I had on issue #69. I tried just emitting an event, but the initial calculation of a computed property doesn't fire `watch` (even with the "immediate" flag). I tried to use `mounted` or `updated` as well, but they initially fire before events can fire properly. Functional properties is an oft-ignored feature of Vue, but in this case I believe it was the right call. It is fired once after the component updates the first time, and anytime thereafter that a change to any of the other props results in a change in the calendar's current date range.
 
 Note that these properties are also passed to the header slot as part of `headerProps`, so you don't need to wire them to your header.
+
+#### No default export
+
+The `vue-simple-calendar` main bundle now includes `CalendarView`, `CalendarViewHeader`, and `CalendarViewMixin`. This makes more sense, particularly since the header will need to be imported in any apps that want to use it, but it also means your `import` statements need to specify which module you're importing (there is no default export). In most cases, your import should look like this:
+
+```JavaScript
+import { CalendarView, CalendarViewHeader } from "vue-simple-calendar"
+```
+
+In short, the curly braces are important.
 
 ### Bug fixes and non-breaking changes
 
