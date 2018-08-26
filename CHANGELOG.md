@@ -4,6 +4,11 @@
 * Handles to drag events to make them longer or shorter
 * Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
 
+## 4.0.1, 4.0.2 (2018-08-25)
+
+* Fix main setting
+* Fix exports
+
 ## 4.0.0 (2018-08-25)
 
 ### Breaking changes

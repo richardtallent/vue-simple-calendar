@@ -5,8 +5,8 @@ import CalendarMathMixin from "./CalendarMathMixin.js"
 Vue.config.productionTip = false
 
 const Components = {
-	CalendarView,
-	CalendarViewHeader,
+	CalendarView: CalendarView,
+	CalendarViewHeader: CalendarViewHeader,
 }
 
 Object.keys(Components).forEach(name => {
@@ -15,4 +15,4 @@ Object.keys(Components).forEach(name => {
 
 // Export the compiled Vue components, and also the mixin for those who wish to use
 // those methods in their own custom headers, etc.
-export default { ...Components, CalendarMathMixin }
+export { CalendarView, CalendarViewHeader, CalendarMathMixin }
