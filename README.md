@@ -403,7 +403,7 @@ This project was inspired by Monthly.js, a JQuery-based control I've contributed
 (Ok, not really frequently-asked, but just random stuff.)
 
 #### Why Vue?
-Because Vue is awesome. I've been using it a few months in production, and I've slowly migrated my applications from ExtJS, JQuery, and Riot to Vue components. If you prefer React or Angular, it should be reasonably easy to port it. If you do, please let me know, maybe we can coordinate on feature upgrades!
+Because Vue is awesome. I've been using it since early 2017 in production, and I've migrated my applications from ExtJS, JQuery, and Riot to Vue components. If you prefer React or Angular, it should be reasonably easy to port it. If you do, please let me know, maybe we can coordinate on feature upgrades!
 
 #### Can you add "X" feature?
 Maybe. Depends if it fits the core functionality of viewing a calendar grid. I don't want to create something that replicates all possible calendar views, and definitely don't want to add functionality for creating or editing events (that should be handled by the application/component hosting the view).
