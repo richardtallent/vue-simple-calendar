@@ -117,8 +117,8 @@ Here's a minimal application example for a calendar with no events, but styled w
 	import { CalendarView, CalendarViewHeader } from "vue-simple-calendar"
 	// The next two lines are processed by webpack. If you're using the component without webpack compilation,
 	// you should just create <link> elements for these. Both are optional, you can create your own theme if you prefer.
-	require("vue-simple-calendar/dist/static/css/default.css")
-	require("vue-simple-calendar/dist/static/css/holidays-us.css")
+	require("vue-simple-calendar/static/css/default.css")
+	require("vue-simple-calendar/static/css/holidays-us.css")
 
 	export default {
 		name: 'app',
