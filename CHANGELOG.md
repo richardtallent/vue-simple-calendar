@@ -4,6 +4,13 @@
 * Handles to drag events to make them longer or shorter
 * Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
 
+## 4.1.0 (2018-10-05)
+
+* Fix where dowX class improperly assigned when startingDayOfWeek != 0 (#93)
+* Add pseudo-hover class (isHovered) to all event elements in view whose id matches the event being hovered (#95)
+* Renamed prop `onPeriodChange` to `periodChangedCallback` to resolve issue for JSX users (#94) **BREAKING CHANGE**
+* Hopefully where initial call of periodChangedCallback was not firing for all users, or was firing duplicates (could not reproduce, #94, #98)
+
 ## 4.0.1, 4.0.2 (2018-08-25)
 
 * Fix main setting
@@ -51,15 +58,14 @@ The example above uses ES6 concepts and webpack's `import` statement, so some ad
 #### The show-date-change event no longer exists
 The `show-date-change` event was emitted by `CalendarView` *on behalf of* the default header. Since `CalendarView` is now decoupled from the default header, the purpose of this event is now moot. If you're using the default header component, put an `@input` listener on it instead. If you are using your own header component, you can decide how it should communicate with your app if the header includes UI components the user can interact with.
 
-#### New property: onPeriodChange
-This property sounds like an event, and it is, *sort of*. It's an optional `prop` that takes a *function* as its argument. The function is invoked whenever the date range being shown by the calendar has changed. It passes a single argument to the function, an object with the keys `periodStart` and `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). The intent of this property is to let the parent know what is being shown on the calendar, which the parent can then use to, for example, query a back-end database to update the event list, or update another component with information about the same period.
+#### New property: onPeriodChange (NOTE: renamed in 4.1 to periodChangedCallback)
+This property sounds like an event, and it is, *sort of*. It's an optional `prop` that takes a *function* as its argument. The function is invoked whenever the date range being shown by the calendar has changed (and also when the component is initialized). It passes a single argument to the function, an object with the keys `periodStart` and `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). The intent of this property is to let the parent know what is being shown on the calendar, which the parent can then use to, for example, query a back-end database to update the event list, or update another component with information about the same period.
 
-This was the solution I landed on in response to the question I had on issue #69. I tried just emitting an event, but the initial calculation of a computed property doesn't fire `watch` (even with the "immediate" flag). I tried to use `mounted` or `updated` as well, but they initially fire before events can fire properly. Functional properties is an oft-ignored feature of Vue, but in this case I believe it was the right call. It is fired once after the component updates the first time, and anytime thereafter that a change to any of the other props results in a change in the calendar's current date range.
+This was the solution I landed on in response to the question I had on issue #69. While `watch` with `immediate` can be used to see when the period changes, a watch handler will *not* emit an event during initialization (`this.$emit` does nothing). I also tried using `mounted` or `updated` as well, but they have the same problem--you can't emit events during component initialization. `Function` props are an oft-ignored feature of Vue, but in this case I believe it was the right call. It is fired once after the component updates the first time, and anytime thereafter that a change to any of the other props results in a change in the calendar's current date range.
 
-Note that these properties are also passed to the header slot as part of `headerProps`, so you don't need to wire them to your header.
+Note: these date ranges are also passed to the header slot as part of `headerProps`, so you don't need to wire them to your header.
 
 #### No default export
-
 The `vue-simple-calendar` main bundle now includes `CalendarView`, `CalendarViewHeader`, and `CalendarViewMixin`. This makes more sense, particularly since the header will need to be imported in any apps that want to use it, but it also means your `import` statements need to specify which module you're importing (there is no default export). In most cases, your import should look like this:
 
 ```JavaScript

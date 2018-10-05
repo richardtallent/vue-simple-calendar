@@ -16,8 +16,8 @@
 		<slot :header-props="headerProps" name="header" />
 		<div class="cv-header-days">
 			<template v-for="(label, index) in weekdayNames">
-				<slot :index="`${index}-dow`" :label="label" name="dayHeader">
-					<div :key="`${index}-dow`" :class="'dow'+index" class="cv-header-day">{{ label }}</div>
+				<slot :index="getColumnDOWClass(index)" :label="label" name="dayHeader">
+					<div :key="getColumnDOWClass(index)" :class="getColumnDOWClass(index)" class="cv-header-day">{{ label }}</div>
 				</slot>
 			</template>
 		</div>
@@ -26,10 +26,10 @@
 				:key="`${weekIndex}-week`"
 				:class="['cv-week', 'week' + (weekIndex+1), 'ws' + isoYearMonthDay(weekStart)]">
 				<div v-for="(day, dayIndex) in daysOfWeek(weekStart)"
-					:key="`${dayIndex}-day`"
+					:key="getColumnDOWClass(dayIndex)"
 					:class="[
 						'cv-day',
-						'dow' + day.getDay(),
+						getColumnDOWClass(dayIndex),
 						'd' + isoYearMonthDay(day),
 						'd' + isoMonthDay(day),
 						'd' + paddedDay(day),
@@ -63,6 +63,8 @@
 							:style="`top:${getEventTop(e)};${e.originalEvent.style}`"
 							class="cv-event"
 							@dragstart="onDragStart(e, $event)"
+							@mouseenter="onMouseEnter(e)"
+							@mouseleave="onMouseLeave"
 							@click.stop="onClickEvent(e)"
 							v-html="getEventTitle(e)"/>
 					</slot>
@@ -101,10 +103,13 @@ export default {
 		eventTop: { type: String, default: "1.4em" },
 		eventContentHeight: { type: String, default: "1.4em" },
 		eventBorderHeight: { type: String, default: "2px" },
-		onPeriodChange: { type: Function, default: undefined },
+		periodChangedCallback: { type: Function, default: undefined },
 	},
 
-	data: () => ({ currentDragEvent: null, sentInitialPeriodChangeEvent: false }),
+	data: () => ({
+		currentDragEvent: null,
+		currentHoveredEventId: undefined,
+	}),
 
 	computed: {
 		/*
@@ -192,7 +197,13 @@ export default {
 
 		// Ensure all event properties have suitable default
 		fixedEvents() {
-			return this.events.map(this.normalizeEvent)
+			const self = this
+			return this.events.map(e =>
+				self.normalizeEvent(
+					e,
+					self.currentHoveredEventId && e.id === self.currentHoveredEventId
+				)
+			)
 		},
 
 		// Creates the HTML to render the date range for the calendar header.
@@ -241,18 +252,15 @@ export default {
 	},
 
 	watch: {
-		periodRange(newVal) {
-			if (this.onPeriodChange) this.onPeriodChange(newVal)
+		periodRange: {
+			immediate: true,
+			handler(newVal) {
+				if (this.periodChangedCallback) {
+					this.$emit("period-changed")
+					this.periodChangedCallback(newVal, "watch")
+				}
+			},
 		},
-	},
-
-	updated() {
-		// watch doesn't send an event on initial computed property computation, and mounted()
-		// and updated() can't emit an event properly, so we hack a notification to the parent
-		// with the computed period in view.
-		if (this.sentInitialPeriodChangeEvent) return
-		this.sentInitialPeriodChangeEvent = true
-		if (this.onPeriodChange) this.onPeriodChange(this.periodRange)
 	},
 
 	methods: {
@@ -270,9 +278,14 @@ export default {
 			this.$emit("click-event", e, day)
 		},
 
-		//onChangeDate(d) {
-		//	this.$emit("show-date-change", d)
-		//},
+		/*
+		The day name header needs to know the dow for class assignment, and this value should
+		not change based on startingDayOfWeek (i.e., Sunday is always 0). This function
+		computes the dow for a given day index.
+		*/
+		getColumnDOWClass(dayIndex) {
+			return "dow" + ((dayIndex + this.startingDayOfWeek) % 7)
+		},
 
 		// ******************************
 		// Date Periods
@@ -297,6 +310,16 @@ export default {
 			if (this.disablePast && newEndDate <= this.today()) return null
 			if (this.disableFuture && newStartDate > this.today()) return null
 			return newStartDate
+		},
+
+		// ******************************
+		// Hover events (#95)
+		// ******************************
+		onMouseEnter(calendarEvent) {
+			this.currentHoveredEventId = calendarEvent.id
+		},
+		onMouseLeave() {
+			this.currentHoveredEventId = undefined
 		},
 
 		// ******************************

@@ -72,7 +72,7 @@ having to override as much.
 	border-bottom-right-radius: 0;
 }
 
-.theme-default .cv-event.hasUrl:hover {
+.theme-default .cv-event.isHovered.hasUrl {
 	text-decoration: underline;
 }
 

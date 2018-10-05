@@ -273,18 +273,21 @@ export default {
 		// ******************************
 		// Events
 		// ******************************
-		normalizeEvent(event) {
+		normalizeEvent(event, isHovered) {
+			// Classes may be a string, an array, or null. Normalize to an array
+			const eventClasses = event.classes
+				? Array.isArray(event.classes)
+					? [...event.classes]
+					: [event.classes]
+				: []
+			// Provides support for pseudo-hover of entire event when one part of it is hovered
+			if (isHovered) eventClasses.push("isHovered")
 			return {
 				originalEvent: event,
 				startDate: this.toLocalDate(event.startDate),
 				// For an event without an end date, the end date is the start date
 				endDate: this.toLocalDate(event.endDate || event.startDate),
-				// Classes may be a string, an array, or null. Normalize to an array
-				classes: event.classes
-					? Array.isArray(event.classes)
-						? [...event.classes]
-						: [event.classes]
-					: [],
+				classes: eventClasses,
 				// Events without a title are untitled
 				title: event.title || "Untitled",
 				// Events without an id receive an auto-generated ID

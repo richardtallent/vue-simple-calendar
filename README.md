@@ -23,7 +23,7 @@
 
 ## Introduction
 
-**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **4.0.2**.
+**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **4.1.0**.
 
 _(For the migration guide from 3.x, please see the CHANGELOG.)_
 
@@ -169,7 +169,7 @@ The following properties are supported, roughly in order of popularity. Remember
 * `eventTop` - Optional string of a CSS height to be used as the baseline for where events are positioned relative the top of the week. By default, this is `1.4em`, the height of the standard `cv-day-number` element.
 * `eventContentHeight` - Optional CSS string of the total height of your events, *not including* borders. The default is `1.4em` (1.0 from the font, 0.2 * 2 from the padding.). You would only set this if you're overriding the event height. This doesn't actually change the event height, it is only used to position the events below one another.
 * `eventBorderHeight` - Optional CSS string of the sum of your events' top and bottom borders. The default is `2px`. You would only set this if you're overriding the event top and/or bottom border width. This doesn't actually change the borders, it is only used to position the events below one another.
-* **NEW IN 4.0** `onPeriodChange` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `events` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
+* **NEW IN 4.0** `periodChangedCallback` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `events` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
 
 ## Calendar Event Properties
 Each event shown on the calendar can have the following properties. `startDate` is required, and `title` and `id` are strongly recommended.
@@ -372,6 +372,11 @@ This is added to an event when it is spills over into the following week. By def
 
 #### hasUrl
 This is added to an event when it has a `url` attribute (i.e., it is a hyperlink). By default, this is used to add a hovering underscore to event titles that are hyperlinked.
+
+#### **NEW IN 4.1** isHovered 
+This is added for all event elements whose `id` matches the `id` of the event being hovered. (This allows proper hover styling--when events wrap to more than one week, they are represented by more than
+one element, so a standard `:hover` selector will only select the element being hovered, not the entire event.) Note that there is no default styling for this, it is solely provided so you can choose
+to style hovered events if you wish.
 
 I'm open to other suggestions, provided they are easily calculated and there's some reasonable use case for having them.
 
