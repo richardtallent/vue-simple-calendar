@@ -5,7 +5,7 @@
 			<button :disabled="!headerProps.previousPeriod" class="previousPeriod" @click="onInput(headerProps.previousPeriod)">&lt;</button>
 			<button :disabled="!headerProps.nextPeriod" class="nextPeriod" @click="onInput(headerProps.nextPeriod)">&gt;</button>
 			<button :disabled="!headerProps.nextYear" class="nextYear" @click="onInput(headerProps.nextYear)">&gt;&gt;</button>
-			<button class="currentPeriod" @click="onInput(headerProps.currentPeriod)">Today</button>
+			<button class="currentPeriod" @click="onInput(headerProps.currentPeriod)">{{ headerProps.todayLabel }}</button>
 		</div>
 		<div class="periodLabel">
 			<slot name="label">

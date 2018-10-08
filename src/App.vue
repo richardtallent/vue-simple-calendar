@@ -1,11 +1,11 @@
 <template>
-  <div id="app">
+	<div id="app">
 		<calendar-view
 			:show-date="showDate"
 			class="theme-default holiday-us-traditional holiday-us-official"
 			@show-date-change="setShowDate"
 		/>
-  </div>
+	</div>
 </template>
 
 <script>

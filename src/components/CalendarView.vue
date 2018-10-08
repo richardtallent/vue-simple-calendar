@@ -104,6 +104,7 @@ export default {
 		eventContentHeight: { type: String, default: "1.4em" },
 		eventBorderHeight: { type: String, default: "2px" },
 		periodChangedCallback: { type: Function, default: undefined },
+		todayLabel: { type: String, default: "Today" },
 	},
 
 	data: () => ({
@@ -239,6 +240,7 @@ export default {
 				monthNames: this.monthNames,
 				fixedEvents: this.fixedEvents,
 				periodLabel: this.periodLabel,
+				todayLabel: this.todayLabel,
 			}
 		},
 		periodRange() {
