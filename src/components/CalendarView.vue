@@ -274,8 +274,8 @@ export default {
 			this.$emit("click-date", day)
 		},
 
-		onClickEvent(e, day) {
-			this.$emit("click-event", e, day)
+		onClickEvent(e) {
+			this.$emit("click-event", e)
 		},
 
 		/*
