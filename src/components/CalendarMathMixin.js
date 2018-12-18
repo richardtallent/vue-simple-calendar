@@ -290,13 +290,8 @@ export default {
 				classes: eventClasses,
 				// Events without a title are untitled
 				title: event.title || "Untitled",
-				// Events without an id receive an auto-generated ID
-				id:
-					event.id ||
-					"e" +
-						Math.random()
-							.toString(36)
-							.substr(2, 10),
+				// An ID is *required*. Auto-generating leads to weird bugs because these are used as keys and passed in events
+				id: event.id,
 			}
 		},
 	},

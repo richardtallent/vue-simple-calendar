@@ -1,31 +1,40 @@
 <template>
-	<div :class="[
-		'cv-wrapper',
-		'locale-' + languageCode(displayLocale),
-		'locale-' + displayLocale,
-		'y' + periodStart.getFullYear(),
-		'm' + paddedMonth(periodStart),
-		'period-' + displayPeriodUom,
-		'periodCount-' + displayPeriodCount,
-		{
-			past: isPastMonth(periodStart),
-			future: isFutureMonth(periodStart),
-			noIntl: !supportsIntl,
-		}
-	]">
-		<slot :header-props="headerProps" name="header" />
+	<div
+		:class="[
+			'cv-wrapper',
+			'locale-' + languageCode(displayLocale),
+			'locale-' + displayLocale,
+			'y' + periodStart.getFullYear(),
+			'm' + paddedMonth(periodStart),
+			'period-' + displayPeriodUom,
+			'periodCount-' + displayPeriodCount,
+			{
+				past: isPastMonth(periodStart),
+				future: isFutureMonth(periodStart),
+				noIntl: !supportsIntl,
+			}
+		]"
+	>
+		<slot :header-props="headerProps" name="header"/>
 		<div class="cv-header-days">
 			<template v-for="(label, index) in weekdayNames">
 				<slot :index="getColumnDOWClass(index)" :label="label" name="dayHeader">
-					<div :key="getColumnDOWClass(index)" :class="getColumnDOWClass(index)" class="cv-header-day">{{ label }}</div>
+					<div
+						:key="getColumnDOWClass(index)"
+						:class="getColumnDOWClass(index)"
+						class="cv-header-day"
+					>{{ label }}</div>
 				</slot>
 			</template>
 		</div>
 		<div class="cv-weeks">
-			<div v-for="(weekStart, weekIndex) in weeksOfPeriod"
+			<div
+				v-for="(weekStart, weekIndex) in weeksOfPeriod"
 				:key="`${weekIndex}-week`"
-				:class="['cv-week', 'week' + (weekIndex+1), 'ws' + isoYearMonthDay(weekStart)]">
-				<div v-for="(day, dayIndex) in daysOfWeek(weekStart)"
+				:class="['cv-week', 'week' + (weekIndex+1), 'ws' + isoYearMonthDay(weekStart)]"
+			>
+				<div
+					v-for="(day, dayIndex) in daysOfWeek(weekStart)"
 					:key="getColumnDOWClass(dayIndex)"
 					:class="[
 						'cv-day',
@@ -51,7 +60,7 @@
 					@dragleave.prevent="onDragLeave(day, $event)"
 				>
 					<div class="cv-day-number">{{ day.getDate() }}</div>
-					<slot :day="day" name="dayContent" />
+					<slot :day="day" name="dayContent"/>
 				</div>
 				<template v-for="e in getWeekEvents(weekStart)">
 					<slot :event="e" :weekStartDate="weekStart" :top="getEventTop(e)" name="event">
@@ -66,7 +75,8 @@
 							@mouseenter="onMouseEnter(e)"
 							@mouseleave="onMouseLeave"
 							@click.stop="onClickEvent(e)"
-							v-html="getEventTitle(e)"/>
+							v-html="getEventTitle(e)"
+						/>
 					</slot>
 				</template>
 			</div>
@@ -104,6 +114,8 @@ export default {
 		eventContentHeight: { type: String, default: "1.4em" },
 		eventBorderHeight: { type: String, default: "2px" },
 		periodChangedCallback: { type: Function, default: undefined },
+		currentPeriodLabel: { type: String, default: "" },
+		currentPeriodLabelIcons: { type: String, default: "⇤-⇥" },
 	},
 
 	data: () => ({
@@ -215,6 +227,38 @@ export default {
 				this.monthNames
 			)
 		},
+		// Period that today's date sits within
+		currentPeriodStart() {
+			return this.beginningOfPeriod(
+				this.today(),
+				this.displayPeriodUom,
+				this.startingDayOfWeek
+			)
+		},
+		currentPeriodEnd() {
+			return this.addDays(
+				this.incrementPeriod(
+					this.currentPeriodStart,
+					this.displayPeriodUom,
+					this.displayPeriodCount
+				),
+				-1
+			)
+		},
+		currentPeriodLabelFinal() {
+			const c = this.currentPeriodStart
+			const s = this.periodStart
+			if (!this.currentPeriodLabel)
+				return this.formattedPeriod(
+					c,
+					this.currentPeriodEnd,
+					this.displayPeriodUom,
+					this.monthNames
+				)
+			if (this.currentPeriodLabel === "icons")
+				return this.currentPeriodLabelIcons[Math.sign(c - s) + 1]
+			return this.currentPeriodLabel
+		},
 		headerProps() {
 			return {
 				// Dates for UI navigation
@@ -224,11 +268,8 @@ export default {
 				previousFullPeriod: this.getIncrementedPeriod(-this.displayPeriodCount),
 				nextFullPeriod: this.getIncrementedPeriod(this.displayPeriodCount),
 				nextYear: this.getIncrementedPeriod(12),
-				currentPeriod: this.beginningOfPeriod(
-					this.today(),
-					this.displayPeriodUom,
-					this.startingDayOfWeek
-				),
+				currentPeriod: this.currentPeriodStart,
+				currentPeriodLabel: this.currentPeriodLabelFinal,
 				// Dates for header display
 				periodStart: this.periodStart,
 				periodEnd: this.periodEnd,

@@ -1,16 +1,33 @@
 <template>
 	<div class="cv-header">
 		<div class="cv-header-nav">
-			<button :disabled="!headerProps.previousYear" class="previousYear" @click="onInput(headerProps.previousYear)">&lt;&lt;</button>
-			<button :disabled="!headerProps.previousPeriod" class="previousPeriod" @click="onInput(headerProps.previousPeriod)">&lt;</button>
-			<button :disabled="!headerProps.nextPeriod" class="nextPeriod" @click="onInput(headerProps.nextPeriod)">&gt;</button>
-			<button :disabled="!headerProps.nextYear" class="nextYear" @click="onInput(headerProps.nextYear)">&gt;&gt;</button>
-			<button class="currentPeriod" @click="onInput(headerProps.currentPeriod)">Today</button>
+			<button
+				:disabled="!headerProps.previousYear"
+				class="previousYear"
+				@click="onInput(headerProps.previousYear)"
+			>&lt;&lt;</button>
+			<button
+				:disabled="!headerProps.previousPeriod"
+				class="previousPeriod"
+				@click="onInput(headerProps.previousPeriod)"
+			>&lt;</button>
+			<button
+				class="currentPeriod"
+				@click="onInput(headerProps.currentPeriod)"
+			>{{ headerProps.currentPeriodLabel }}</button>
+			<button
+				:disabled="!headerProps.nextPeriod"
+				class="nextPeriod"
+				@click="onInput(headerProps.nextPeriod)"
+			>&gt;</button>
+			<button
+				:disabled="!headerProps.nextYear"
+				class="nextYear"
+				@click="onInput(headerProps.nextYear)"
+			>&gt;&gt;</button>
 		</div>
 		<div class="periodLabel">
-			<slot name="label">
-				{{ headerProps.periodLabel }}
-			</slot>
+			<slot name="label">{{ headerProps.periodLabel }}</slot>
 		</div>
 	</div>
 </template>

@@ -23,7 +23,7 @@
 
 ## Introduction
 
-**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **4.1.0**.
+**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **4.2.0**.
 
 _(For the migration guide from 3.x, please see the CHANGELOG.)_
 
@@ -169,18 +169,20 @@ The following properties are supported, roughly in order of popularity. Remember
 * `eventTop` - Optional string of a CSS height to be used as the baseline for where events are positioned relative the top of the week. By default, this is `1.4em`, the height of the standard `cv-day-number` element.
 * `eventContentHeight` - Optional CSS string of the total height of your events, *not including* borders. The default is `1.4em` (1.0 from the font, 0.2 * 2 from the padding.). You would only set this if you're overriding the event height. This doesn't actually change the event height, it is only used to position the events below one another.
 * `eventBorderHeight` - Optional CSS string of the sum of your events' top and bottom borders. The default is `2px`. You would only set this if you're overriding the event top and/or bottom border width. This doesn't actually change the borders, it is only used to position the events below one another.
-* **NEW IN 4.0** `periodChangedCallback` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `events` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
+* `periodChangedCallback` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `events` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
+* `currentPeriodLabel` - Optional label for the "Today" button (the button in the header to return to the current period). If blank, this will show the current date period (*i.e.*, the period where today's date would fall). If this has the special value `icons`, it will display an icon, where the icon depends on whether the current date period is in the past, is the displayed period, or is in the future. The default icons for this are `⇤`, `-`, and `⇥`, respectively. If you use any other string, the button will show the literal value you provide.
+* `currentPeriodLabelIcons` - Optional replacement for the above three icons. Pass this as a three-character string.
 
 ## Calendar Event Properties
-Each event shown on the calendar can have the following properties. `startDate` is required, and `title` and `id` are strongly recommended.
+Each event shown on the calendar can have the following properties. `id` and `startDate` are required, and `title` is strongly recommended.
 
+* `id` - A unique identifier for the event. This is required and must be unique.
 * `startDate` - The date the event starts on the calendar. This must be either passed as a JavaScript date object, or as a string following an ISO-like form of "yyyy-mm-dd HH:MM:SS" (time is optional, and within time, minutes and seconds are both optional).
 * `endDate` - The date the event ends on the calendar. Defaults to the same date as `startDate`. This must be either passed as a JavaScript date object, or as a string following an ISO-like form of "yyyy-mm-dd HH:MM:SS" (time is optional, and within time, minutes and seconds are both optional).
 * `title` - The name of the event shown on the calendar. Defaults to "Untitled".
-* `id` - A unique identifier for the event. Defaults to a randomly-generated string.
 * `url` - The URL associated with the event. The component has no built-in action associated with this, but it does add a "hasUrl" class to the event. To "follow" the URL, you'll need to listen for the `click-event` event and take the appropriate action.
 * `classes` - A String with any additional CSS classes you wish to assign to the event.
-* **NEW IN 4.0** `style` - A String with any additional CSS styles you wish to apply to the event.
+* `style` - A String with any additional CSS styles you wish to apply to the event.
 
 ## Component Events
 The following Vue events are raised by the component, which you can catch in your calling application to respond to user actions:
@@ -213,10 +215,11 @@ The parent `calendar-view` passes a property called `headerProps` to the header 
 - previousYear: one year before `periodStart`
 - previousPeriod: one `displayPeriodUom` before `periodStart` (*regardless* of the `displayPeriodCount` setting)
 - nextPeriod: one `displayPeriodUom` after `periodStart` (*regardless* of the `displayPeriodCount` setting)
-- **NEW IN 4.0** previousFullPeriod: one `displayPeriodUom` before `periodStart` (takes the `displayPeriodCount` setting into consideration)
-- **NEW IN 4.0** nextFullPeriod: one `displayPeriodUom` after `periodStart` (takes the `displayPeriodCount` setting into consideration)
+- previousFullPeriod: one `displayPeriodUom` before `periodStart` (takes the `displayPeriodCount` setting into consideration)
+- nextFullPeriod: one `displayPeriodUom` after `periodStart` (takes the `displayPeriodCount` setting into consideration)
 - nextYear: one year after `periodStart`
 - currentPeriod: the date at the beginning of the `displayPeriodUom` containing today's date (user local time)
+- currentPeriodLabel: the *computed* label (using the logic described for the property of the same name on the calendar component above) of the period containing today's date.
 - displayLocale: the user's locale setting
 - displayFirstDate: the first date shown in the calendar (may differ from `periodStart`--*e.g.*, if periodStart is June 1, 2018, displayFirstDate will be May 27, 2018)
 - displayLastDate: the last date shown in the calendar (ditto)
@@ -229,7 +232,7 @@ The developer implementing her own header simply needs to create a header compon
 - Receives this information and displays it with appropriate UI elements (suggested property name: `headerProps`)
 - Emits an event when the user wants to change the calendar period (suggested event name: `input`)
 
-**NEW IN 4.0** Note above that both `previousPeriod` and `previousFullPeriod` are provided, as well as `nextPeriod` and `nextFullPeriod`. The reason for this distinction is to allow the developer to decide how the calendar's Previous and Next buttons should move through time if `displayPeriodCount` is greater than 1. My personal preference is to move forward and backward by one week / month, allowing the user to pinpoint the exact date window they wish to see. But in some applications (a "quarterly" calednar, for example, or a calendar with set two-week periods), it may be better for the buttons to jump backward and forward based on the `displayPeriodCount` setting. This gives the developer both options -- just choose which interaction you want to use, and use those dates to set the new `showDate`.
+Note above that both `previousPeriod` and `previousFullPeriod` are provided, as well as `nextPeriod` and `nextFullPeriod`. The reason for this distinction is to allow the developer to decide how the calendar's Previous and Next buttons should move through time if `displayPeriodCount` is greater than 1. My personal preference is to move forward and backward by one week / month, allowing the user to pinpoint the exact date window they wish to see. But in some applications (a "quarterly" calednar, for example, or a calendar with set two-week periods), it may be better for the buttons to jump backward and forward based on the `displayPeriodCount` setting. This gives the developer both options -- just choose which interaction you want to use, and use those dates to set the new `showDate`.
 
 ### dayHeader
 This optional named slot **replaces** the default `div.day` elements that appear in the column headers for each day of the week. If all you need to do is change how the names are shown, it's probably better to override the `locale` and/or `weekdayNameFormat` property. This slot is intended for situations where you need to override the markup within each header cell. For example, if you want each day of the week to be clickable.
