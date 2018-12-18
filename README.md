@@ -23,7 +23,9 @@
 
 ## Introduction
 
-**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue. The current version is **4.2.0**.
+**vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue.
+
+**The current release is 4.1.0. This contains some information about a new version coming very soon, 4.2.0. See the CHANGELOG for differences.**
 
 _(For the migration guide from 3.x, please see the CHANGELOG.)_
 
