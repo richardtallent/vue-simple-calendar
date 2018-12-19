@@ -612,7 +612,27 @@ header are in the CalendarViewHeader component.
 	border-width: 1px 1px 0 0;
 }
 
-.cv-day-number {
+/* 
+A bug in Microsoft Edge 41 (EdgeHTML 16) has been reported (#109) where days "disappear" because they are
+wrapping under the next week (despite the "nowrap" on cv-week). This appears to be an issue specifically
+with our metrics and the sticky positioning. I was not able to reproduce this issue in Edge 38, 42, or 44.
+I'm reticent to turn off the sticky functionality for all Edge users because of one version (or perhaps an
+interaction of that version with a specific graphics adapter or other setting). So instead, I'm leaving this
+as an example for anyone forced to support Edge 41 who may see the same issue. If that's the case, just
+add this selector to your own CSS.
+
+@supports (-ms-ime-align: auto) {
+	.cv-day {
+		position: relative;
+	}
+}
+*/
+
+_:-ms-lang(x),
+.cv-day {
+	position: relative;
+}
+*/ .cv-day-number {
 	position: absolute;
 	right: 0;
 }

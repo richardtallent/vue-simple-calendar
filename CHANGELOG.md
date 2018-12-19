@@ -10,10 +10,11 @@
 * Removed auto-defaulting of event `id`, was causing update issues (#108)
 * Removed auto-registration of the Vue components in the webpack bundle, it was causing issues for people with multiple Vue instances (#106)
 * Replaced "Today" button in the default header with a `headerProps.currentPeriodLabel` property (set by the parent calendar) (#101)
-* Moved said button between the arrow pairs (if you need to move it back, you can use CSS via the flexbox `order` property)
-* Added corresponding optional `currentPeriodLabel` property to the calendar component. If undefined, uses the localized date range. If "icons", uses an icon pair (`⇤` or `⇥`). Otherwise uses the literal value (e.g., "Today" to mimic the old functionality).
+* Moved said button between the arrow pairs (if you need to move it back, you can use the CSS flexbox `order` property)
+* Added corresponding optional `currentPeriodLabel` property to the calendar component. If undefined, uses the localized date range. If "icons", uses an icon pair (`⇤` or `⇥`). Otherwise uses the literal value (*e.g.*, use "Today" to mimic the old functionality).
 * Added a `currentPeriodLabelIcons` property for advanced swapping of said icons
 * Auto-formatting of HTML in template source code created some diff noise in the repo
+* Added sample CSS to disable sticky positioning in Edge (disabled by default) (#109)
 
 ## 4.1.0 (2018-10-05)
 
