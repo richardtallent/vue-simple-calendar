@@ -312,7 +312,7 @@ export default {
 		onClickDay(day, e) {
 			if (this.disablePast && this.isInPast(day)) return
 			if (this.disableFuture && this.isInFuture(day)) return
-			this.$emit("click-date", {'day': day, 'originalEvent': e})
+			this.$emit("click-date", {'date': day, 'originalEvent': e})
 		},
 
 		onClickEvent(e) {
