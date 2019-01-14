@@ -53,7 +53,7 @@
 						},
 						...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null)
 					]"
-					@click="onClickDay(day)"
+					@click="onClickDay(day, $event)"
 					@drop.prevent="onDrop(day, $event)"
 					@dragover.prevent="onDragOver(day)"
 					@dragenter.prevent="onDragEnter(day, $event)"
@@ -309,10 +309,10 @@ export default {
 		// UI Events
 		// ******************************
 
-		onClickDay(day) {
+		onClickDay(day, e) {
 			if (this.disablePast && this.isInPast(day)) return
 			if (this.disableFuture && this.isInFuture(day)) return
-			this.$emit("click-date", day)
+			this.$emit("click-date", {'day': day, 'originalEvent': e})
 		},
 
 		onClickEvent(e) {
