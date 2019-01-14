@@ -187,7 +187,7 @@ Each event shown on the calendar can have the following properties. `id` and `st
 ## Component Events
 The following Vue events are raised by the component, which you can catch in your calling application to respond to user actions:
 
-* `click-date(event, date)`: fired when user clicks a date
+* `click-date($event)`: fired when user clicks a date with `$event={'date' : clickedDate, 'originalEvent': originalJSEvent}`
 * `click-event(event)`: fired when user clicks on an event
 * `drag-start(event)`: fires when user starts dragging an event
 * `drag-enter-date(event, date)`: fires when an event is dragged over a date
