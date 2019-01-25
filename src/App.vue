@@ -1,11 +1,17 @@
 <template>
-  <div id="app">
+	<div id="app">
 		<calendar-view
 			:show-date="showDate"
 			class="theme-default holiday-us-traditional holiday-us-official"
-			@show-date-change="setShowDate"
-		/>
-  </div>
+		>
+			<calendar-view-header
+				slot="header"
+				slot-scope="{ headerProps }"
+				:header-props="headerProps"
+				@input="setShowDate"
+			/>
+		</calendar-view>
+	</div>
 </template>
 
 <script>
@@ -35,8 +41,8 @@ export default {
 
 div#app {
 	display: flex;
-	height: 80vh;
-	width: 80vw;
-	margin-left: 10vw;
+	height: 87vh;
+	width: 87vw;
+	margin-left: 6vw;
 }
 </style>

@@ -4,6 +4,13 @@
 * Handles to drag events to make them longer or shorter
 * Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
 
+## 4.2.1 (2019-01-25)
+
+* Fix issue with button click event propagation in default header (#117)
+* Update dependencies
+* Update minimal test app to use the default header
+* Changes due to the hell that is Vetur's available HTML template auto-formatters
+
 ## 4.2.0 (2018-12-18)
 
 * Updated dependencies

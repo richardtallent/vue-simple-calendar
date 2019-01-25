@@ -4,27 +4,37 @@
 			<button
 				:disabled="!headerProps.previousYear"
 				class="previousYear"
-				@click="onInput(headerProps.previousYear)"
-			>&lt;&lt;</button>
+				@click.prevent="onInput(headerProps.previousYear)"
+			>
+				&lt;&lt;
+			</button>
 			<button
 				:disabled="!headerProps.previousPeriod"
 				class="previousPeriod"
-				@click="onInput(headerProps.previousPeriod)"
-			>&lt;</button>
+				@click.prevent="onInput(headerProps.previousPeriod)"
+			>
+				&lt;
+			</button>
 			<button
 				class="currentPeriod"
-				@click="onInput(headerProps.currentPeriod)"
-			>{{ headerProps.currentPeriodLabel }}</button>
+				@click.prevent="onInput(headerProps.currentPeriod)"
+			>
+				{{ headerProps.currentPeriodLabel }}
+			</button>
 			<button
 				:disabled="!headerProps.nextPeriod"
 				class="nextPeriod"
-				@click="onInput(headerProps.nextPeriod)"
-			>&gt;</button>
+				@click.prevent="onInput(headerProps.nextPeriod)"
+			>
+				&gt;
+			</button>
 			<button
 				:disabled="!headerProps.nextYear"
 				class="nextYear"
-				@click="onInput(headerProps.nextYear)"
-			>&gt;&gt;</button>
+				@click.prevent="onInput(headerProps.nextYear)"
+			>
+				&gt;&gt;
+			</button>
 		</div>
 		<div class="periodLabel">
 			<slot name="label">{{ headerProps.periodLabel }}</slot>

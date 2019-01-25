@@ -12,10 +12,10 @@
 				past: isPastMonth(periodStart),
 				future: isFutureMonth(periodStart),
 				noIntl: !supportsIntl,
-			}
+			},
 		]"
 	>
-		<slot :header-props="headerProps" name="header"/>
+		<slot :header-props="headerProps" name="header" />
 		<div class="cv-header-days">
 			<template v-for="(label, index) in weekdayNames">
 				<slot :index="getColumnDOWClass(index)" :label="label" name="dayHeader">
@@ -23,7 +23,9 @@
 						:key="getColumnDOWClass(index)"
 						:class="getColumnDOWClass(index)"
 						class="cv-header-day"
-					>{{ label }}</div>
+					>
+						{{ label }}
+					</div>
 				</slot>
 			</template>
 		</div>
@@ -31,7 +33,11 @@
 			<div
 				v-for="(weekStart, weekIndex) in weeksOfPeriod"
 				:key="`${weekIndex}-week`"
-				:class="['cv-week', 'week' + (weekIndex+1), 'ws' + isoYearMonthDay(weekStart)]"
+				:class="[
+					'cv-week',
+					'week' + (weekIndex + 1),
+					'ws' + isoYearMonthDay(weekStart),
+				]"
 			>
 				<div
 					v-for="(day, dayIndex) in daysOfWeek(weekStart)"
@@ -49,9 +55,9 @@
 							past: isInPast(day),
 							future: isInFuture(day),
 							last: isLastDayOfMonth(day),
-							lastInstance: isLastInstanceOfMonth(day)
+							lastInstance: isLastInstanceOfMonth(day),
 						},
-						...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null)
+						...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null),
 					]"
 					@click="onClickDay(day)"
 					@drop.prevent="onDrop(day, $event)"
@@ -60,10 +66,15 @@
 					@dragleave.prevent="onDragLeave(day, $event)"
 				>
 					<div class="cv-day-number">{{ day.getDate() }}</div>
-					<slot :day="day" name="dayContent"/>
+					<slot :day="day" name="dayContent" />
 				</div>
 				<template v-for="e in getWeekEvents(weekStart)">
-					<slot :event="e" :weekStartDate="weekStart" :top="getEventTop(e)" name="event">
+					<slot
+						:event="e"
+						:weekStartDate="weekStart"
+						:top="getEventTop(e)"
+						name="event"
+					>
 						<div
 							:key="e.id"
 							:draggable="enableDragDrop"
