@@ -29,16 +29,16 @@ having to override as much.
 
 /* Grid */
 
-.theme-default .cv-day.today {
-	background-color: #ffe;
-}
-
 .theme-default .cv-day.past {
 	background-color: #fafafa;
 }
 
 .theme-default .cv-day.outsideOfMonth {
 	background-color: #f7f7f7;
+}
+
+.theme-default .cv-day.today {
+	background-color: #ffe;
 }
 
 /* Events */

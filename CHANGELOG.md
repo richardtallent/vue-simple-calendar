@@ -4,6 +4,11 @@
 * Handles to drag events to make them longer or shorter
 * Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
 
+## 4.2.2 (2019-05-01)
+
+* Fix CSS precedence for "today" class over "outsideOfMonth" (#126)
+* Update various dependencies
+
 ## 4.2.1 (2019-01-25)
 
 * Fix issue with button click event propagation in default header (#117)

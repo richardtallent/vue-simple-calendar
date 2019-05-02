@@ -50,8 +50,8 @@
 						'd' + paddedDay(day),
 						'instance' + instanceOfMonth(day),
 						{
-							outsideOfMonth: !isSameMonth(day, defaultedShowDate),
 							today: isSameDate(day, today()),
+							outsideOfMonth: !isSameMonth(day, defaultedShowDate),
 							past: isInPast(day),
 							future: isInFuture(day),
 							last: isLastDayOfMonth(day),

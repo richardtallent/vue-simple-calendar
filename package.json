@@ -1,6 +1,6 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "4.2.1",
+	"version": "4.2.2",
 	"description": "Simple calendar event control",
 	"author": "richardtallent <richard@tallent.us>",
 	"license": "MIT",
@@ -14,17 +14,17 @@
 		"lint": "vue-cli-service lint"
 	},
 	"dependencies": {
-		"vue": "^2.5.22"
+		"vue": "^2.6.10"
 	},
 	"devDependencies": {
 		"@vue/cli-plugin-babel": "^3.3.0",
 		"@vue/cli-plugin-eslint": "^3.3.0",
 		"@vue/cli-service": "^3.3.1",
 		"@vue/eslint-config-prettier": "^4.0.1",
-		"eslint": "^5.12.1",
-		"node-sass": "^4.11.0",
+		"eslint": "^5.16.0",
+		"node-sass": "^4.12.0",
 		"sass-loader": "^7.1.0",
-		"vue-template-compiler": "^2.5.22"
+		"vue-template-compiler": "^2.6.10"
 	},
 	"eslintConfig": {
 		"root": true,
