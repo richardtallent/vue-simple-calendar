@@ -85,7 +85,7 @@
 							@dragstart="onDragStart(e, $event)"
 							@mouseenter="onMouseEnter(e)"
 							@mouseleave="onMouseLeave"
-							@click.stop="onClickEvent(e)"
+							@click.stop="onClickEvent(e, $event)"
 							v-html="getEventTitle(e)"
 						/>
 					</slot>
