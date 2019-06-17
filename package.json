@@ -8,6 +8,7 @@
 	"repository": "https://github.com/richardtallent/vue-simple-calendar",
 	"private": false,
 	"scripts": {
+		"postinstall": "npm run bundle",
 		"prepare": "npm run bundle",
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build",
