@@ -85,7 +85,7 @@
 							@dragstart="onDragStart(e, $event)"
 							@mouseenter="onMouseEnter(e)"
 							@mouseleave="onMouseLeave"
-							@click.stop="onClickEvent(e)"
+							@click.stop="onClickEvent(e, $event)"
 							v-html="getEventTitle(e)"
 						/>
 					</slot>
@@ -326,8 +326,8 @@ export default {
 			this.$emit("click-date", day)
 		},
 
-		onClickEvent(e) {
-			this.$emit("click-event", e)
+		onClickEvent(e, windowEvent) {
+			this.$emit("click-event", e, windowEvent)
 		},
 
 		/*
