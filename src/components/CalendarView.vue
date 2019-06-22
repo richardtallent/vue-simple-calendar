@@ -320,14 +320,14 @@ export default {
 		// UI Events
 		// ******************************
 
-		onClickDay(day) {
+		onClickDay(day, windowEvent) {
 			if (this.disablePast && this.isInPast(day)) return
 			if (this.disableFuture && this.isInFuture(day)) return
-			this.$emit("click-date", day)
+			this.$emit("click-date", day, windowEvent)
 		},
 
-		onClickEvent(e, windowEvent) {
-			this.$emit("click-event", e, windowEvent)
+		onClickEvent(calendarEvent, windowEvent) {
+			this.$emit("click-event", calendarEvent, windowEvent)
 		},
 
 		/*

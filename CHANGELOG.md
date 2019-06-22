@@ -4,6 +4,10 @@
 * Handles to drag events to make them longer or shorter
 * Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
 
+## UNRELEASED
+
+* The `click-date` and `click-event` events are emitted with the DOM click event as the second argument
+
 ## 4.2.2 (2019-05-01)
 
 * Fix CSS precedence for "today" class over "outsideOfMonth" (#126)

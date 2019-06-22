@@ -25,7 +25,7 @@
 
 **vue-simple-calendar** is a flexible, themeable, lightweight *event calendar* component for Vue.
 
-**The current release is 4.2.0. See CHANGELOG for more information about upgrading from a previous version.**
+**The current release is 4.2.2. The master branch of this document and the code may contain unreleased changes. See the CHANGELOG for details.**
 
 There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show events (including multi-day events) on that grid. While the component goes beyond that simple use case, that is still the core focus.
 
@@ -187,15 +187,15 @@ Each event shown on the calendar can have the following properties. `id` and `st
 ## Component Events
 The following Vue events are raised by the component, which you can catch in your calling application to respond to user actions:
 
-* `click-date(date)`: fired when user clicks a date
-* `click-event(event)`: fired when user clicks on an event
-* `drag-start(event)`: fires when user starts dragging an event
-* `drag-enter-date(event, date)`: fires when an event is dragged over a date
-* `drag-leave-date(event, date)`: fires when an event is dragged out of a date without dropping it there
-* `drag-over-date(event, date)`: fires multiple times as an event is hovered over a date
-* `drop-on-date(event, date)`: fired when an event is dropped on a date
+* `click-date(date, windowEvent)`: fired when user clicks a date
+* `click-event(calendarEvent, windowEvent)`: fired when user clicks on an event
+* `drag-start(calendarEvent)`: fires when user starts dragging an event
+* `drag-enter-date(calendarEvent, date)`: fires when an event is dragged over a date
+* `drag-leave-date(calendarEvent, date)`: fires when an event is dragged out of a date without dropping it there
+* `drag-over-date(calendarEvent, date)`: fires multiple times as an event is hovered over a date
+* `drop-on-date(calendarEvent, date)`: fired when an event is dropped on a date
 
-*Note in the above, `event` refers to the **normalized** version of the calendar "event" involved in the activity. For more information, see the "event" slot below.
+*Note in the above, `calendarEvent` refers to the **normalized** version of the calendar "event" involved in the activity. For more information, see the "event" slot below.
 
 ## Slots
 
