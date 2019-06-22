@@ -22,30 +22,15 @@
 		"@vue/cli-service": "^3.3.1",
 		"@vue/eslint-config-prettier": "^4.0.1",
 		"eslint": "^5.16.0",
+		"eslint-config-tabsanity": "^1.0.6",
 		"node-sass": "^4.12.0",
 		"sass-loader": "^7.1.0",
 		"vue-template-compiler": "^2.6.10"
 	},
 	"eslintConfig": {
-		"root": true,
-		"env": {
-			"node": true
-		},
 		"extends": [
-			"plugin:vue/recommended",
-			"@vue/prettier"
-		],
-		"rules": {
-			"vue/html-indent": [
-				"warn",
-				"tab"
-			],
-			"no-console": "warn",
-			"vue/max-attributes-per-line": "off"
-		},
-		"parserOptions": {
-			"parser": "babel-eslint"
-		}
+			"tabsanity"
+		]
 	},
 	"postcss": {
 		"plugins": {
