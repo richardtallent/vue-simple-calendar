@@ -72,7 +72,7 @@
 					<slot
 						:event="e"
 						:weekStartDate="weekStart"
-						:top="getEventTop(e)"
+						:top="getItemTop(e)"
 						name="event"
 					>
 						<div
@@ -426,7 +426,7 @@ export default {
 		},
 
 		// ******************************
-		// Calendar Events
+		// Calendar Items
 		// ******************************
 
 		findAndSortItemsInWeek(weekStart) {

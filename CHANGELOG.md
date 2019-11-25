@@ -4,6 +4,10 @@
 - Handles to drag events to make them longer or shorter
 - Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
 
+## 4.3.1 (2019-11-24)
+
+- Method rename bug
+
 ## 4.3.0 (2019-11-24)
 
 - The `click-date` and `click-event` events are emitted with the DOM click event as the second argument
