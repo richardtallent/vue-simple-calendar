@@ -10,7 +10,7 @@
   - [header](#header)
   - [dayHeader](#dayHeader)
   - [dayContent](#dayContent)
-- [event](#event)
+  - [event](#event)
 - [Customizing the Look and Feel](#customizing-the-look-and-feel)
   - [Calendar classes](#calendar-classes)
   - [Week classes](#week-classes)
