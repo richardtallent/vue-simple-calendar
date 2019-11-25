@@ -1,37 +1,47 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "4.2.2",
+	"version": "4.3.0",
+	"private": false,
 	"description": "Simple calendar event control",
 	"author": "richardtallent <richard@tallent.us>",
-	"license": "MIT",
-	"main": "dist/CalendarView.umd.js",
-	"repository": "https://github.com/richardtallent/vue-simple-calendar",
-	"private": false,
 	"scripts": {
-		"prepublishOnly": "npm run bundle",
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build",
+		"lint": "vue-cli-service lint",
 		"bundle": "vue-cli-service build --target lib --name CalendarView ./src/components/bundle.js",
-		"lint": "vue-cli-service lint"
+		"prepublishOnly": "npm run bundle"
 	},
+	"main": "dist/CalendarView.umd.js",
 	"dependencies": {
+		"core-js": "^3.3.2",
 		"vue": "^2.6.10"
 	},
 	"devDependencies": {
-		"@vue/cli-plugin-babel": "^3.8.0",
-		"@vue/cli-plugin-eslint": "^3.8.0",
-		"@vue/cli-service": "^3.8.4",
-		"@vue/eslint-config-prettier": "^4.0.1",
-		"eslint": "^6.0.0",
-		"eslint-config-tabsanity": "^1.0.6",
-		"node-sass": "^4.12.0",
-		"sass-loader": "^7.1.0",
+		"@vue/cli-plugin-babel": "^4.0.5",
+		"@vue/cli-plugin-eslint": "^4.0.5",
+		"@vue/cli-service": "^4.0.5",
+		"@vue/eslint-config-prettier": "^5.0.0",
+		"babel-eslint": "^10.0.3",
+		"eslint": "^5.16.0",
+		"eslint-config-tabsanity": "^1.0.22",
+		"eslint-plugin-prettier": "^3.1.1",
+		"eslint-plugin-vue": "^5.0.0",
+		"node-sass": "^4.13.0",
+		"prettier": "^1.18.2",
+		"sass-loader": "^7.3.1",
 		"vue-template-compiler": "^2.6.10"
 	},
 	"eslintConfig": {
 		"extends": [
 			"tabsanity"
 		]
+	},
+	"prettier": {
+		"useTabs": true,
+		"semi": false,
+		"singleQuote": false,
+		"bracketSpacing": true,
+		"trailingComma": "es5"
 	},
 	"postcss": {
 		"plugins": {
@@ -42,13 +52,8 @@
 		"> 1%",
 		"ie >= 11"
 	],
-	"prettier": {
-		"useTabs": true,
-		"semi": false,
-		"singleQuote": false,
-		"bracketSpacing": true,
-		"trailingComma": "es5"
-	},
+	"license": "MIT",
+	"repository": "https://github.com/richardtallent/vue-simple-calendar",
 	"stylelint": {
 		"extends": "stylelint-config-standard",
 		"rules": {

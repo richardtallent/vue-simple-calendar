@@ -68,7 +68,7 @@
 					<div class="cv-day-number">{{ day.getDate() }}</div>
 					<slot :day="day" name="dayContent" />
 				</div>
-				<template v-for="e in getWeekEvents(weekStart)">
+				<template v-for="e in getWeekItems(weekStart)">
 					<slot
 						:event="e"
 						:weekStartDate="weekStart"
@@ -80,13 +80,13 @@
 							:draggable="enableDragDrop"
 							:class="e.classes"
 							:title="e.title"
-							:style="`top:${getEventTop(e)};${e.originalEvent.style}`"
+							:style="`top:${getItemTop(e)};${e.originalEvent.style}`"
 							class="cv-event"
 							@dragstart="onDragStart(e, $event)"
-							@mouseenter="onMouseEnter(e)"
-							@mouseleave="onMouseLeave"
-							@click.stop="onClickEvent(e, $event)"
-							v-html="getEventTitle(e)"
+							@mouseenter="onMouseEnterItem(e, $event)"
+							@mouseleave="onMouseLeaveItem(e, $event)"
+							@click.stop="onClickItem(e, $event)"
+							v-html="getItemTitle(e)"
 						/>
 					</slot>
 				</template>
@@ -97,12 +97,9 @@
 
 <script>
 import CalendarMathMixin from "./CalendarMathMixin"
-import CalendarViewHeader from "./CalendarViewHeader.vue"
 
 export default {
 	name: "CalendarView",
-
-	components: { CalendarViewHeader },
 
 	mixins: [CalendarMathMixin],
 
@@ -127,11 +124,12 @@ export default {
 		periodChangedCallback: { type: Function, default: undefined },
 		currentPeriodLabel: { type: String, default: "" },
 		currentPeriodLabelIcons: { type: String, default: "⇤-⇥" },
+		doEmitItemMouseEvents: { type: Boolean, default: false },
 	},
 
 	data: () => ({
-		currentDragEvent: null,
-		currentHoveredEventId: undefined,
+		currentDragItem: null,
+		currentHoveredItemId: undefined,
 	}),
 
 	computed: {
@@ -218,13 +216,13 @@ export default {
 			)
 		},
 
-		// Ensure all event properties have suitable default
-		fixedEvents() {
+		// Ensure all item properties have suitable default
+		fixedItems() {
 			const self = this
 			return this.events.map(e =>
 				self.normalizeEvent(
 					e,
-					self.currentHoveredEventId && e.id === self.currentHoveredEventId
+					self.currentHoveredItemId && e.id === self.currentHoveredItemId
 				)
 			)
 		},
@@ -289,7 +287,7 @@ export default {
 				displayFirstDate: this.displayFirstDate,
 				displayLastDate: this.displayLastDate,
 				monthNames: this.monthNames,
-				fixedEvents: this.fixedEvents,
+				fixedEvents: this.fixedItems,
 				periodLabel: this.periodLabel,
 			}
 		},
@@ -326,8 +324,8 @@ export default {
 			this.$emit("click-date", day, windowEvent)
 		},
 
-		onClickEvent(calendarEvent, windowEvent) {
-			this.$emit("click-event", calendarEvent, windowEvent)
+		onClickItem(calendarItem, windowEvent) {
+			this.$emit("click-event", calendarItem, windowEvent)
 		},
 
 		/*
@@ -365,40 +363,46 @@ export default {
 		},
 
 		// ******************************
-		// Hover events (#95)
+		// Hover items (#95, #136)
 		// ******************************
-		onMouseEnter(calendarEvent) {
-			this.currentHoveredEventId = calendarEvent.id
+		onMouseEnterItem(calendarItem, windowEvent) {
+			this.currentHoveredItemId = calendarItem.id
+			if (this.doEmitItemMouseEvents) {
+				this.$emit("item-mouseenter", calendarItem, windowEvent)
+			}
 		},
-		onMouseLeave() {
-			this.currentHoveredEventId = undefined
+		onMouseLeaveItem(calendarItem, windowEvent) {
+			this.currentHoveredItemId = undefined
+			if (this.doEmitItemMouseEvents) {
+				this.$emit("item-mouseleave", calendarItem, windowEvent)
+			}
 		},
 
 		// ******************************
-		// Drag and drop events
+		// Drag and drop items
 		// ******************************
 
-		onDragStart(calendarEvent, windowEvent) {
+		onDragStart(calendarItem, windowEvent) {
 			if (!this.enableDragDrop) return false
-			// Not using dataTransfer.setData to store the event ID because it (a) doesn't allow access to the data being
+			// Not using dataTransfer.setData to store the item ID because it (a) doesn't allow access to the data being
 			// dragged during dragover, dragenter, and dragleave events, and because storing an ID requires an unnecessary
 			// lookup. This does limit the drop zones to areas within this instance of this component.
-			this.currentDragEvent = calendarEvent
+			this.currentDragItem = calendarItem
 			// Firefox and possibly other browsers require dataTransfer to be set, even if the value is not used. IE11
 			// requires that the first argument be exactly "text" (not "text/plain", etc.).
 			windowEvent.dataTransfer.setData("text", "foo")
-			this.$emit("drag-start", calendarEvent)
+			this.$emit("drag-start", calendarItem)
 			return true
 		},
 
 		handleDragEvent(bubbleEventName, bubbleParam) {
 			if (!this.enableDragDrop) return false
-			if (!this.currentDragEvent) {
+			if (!this.currentDragItem) {
 				// shouldn't happen
-				// If current drag event is not set, check if user has set its own slot for events
+				// If current drag item is not set, check if user has set its own slot for items
 				if (!this.$scopedSlots["event"]) return false
 			}
-			this.$emit(bubbleEventName, this.currentDragEvent, bubbleParam)
+			this.$emit(bubbleEventName, this.currentDragItem, bubbleParam)
 			return true
 		},
 
@@ -425,15 +429,15 @@ export default {
 		// Calendar Events
 		// ******************************
 
-		findAndSortEventsInWeek(weekStart) {
-			// Return a list of events that INCLUDE any day of a week starting on a
-			// particular day. Sorted so the events that start earlier are always
+		findAndSortItemsInWeek(weekStart) {
+			// Return a list of items that INCLUDE any day of a week starting on a
+			// particular day. Sorted so the items that start earlier are always
 			// shown first.
-			const events = this.fixedEvents
+			const items = this.fixedItems
 				.filter(
-					event =>
-						event.startDate < this.addDays(weekStart, 7) &&
-						event.endDate >= weekStart,
+					item =>
+						item.startDate < this.addDays(weekStart, 7) &&
+						item.endDate >= weekStart,
 					this
 				)
 				.sort((a, b) => {
@@ -443,18 +447,18 @@ export default {
 					if (b.endDate > a.endDate) return 1
 					return a.id < b.id ? -1 : 1
 				})
-			return events
+			return items
 		},
 
-		getWeekEvents(weekStart) {
-			// Return a list of events that CONTAIN the week starting on a day.
-			// Sorted so the events that start earlier are always shown first.
-			const events = this.findAndSortEventsInWeek(weekStart)
+		getWeekItems(weekStart) {
+			// Return a list of items that CONTAIN the week starting on a day.
+			// Sorted so the items that start earlier are always shown first.
+			const items = this.findAndSortItemsInWeek(weekStart)
 			const results = []
-			const eventRows = [[], [], [], [], [], [], []]
-			for (let i = 0; i < events.length; i++) {
-				const ep = Object.assign({}, events[i], {
-					classes: [...events[i].classes],
+			const itemRows = [[], [], [], [], [], [], []]
+			for (let i = 0; i < items.length; i++) {
+				const ep = Object.assign({}, items[i], {
+					classes: [...items[i].classes],
 					eventRow: 0,
 				})
 				const continued = ep.startDate < weekStart
@@ -473,11 +477,11 @@ export default {
 				for (let d = 0; d < 7; d++) {
 					if (d === startOffset) {
 						let s = 0
-						while (eventRows[d][s]) s++
+						while (itemRows[d][s]) s++
 						ep.eventRow = s
-						eventRows[d][s] = true
+						itemRows[d][s] = true
 					} else if (d < startOffset + span) {
-						eventRows[d][ep.eventRow] = true
+						itemRows[d][ep.eventRow] = true
 					}
 				}
 				ep.classes.push(`offset${startOffset}`)
@@ -488,7 +492,7 @@ export default {
 		},
 
 		/*
-		Creates the HTML to prefix the event title showing the event's start and/or
+		Creates the HTML to prefix the item title showing the item's start and/or
 		end time. Midnight is not displayed.
 		*/
 		getFormattedTimeRange(e) {
@@ -513,13 +517,13 @@ export default {
 			)
 		},
 
-		getEventTitle(e) {
+		getItemTitle(e) {
 			if (!this.showEventTimes) return e.title
 			return this.getFormattedTimeRange(e) + " " + e.title
 		},
 
-		getEventTop(e) {
-			// Compute the top position of the event based on its assigned row within the given week.
+		getItemTop(e) {
+			// Compute the top position of the item based on its assigned row within the given week.
 			const r = e.eventRow
 			const h = this.eventContentHeight
 			const b = this.eventBorderHeight
@@ -531,7 +535,7 @@ export default {
 <!--
 
 The CSS below represents only the CSS required for proper rendering (positioning, etc.) and
-minimalist default borders and colors. Special-day colors, holiday emoji, event colors,
+minimalist default borders and colors. Special-day colors, holiday emoji, item colors,
 and decorations like border-radius should be part of a theme. Styles related to the default
 header are in the CalendarViewHeader component.
 
@@ -618,7 +622,7 @@ header are in the CalendarViewHeader component.
 	flex-shrink: 0;
 	flex-basis: 0;
 	position: relative; /* Fallback for IE11, which doesn't support sticky */
-	position: sticky; /* When week's events are scrolled, keep the day content fixed */
+	position: sticky; /* When week's items are scrolled, keep the day content fixed */
 	top: 0;
 	border-width: 1px 1px 0 0;
 }
@@ -656,7 +660,7 @@ _:-ms-lang(x),
 	border-width: 1px;
 }
 
-/* Wrap to show entire event title on hover */
+/* Wrap to show entire item title on hover */
 .cv-wrapper.wrap-event-title-on-hover .cv-event:hover {
 	white-space: normal;
 	z-index: 1;
@@ -674,7 +678,7 @@ _:-ms-lang(x),
 	border-color: #ddd;
 }
 
-/* Event Times */
+/* Item Times */
 .cv-event .endTime::before {
 	content: "-";
 }
@@ -719,7 +723,7 @@ _:-ms-lang(x),
 	left: calc((600% / 7));
 }
 
-/* Metrics for events spanning dates */
+/* Metrics for items spanning dates */
 
 .cv-event.span1 {
 	width: calc((100% / 7) - 0.05em);
