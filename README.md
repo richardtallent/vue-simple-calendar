@@ -15,7 +15,7 @@
   - [Calendar classes](#calendar-classes)
   - [Week classes](#week-classes)
   - [Day classes](#day-classes)
-  - [Classes for Calendar Items](#classes-for-calendar-items)
+  - [Calendar Item classes](#calendar-item-classes)
 - [Future plans](#future-plans)
 - [Day classes](#day-classes)
 - [FAQ](#faq)
@@ -397,7 +397,7 @@ This class is added to days after the current date (local time).
 
 This class is added to the last day of the its month.
 
-### Classes for Calendar Items
+### Calendar Item classes
 
 #### offset<i>X</i>
 
