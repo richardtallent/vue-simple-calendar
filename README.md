@@ -180,7 +180,7 @@ The following properties are supported, roughly in order of popularity. Remember
 - `periodChangedCallback` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `events` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
 - `currentPeriodLabel` - Optional label for the "Today" button (the button in the header to return to the current period). If blank, this will show the current date period (_i.e._, the period where today's date would fall). If this has the special value `icons`, it will display an icon, where the icon depends on whether the current date period is in the past, is the displayed period, or is in the future. The default icons for this are `⇤`, `-`, and `⇥`, respectively. If you use any other string, the button will show the literal value you provide.
 - `currentPeriodLabelIcons` - Optional replacement for the above three icons. Pass this as a three-character string.
-- `doEmitItemMouseEvents` - Optional, default is false. If true, emits `item-mouseover` and `item-mouseout` events when the mouse hovers over a calendar item. In most cases, styling the `isHovered` class is enough to handle hover interactions with a calendar item. However, if you want to, say, show a tooltip or menu when a user hovers over a calendar item, you may need access to the real-time mouse DOM events. Be sure that your use of these events doesn't conflict with the user's ability to click, drag, read, or otherwise interact with the calendar items. NOTE: if you use slots for your calendar items, this property is ignored. (#136)
+- `doEmitItemMouseEvents` - Optional, default is false. If true, emits `item-mouseenter` and `item-mouseleave` events when the mouse hovers over a calendar item. In most cases, styling the `isHovered` class is enough to handle hover interactions with a calendar item. However, if you want to, say, show a tooltip or menu when a user hovers over a calendar item, you may need access to the real-time mouse DOM events. Be sure that your use of these events doesn't conflict with the user's ability to click, drag, read, or otherwise interact with the calendar items. NOTE: if you use slots for your calendar items, this property is ignored. (#136)
 
 ## Calendar Item Properties
 
@@ -205,8 +205,8 @@ The following Vue events are raised by the component, which you can catch in you
 - `drag-leave-date(calendarItem, date)`: fires when an item is dragged out of a date without dropping it there
 - `drag-over-date(calendarItem, date)`: fires multiple times as an item is hovered over a date
 - `drop-on-date(calendarItem, date)`: fired when an item is dropped on a date
-- `item-mouseover(calendarItem, windowEvent)`: optional (controlled by doEmitItemMouseEvents prop), fires when user's pointer hovers over a calendar item.
-- `item-mouseout(calendarItem, windowEvent)`: optional (controlled by doEmitItemMouseEvents prop), fires when user's pointer leaves a calendar item.
+- `item-mouseenter(calendarItem, windowEvent)`: optional (controlled by doEmitItemMouseEvents prop), fires when user's pointer hovers over a calendar item.
+- `item-mouseleave(calendarItem, windowEvent)`: optional (controlled by doEmitItemMouseEvents prop), fires when user's pointer leaves a calendar item.
 
 \*Note in the above, `calendarItem` refers to the **normalized** version of the calendar item involved in the activity. For more information, see the "event" slot below.
 
