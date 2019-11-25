@@ -1,6 +1,6 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "4.3.1",
+	"version": "4.3.2",
 	"private": false,
 	"description": "Simple calendar event control",
 	"author": "richardtallent <richard@tallent.us>",

@@ -613,6 +613,9 @@ header are in the CalendarViewHeader component.
 	width: 100%;
 	overflow-y: auto;
 	-ms-overflow-style: none;
+
+	/* Days of the week go left to right even if user's language is RTL (#138) */
+	direction: ltr;
 }
 
 .cv-day {
@@ -625,6 +628,8 @@ header are in the CalendarViewHeader component.
 	position: sticky; /* When week's items are scrolled, keep the day content fixed */
 	top: 0;
 	border-width: 1px 1px 0 0;
+	/* Restore user's direction setting (overridden for week) */
+	direction: initial;
 }
 
 /* 
@@ -658,6 +663,8 @@ _:-ms-lang(x),
 	overflow: hidden;
 	background-color: #f7f7f7;
 	border-width: 1px;
+	/* Restore user's direction setting (overridden for week) */
+	direction: initial;
 }
 
 /* Wrap to show entire item title on hover */

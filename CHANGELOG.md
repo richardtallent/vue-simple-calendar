@@ -4,6 +4,10 @@
 - Handles to drag events to make them longer or shorter
 - Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
 
+## 4.3.2 (2019-11-24)
+
+- Fix calendar layout for RTL languages (#138)
+
 ## 4.3.1 (2019-11-24)
 
 - Method rename bug
