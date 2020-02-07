@@ -198,7 +198,7 @@ Each item shown on the calendar can have the following properties. `id` and `sta
 
 The following Vue events are raised by the component, which you can catch in your calling application to respond to user actions:
 
-- `click-date(date, windowEvent)`: fired when user clicks a date
+- `click-date(date, events, windowEvent)`: fired when user clicks a date.
 - `click-event(calendarItem, windowEvent)`: same as above, but deprecated.
 - `drag-start(calendarItem)`: fires when user starts dragging an item
 - `drag-enter-date(calendarItem, date)`: fires when an item is dragged over a date

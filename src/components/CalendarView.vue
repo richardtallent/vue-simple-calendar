@@ -59,7 +59,7 @@
 						},
 						...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null),
 					]"
-					@click="onClickDay(day)"
+					@click="onClickDay(day, findAndSortItemsInDay(day))"
 					@drop.prevent="onDrop(day, $event)"
 					@dragover.prevent="onDragOver(day)"
 					@dragenter.prevent="onDragEnter(day, $event)"
@@ -318,10 +318,10 @@ export default {
 		// UI Events
 		// ******************************
 
-		onClickDay(day, windowEvent) {
+		onClickDay(day, items, windowEvent) {
 			if (this.disablePast && this.isInPast(day)) return
 			if (this.disableFuture && this.isInFuture(day)) return
-			this.$emit("click-date", day, windowEvent)
+			this.$emit("click-date", day, items, windowEvent)
 		},
 
 		onClickItem(calendarItem, windowEvent) {
@@ -429,6 +429,14 @@ export default {
 		// Calendar Items
 		// ******************************
 
+		sortItemCallback(a, b) {
+			if (a.startDate < b.startDate) return -1
+			if (b.startDate < a.startDate) return 1
+			if (a.endDate > b.endDate) return -1
+			if (b.endDate > a.endDate) return 1
+			return a.id < b.id ? -1 : 1
+		},
+
 		findAndSortItemsInWeek(weekStart) {
 			// Return a list of items that INCLUDE any day of a week starting on a
 			// particular day. Sorted so the items that start earlier are always
@@ -440,13 +448,18 @@ export default {
 						item.endDate >= weekStart,
 					this
 				)
-				.sort((a, b) => {
-					if (a.startDate < b.startDate) return -1
-					if (b.startDate < a.startDate) return 1
-					if (a.endDate > b.endDate) return -1
-					if (b.endDate > a.endDate) return 1
-					return a.id < b.id ? -1 : 1
-				})
+				.sort(this.sortItemCallback)
+			return items
+		},
+
+		findAndSortItemsInDay(day) {
+			const items = this.fixedItems
+				.filter(
+					item =>
+						this.isSameDate(item.startDate, day),
+					this
+				)
+				.sort(this.sortItemCallback)
 			return items
 		},
 
