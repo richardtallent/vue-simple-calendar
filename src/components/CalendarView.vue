@@ -69,7 +69,7 @@
 					<slot :day="day" name="dayContent" />
 				</div>
 				<template v-for="e in getWeekItems(weekStart)">
-					<slot
+					<slot v-if="showEvents"
 						:event="e"
 						:weekStartDate="weekStart"
 						:top="getItemTop(e)"
@@ -117,6 +117,7 @@ export default {
 		enableDragDrop: { type: Boolean, default: false },
 		startingDayOfWeek: { type: Number, default: 0 },
 		events: { type: Array, default: () => [] },
+		showEvents: { type: Boolean, default: true },
 		dateClasses: { type: Object, default: () => {} },
 		eventTop: { type: String, default: "1.4em" },
 		eventContentHeight: { type: String, default: "1.4em" },
