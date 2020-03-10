@@ -58,6 +58,7 @@
 							lastInstance: isLastInstanceOfMonth(day),
 						},
 						...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null),
+						hasEvent(day)
 					]"
 					@click="onClickDay(day, findAndSortItemsInDay(day))"
 					@drop.prevent="onDrop(day, $event)"
@@ -429,6 +430,13 @@ export default {
 		// ******************************
 		// Calendar Items
 		// ******************************
+
+		hasEvent(day) {
+			if(this.findAndSortItemsInDay(day).length > 0)
+				return "hasEvent"
+			else
+				return ""
+		},
 
 		sortItemCallback(a, b) {
 			if (a.startDate < b.startDate) return -1
