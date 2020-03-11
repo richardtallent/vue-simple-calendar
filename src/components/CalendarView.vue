@@ -58,6 +58,7 @@
 							lastInstance: isLastInstanceOfMonth(day),
 						},
 						...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null),
+						hasEvent(day)
 					]"
 					@click="onClickDay(day, findAndSortItemsInDay(day))"
 					@drop.prevent="onDrop(day, $event)"
@@ -69,7 +70,7 @@
 					<slot :day="day" name="dayContent" />
 				</div>
 				<template v-for="e in getWeekItems(weekStart)">
-					<slot
+					<slot v-if="showEvents"
 						:event="e"
 						:weekStartDate="weekStart"
 						:top="getItemTop(e)"
@@ -117,6 +118,7 @@ export default {
 		enableDragDrop: { type: Boolean, default: false },
 		startingDayOfWeek: { type: Number, default: 0 },
 		events: { type: Array, default: () => [] },
+		showEvents: { type: Boolean, default: true },
 		dateClasses: { type: Object, default: () => {} },
 		eventTop: { type: String, default: "1.4em" },
 		eventContentHeight: { type: String, default: "1.4em" },
@@ -428,6 +430,13 @@ export default {
 		// ******************************
 		// Calendar Items
 		// ******************************
+
+		hasEvent(day) {
+			if(this.findAndSortItemsInDay(day).length > 0)
+				return "hasEvent"
+			else
+				return ""
+		},
 
 		sortItemCallback(a, b) {
 			if (a.startDate < b.startDate) return -1
