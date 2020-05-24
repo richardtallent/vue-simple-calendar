@@ -200,11 +200,11 @@ The following Vue events are raised by the component, which you can catch in you
 
 - `click-date(date, windowEvent)`: fired when user clicks a date
 - `click-event(calendarItem, windowEvent)`: same as above, but deprecated.
-- `drag-start(calendarItem)`: fires when user starts dragging an item
-- `drag-enter-date(calendarItem, date)`: fires when an item is dragged over a date
-- `drag-leave-date(calendarItem, date)`: fires when an item is dragged out of a date without dropping it there
-- `drag-over-date(calendarItem, date)`: fires multiple times as an item is hovered over a date
-- `drop-on-date(calendarItem, date)`: fired when an item is dropped on a date
+- `drag-start(calendarItem, windowEvent)`: fires when user starts dragging an item
+- `drag-enter-date(calendarItem, date, windowEvent)`: fires when an item is dragged over a date
+- `drag-leave-date(calendarItem, date, windowEvent)`: fires when an item is dragged out of a date without dropping it there
+- `drag-over-date(calendarItem, date, windowEvent)`: fires multiple times as an item is hovered over a date
+- `drop-on-date(calendarItem, date, windowEvent)`: fired when an item is dropped on a date
 - `item-mouseenter(calendarItem, windowEvent)`: optional (controlled by doEmitItemMouseEvents prop), fires when user's pointer hovers over a calendar item.
 - `item-mouseleave(calendarItem, windowEvent)`: optional (controlled by doEmitItemMouseEvents prop), fires when user's pointer leaves a calendar item.
 

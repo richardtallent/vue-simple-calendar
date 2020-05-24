@@ -61,7 +61,7 @@
 					]"
 					@click="onClickDay(day, $event)"
 					@drop.prevent="onDrop(day, $event)"
-					@dragover.prevent="onDragOver(day)"
+					@dragover.prevent="onDragOver(day, $event)"
 					@dragenter.prevent="onDragEnter(day, $event)"
 					@dragleave.prevent="onDragLeave(day, $event)"
 				>
@@ -391,37 +391,42 @@ export default {
 			// Firefox and possibly other browsers require dataTransfer to be set, even if the value is not used. IE11
 			// requires that the first argument be exactly "text" (not "text/plain", etc.).
 			windowEvent.dataTransfer.setData("text", "foo")
-			this.$emit("drag-start", calendarItem)
+			this.$emit("drag-start", calendarItem, windowEvent)
 			return true
 		},
 
-		handleDragEvent(bubbleEventName, bubbleParam) {
+		handleDragEvent(bubbleEventName, bubbleParam, windowEvent) {
 			if (!this.enableDragDrop) return false
-			if (!this.currentDragItem) {
-				// shouldn't happen
-				// If current drag item is not set, check if user has set its own slot for items
-				if (!this.$scopedSlots["event"]) return false
-			}
-			this.$emit(bubbleEventName, this.currentDragItem, bubbleParam)
+			// If the user drags an event FROM this calendar TO this calendar, currentDragItem will be initialized to the
+			// most recent item with a dragStart event. If not, we still emit the event, and the caller will need to
+			// determine what to do based on the third argument (windowEvent, which gives them access to `dataTransfer`).
+			// This allows developers to create custom calendars where things can be dragged in from the outside. This
+			// also allows developers using scoped slots for items to handle the drag and drop themselves.
+			this.$emit(
+				bubbleEventName,
+				this.currentDragItem,
+				bubbleParam,
+				windowEvent
+			)
 			return true
 		},
 
-		onDragOver(day) {
-			this.handleDragEvent("drag-over-date", day)
+		onDragOver(day, windowEvent) {
+			this.handleDragEvent("drag-over-date", day, windowEvent)
 		},
 
 		onDragEnter(day, windowEvent) {
-			if (!this.handleDragEvent("drag-enter-date", day)) return
+			if (!this.handleDragEvent("drag-enter-date", day, windowEvent)) return
 			windowEvent.target.classList.add("draghover")
 		},
 
 		onDragLeave(day, windowEvent) {
-			if (!this.handleDragEvent("drag-leave-date", day)) return
+			if (!this.handleDragEvent("drag-leave-date", day, windowEvent)) return
 			windowEvent.target.classList.remove("draghover")
 		},
 
 		onDrop(day, windowEvent) {
-			if (!this.handleDragEvent("drop-on-date", day)) return
+			if (!this.handleDragEvent("drop-on-date", day, windowEvent)) return
 			windowEvent.target.classList.remove("draghover")
 		},
 

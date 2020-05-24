@@ -4,11 +4,13 @@
 - Handles to drag events to make them longer or shorter
 - Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
 
-## 4.3.3 (2020-05-24)
+## 4.4.0 (2020-05-24)
 
-- Fix events showing incorrectly during the week of a DST change in the UK (#150)
+- Fix events showing incorrectly during the week of a DST change in the UK (#135 and #150, thanks @ghost and @robert-joscelyne)
 - Update dependencies
 - Clean up to use arrow functions for some functions
+- Now passes second argument `$event` (the native click event) to the `onClickDay` handler (#142, thanks @GiboMac)
+- Pass drag/drop events on days back to calling app even if the dragged item is not one of the calendar's items. This allows developers to drag in elements from other controls, or to handle drag/drop if they use scoped slots for items. (#134, thanks @vykimo!)
 
 ## 4.3.2 (2019-11-24)
 
