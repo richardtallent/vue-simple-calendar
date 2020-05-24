@@ -2,6 +2,7 @@
 	<div id="app">
 		<calendar-view
 			:show-date="showDate"
+			:events="events"
 			class="theme-default holiday-us-traditional holiday-us-official"
 		>
 			<calendar-view-header
@@ -24,8 +25,18 @@ export default {
 		CalendarView,
 		CalendarViewHeader,
 	},
-	data: function() {
-		return { showDate: new Date() }
+	data: function () {
+		return {
+			showDate: new Date(),
+			events: [
+				{
+					id: 1,
+					title: "test",
+					startDate: "2020-03-31",
+					endDate: "2020-03-31",
+				},
+			],
+		}
 	},
 	methods: {
 		setShowDate(d) {

@@ -58,13 +58,9 @@ export default {
 		// ********************************************
 		// Date transforms that ignore/wipe time of day
 		// ********************************************
-		beginningOfMonth(d) {
-			return new Date(d.getFullYear(), d.getMonth())
-		},
+		beginningOfMonth: (d) => new Date(d.getFullYear(), d.getMonth()),
 
-		instanceOfMonth(d) {
-			return Math.ceil(d.getDate() / 7)
-		},
+		instanceOfMonth: (d) => Math.ceil(d.getDate() / 7),
 
 		// This function increments a date by a given number of date units. Accepted units are: year, month, week. For year and month,
 		// the day of the month is unchanged. This could cause an unexpected result if the units are "month" and the starting day is
@@ -81,12 +77,8 @@ export default {
 		// Date formatting
 		// ******************************
 
-		paddedMonth(d) {
-			return ("0" + String(d.getMonth() + 1)).slice(-2)
-		},
-		paddedDay(d) {
-			return ("0" + String(d.getDate())).slice(-2)
-		},
+		paddedMonth: (d) => ("0" + String(d.getMonth() + 1)).slice(-2),
+		paddedDay: (d) => ("0" + String(d.getDate())).slice(-2),
 
 		isoYearMonth(d) {
 			return d.getFullYear() + "-" + this.paddedMonth(d)
@@ -158,13 +150,11 @@ export default {
 		// ******************************
 
 		// Number of whole days between two dates. If present, time of day is ignored.
-		// Have to use setUTCHours to ensure that DST changes between these dates don't
-		// result in a fractional answer.
+		// Treats dates as UTC to avoid DST changes within the perioud leading to incorrect
+		// answers (#150).
 		dayDiff(d1, d2) {
-			const endDate = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate()),
-				startDate = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate())
-			endDate.setUTCHours(0, 0, 0, 0)
-			startDate.setUTCHours(0, 0, 0, 0)
+			const endDate = Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate()),
+				startDate = Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate())
 			return (endDate - startDate) / 86400000
 		},
 
@@ -172,14 +162,10 @@ export default {
 			// http://stackoverflow.com/questions/492994/compare-two-dates-with-javascript
 			return this.dayDiff(d1, d2) === 0
 		},
-		isSameDateTime(d1, d2) {
-			return d1.getTime() === d2.getTime()
-		},
-		isSameMonth(d1, d2) {
-			return (
-				d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth()
-			)
-		},
+
+		isSameDateTime: (d1, d2) => d1.getTime() === d2.getTime(),
+		isSameMonth: (d1, d2) =>
+			d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth(),
 
 		isPastMonth(d) {
 			return this.beginningOfMonth(d) < this.beginningOfMonth(this.today())
@@ -201,14 +187,14 @@ export default {
 			return d.getMonth() !== this.addDays(d, 1).getMonth()
 		},
 		isSelectedDay(d) {
-			var day = Object.keys(this.dateClasses).find(day =>
+			var day = Object.keys(this.dateClasses).find((day) =>
 				this.isSameDate(this.fromIsoStringToLocalDate(day), d)
 			)
 			return day ? this.dateClasses[day] : undefined
 		},
 		// Courtesy https://stackoverflow.com/questions/33908299/javascript-parse-a-string-to-date-as-local-time-zone/42626876#42626876
 		fromIsoStringToLocalDate(s) {
-			let ds = s.split(/\D/).map(s => Number(s))
+			let ds = s.split(/\D/).map((s) => Number(s))
 			ds[1]-- // adjust month
 			return new Date(...ds)
 		},
@@ -230,13 +216,9 @@ export default {
 		// Localization
 		// ******************************
 
-		languageCode(l) {
-			return l.substring(0, 2)
-		},
+		languageCode: (l) => l.substring(0, 2),
 
-		supportsIntl() {
-			return typeof Intl !== "undefined"
-		},
+		supportsIntl: () => typeof Intl !== "undefined",
 
 		getFormattedMonthNames(locale, format) {
 			// Use the provided locale and format if possible to obtain the name of the month

@@ -4,6 +4,12 @@
 - Handles to drag events to make them longer or shorter
 - Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
 
+## 4.3.3 (2020-05-24)
+
+- Fix events showing incorrectly during the week of a DST change in the UK (#150)
+- Update dependencies
+- Clean up to use arrow functions for some functions
+
 ## 4.3.2 (2019-11-24)
 
 - Fix calendar layout for RTL languages (#138)

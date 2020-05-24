@@ -219,7 +219,7 @@ export default {
 		// Ensure all item properties have suitable default
 		fixedItems() {
 			const self = this
-			return this.events.map(e =>
+			return this.events.map((e) =>
 				self.normalizeEvent(
 					e,
 					self.currentHoveredItemId && e.id === self.currentHoveredItemId
@@ -435,7 +435,7 @@ export default {
 			// shown first.
 			const items = this.fixedItems
 				.filter(
-					item =>
+					(item) =>
 						item.startDate < this.addDays(weekStart, 7) &&
 						item.endDate >= weekStart,
 					this

@@ -104,7 +104,9 @@ Official US Holidays
 }
 
 /* Memorial Day - last Monday in May */
-.cv-wrapper.holiday-us-official.m05 .day.dow1.lastInstance .cv-day-number::before {
+.cv-wrapper.holiday-us-official.m05
+	.day.dow1.lastInstance
+	.cv-day-number::before {
 	content: "\1F1FA\1F1F8";
 }
 
