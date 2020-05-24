@@ -59,7 +59,7 @@
 						},
 						...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null),
 					]"
-					@click="onClickDay(day)"
+					@click="onClickDay(day, $event)"
 					@drop.prevent="onDrop(day, $event)"
 					@dragover.prevent="onDragOver(day)"
 					@dragenter.prevent="onDragEnter(day, $event)"
