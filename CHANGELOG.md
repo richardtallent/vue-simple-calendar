@@ -3,6 +3,7 @@
 - Mobile-compatible drag and drop (#21)
 - Handles to drag events to make them longer or shorter
 - Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
+- Change from mixin to plain old imported functions.
 
 ## 4.4.0 (2020-05-24)
 

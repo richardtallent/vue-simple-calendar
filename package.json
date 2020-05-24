@@ -1,63 +1,63 @@
 {
-  "name": "vue-simple-calendar",
-  "version": "4.3.2",
-  "private": false,
-  "description": "Simple calendar event control",
-  "author": "richardtallent <richard@tallent.us>",
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "bundle": "vue-cli-service build --target lib --name CalendarView ./src/components/bundle.js",
-    "prepublishOnly": "npm run bundle"
-  },
-  "main": "dist/CalendarView.umd.js",
-  "dependencies": {
-    "core-js": "^3.6.5",
-    "vue": "^2.6.11"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.3.1",
-    "@vue/cli-plugin-eslint": "^4.3.1",
-    "@vue/cli-service": "^4.3.1",
-    "@vue/eslint-config-prettier": "^6.0.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-config-tabsanity": "^1.0.25",
-    "eslint-plugin-prettier": "^3.1.3",
-    "eslint-plugin-vue": "^6.2.2",
-    "node-sass": "^4.14.1",
-    "prettier": "^2.0.5",
-    "sass-loader": "^7.3.1",
-    "vue-template-compiler": "^2.6.11"
-  },
-  "eslintConfig": {
-    "extends": [
-      "tabsanity"
-    ]
-  },
-  "prettier": {
-    "useTabs": true,
-    "semi": false,
-    "singleQuote": false,
-    "bracketSpacing": true,
-    "trailingComma": "es5"
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "ie >= 11"
-  ],
-  "license": "MIT",
-  "repository": "https://github.com/richardtallent/vue-simple-calendar",
-  "stylelint": {
-    "extends": "stylelint-config-standard",
-    "rules": {
-      "indentation": "tab"
-    }
-  }
+	"name": "vue-simple-calendar",
+	"version": "4.4.0",
+	"private": false,
+	"description": "Simple calendar event control",
+	"author": "richardtallent <richard@tallent.us>",
+	"scripts": {
+		"serve": "vue-cli-service serve",
+		"build": "vue-cli-service build",
+		"lint": "vue-cli-service lint",
+		"bundle": "vue-cli-service build --target lib --name CalendarView ./src/components/bundle.js",
+		"prepublishOnly": "npm run bundle"
+	},
+	"main": "dist/CalendarView.umd.js",
+	"dependencies": {
+		"core-js": "^3.6.5",
+		"vue": "^2.6.11"
+	},
+	"devDependencies": {
+		"@vue/cli-plugin-babel": "^4.3.1",
+		"@vue/cli-plugin-eslint": "^4.3.1",
+		"@vue/cli-service": "^4.3.1",
+		"@vue/eslint-config-prettier": "^6.0.0",
+		"babel-eslint": "^10.1.0",
+		"eslint": "^6.7.2",
+		"eslint-config-tabsanity": "^1.0.25",
+		"eslint-plugin-prettier": "^3.1.3",
+		"eslint-plugin-vue": "^6.2.2",
+		"node-sass": "^4.14.1",
+		"prettier": "^2.0.5",
+		"sass-loader": "^7.3.1",
+		"vue-template-compiler": "^2.6.11"
+	},
+	"eslintConfig": {
+		"extends": [
+			"tabsanity"
+		]
+	},
+	"prettier": {
+		"useTabs": true,
+		"semi": false,
+		"singleQuote": false,
+		"bracketSpacing": true,
+		"trailingComma": "es5"
+	},
+	"postcss": {
+		"plugins": {
+			"autoprefixer": {}
+		}
+	},
+	"browserslist": [
+		"> 1%",
+		"ie >= 11"
+	],
+	"license": "MIT",
+	"repository": "https://github.com/richardtallent/vue-simple-calendar",
+	"stylelint": {
+		"extends": "stylelint-config-standard",
+		"rules": {
+			"indentation": "tab"
+		}
+	}
 }
