@@ -41,6 +41,10 @@ having to override as much.
 	background-color: #ffe;
 }
 
+.theme-default .cv-day[aria-selected] {
+	background-color: #ffc;
+}
+
 /* Events */
 
 .theme-default .cv-item {

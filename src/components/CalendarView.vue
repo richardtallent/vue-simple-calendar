@@ -1,5 +1,6 @@
 <template>
 	<div
+		aria-label="Calendar"
 		:class="[
 			'cv-wrapper',
 			'locale-' + languageCode(displayLocale),
@@ -29,7 +30,7 @@
 				</slot>
 			</template>
 		</div>
-		<div class="cv-weeks">
+		<div :aria-multiselectable="enableDateSelection" class="cv-weeks">
 			<div
 				v-for="(weekStart, weekIndex) in weeksOfPeriod"
 				:key="`${weekIndex}-week`"
@@ -42,6 +43,7 @@
 				<div
 					v-for="(day, dayIndex) in daysOfWeek(weekStart)"
 					:key="getColumnDOWClass(dayIndex)"
+					:draggable="enableDateSelection"
 					:class="[
 						'cv-day',
 						getColumnDOWClass(dayIndex),
@@ -57,16 +59,31 @@
 							last: isLastDayOfMonth(day),
 							lastInstance: isLastInstanceOfMonth(day),
 							hasItems: dayHasItems(day),
+							selectionStart: isSameDate(day, selectionStart),
+							selectionEnd: isSameDate(day, selectionEnd),
 						},
 						...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null),
 					]"
+					:aria-grabbed="enableDateSelection ? dayIsSelected(day) : 'undefined'"
+					:aria-label="day.getDate()"
+					:aria-selected="dayIsSelected(day)"
+					:aria-dropeffect="
+						enableDragDrop && currentDragItem
+							? 'move'
+							: enableDateSelection && dateSelectionOrigin
+							? 'execute'
+							: 'none'
+					"
 					@click="onClickDay(day, $event)"
+					@dragstart="onDragDateStart(day, $event)"
 					@drop.prevent="onDrop(day, $event)"
 					@dragover.prevent="onDragOver(day, $event)"
 					@dragenter.prevent="onDragEnter(day, $event)"
 					@dragleave.prevent="onDragLeave(day, $event)"
 				>
-					<div class="cv-day-number">{{ day.getDate() }}</div>
+					<div class="cv-day-number">
+						{{ day.getDate() }}
+					</div>
 					<slot :day="day" name="dayContent" />
 				</div>
 				<template v-for="i in getWeekItems(weekStart)">
@@ -79,11 +96,14 @@
 						<div
 							:key="i.id"
 							:draggable="enableDragDrop"
+							:aria-grabbed="
+								enableDragDrop ? i == currentDragItem : 'undefined'
+							"
 							:class="i.classes"
 							:title="i.title"
 							:style="`top:${getItemTop(i)};${i.originalItem.style}`"
 							class="cv-item"
-							@dragstart="onDragStart(i, $event)"
+							@dragstart="onDragItemStart(i, $event)"
 							@mouseenter="onMouseEnterItem(i, $event)"
 							@mouseleave="onMouseLeaveItem(i, $event)"
 							@click.stop="onClickItem(i, $event)"
@@ -115,6 +135,9 @@ export default {
 		timeFormatOptions: { type: Object, default: () => {} },
 		disablePast: { type: Boolean, default: false },
 		disableFuture: { type: Boolean, default: false },
+		enableDateSelection: { type: Boolean, default: false },
+		selectionStart: { type: Date, default: null },
+		selectionEnd: { type: Date, default: null },
 		enableDragDrop: { type: Boolean, default: false },
 		startingDayOfWeek: { type: Number, default: 0 },
 		items: { type: Array, default: () => [] },
@@ -130,6 +153,7 @@ export default {
 
 	data: () => ({
 		currentDragItem: null,
+		dateSelectionOrigin: null,
 		currentHoveredItemId: undefined,
 	}),
 
@@ -386,10 +410,28 @@ export default {
 		},
 
 		// ******************************
+		// Dragging across days (selection)
+		// ******************************
+
+		onDragDateStart(day, windowEvent) {
+			if (!this.enableDateSelection) return false
+			// Push the date where the selection started into dataTransfer. This is not used by this component, but
+			// a value required in Firefox and possibly other browsers.
+			windowEvent.dataTransfer.setData("text", day.toString())
+			let img = new Image()
+			img.src =
+				"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+			windowEvent.dataTransfer.setDragImage(img, 10, 10)
+			this.dateSelectionOrigin = day
+			this.emitDateSelection("date-selection-start", day, windowEvent)
+			return true
+		},
+
+		// ******************************
 		// Drag and drop items
 		// ******************************
 
-		onDragStart(calendarItem, windowEvent) {
+		onDragItemStart(calendarItem, windowEvent) {
 			if (!this.enableDragDrop) return false
 			// Firefox and possibly other browsers require dataTransfer to be set, even if the value is not used. IE11
 			// requires that the first argument be exactly "text" (not "text/plain", etc.). The calendar item's ID is
@@ -424,18 +466,39 @@ export default {
 		},
 
 		onDragEnter(day, windowEvent) {
+			if (this.enableDateSelection && this.dateSelectionOrigin) {
+				// User is selecting dates, not items.
+				this.emitDateSelection("date-selection", day, windowEvent)
+				return
+			}
 			if (!this.handleDragEvent("drag-enter-date", day, windowEvent)) return
 			windowEvent.target.classList.add("draghover")
 		},
 
 		onDragLeave(day, windowEvent) {
+			// User is selecting dates, not items. No emit.
+			if (this.enableDateSelection && this.currentSelectionStartDate) return
 			if (!this.handleDragEvent("drag-leave-date", day, windowEvent)) return
 			windowEvent.target.classList.remove("draghover")
 		},
 
 		onDrop(day, windowEvent) {
+			if (this.enableDateSelection && this.dateSelectionOrigin) {
+				// User is selecting dates, not items.
+				this.emitDateSelection("date-selection-finish", day, windowEvent)
+				return
+			}
 			if (!this.handleDragEvent("drop-on-date", day, windowEvent)) return
 			windowEvent.target.classList.remove("draghover")
+		},
+
+		emitDateSelection(eventName, toDate, windowEvent) {
+			this.$emit(
+				eventName,
+				toDate <= this.dateSelectionOrigin
+					? [toDate, this.dateSelectionOrigin, windowEvent]
+					: [this.dateSelectionOrigin, toDate, windowEvent]
+			)
 		},
 
 		// ******************************
@@ -475,6 +538,12 @@ export default {
 			return this.fixedItems.find(
 				(d) => d.endDate >= day && this.dateOnly(d.startDate) <= day
 			)
+		},
+
+		dayIsSelected(day) {
+			if (!this.selectionStart || day < this.selectionStart) return false
+			if (!this.selectionEnd || day > this.selectionEnd) return false
+			return true
 		},
 
 		getWeekItems(weekStart) {
@@ -682,6 +751,11 @@ _:-ms-lang(x),
 */ .cv-day-number {
 	position: absolute;
 	right: 0;
+}
+
+.cv-day[draggable],
+.cv-item[draggable] {
+	user-select: none;
 }
 
 .cv-item {

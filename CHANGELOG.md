@@ -28,6 +28,7 @@ Any reference to a "thing that is scheduled on the calendar" is now called an "i
 - The DIVs for dates that have at least one calendar item crossing into them now have a `hasItems` class. (#143, thanks @SwithFr!)
 - Breaking: the `click-date` event now passes the list of calendar items falling on that date as the second argument (`windowEvent` is pushed to argument 3) #143
 - The `dragStart` event for an item now passes the item's `id` (stringified) into the `dataTransfer` data. This should make it easier to create custom drag/drop functionality where someone could drag a calendar item outside this component.
+- Now supports date range selection, and user drag-select! Enable with the `enable-date-selection` prop.
 
 ## 4.4.0 (2020-05-24)
 

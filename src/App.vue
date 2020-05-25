@@ -3,6 +3,12 @@
 		<calendar-view
 			:show-date="showDate"
 			:items="items"
+			:enable-date-selection="true"
+			:selection-start="selectionStart"
+			:selection-end="selectionEnd"
+			@date-selection-start="setSelection"
+			@date-selection="setSelection"
+			@date-selection-finish="finishSelection"
 			class="theme-default holiday-us-traditional holiday-us-official"
 		>
 			<calendar-view-header
@@ -28,6 +34,8 @@ export default {
 	data: function () {
 		return {
 			showDate: new Date(),
+			selectionStart: null,
+			selectionEnd: null,
 			items: Array(5)
 				.fill()
 				.map((_, i) => this.getRandomEvent(i)),
@@ -36,6 +44,13 @@ export default {
 	methods: {
 		setShowDate(d) {
 			this.showDate = d
+		},
+		setSelection(dateRange) {
+			this.selectionEnd = dateRange[1]
+			this.selectionStart = dateRange[0]
+		},
+		finishSelection(dateRange) {
+			this.setSelection(dateRange)
 		},
 		getRandomEvent(index) {
 			const startDay = Math.floor(Math.random() * 28 + 1)

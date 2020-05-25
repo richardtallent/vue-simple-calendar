@@ -160,12 +160,15 @@ export default {
 
 		isSameDate(d1, d2) {
 			// http://stackoverflow.com/questions/492994/compare-two-dates-with-javascript
-			return this.dayDiff(d1, d2) === 0
+			return d1 && d2 && this.dayDiff(d1, d2) === 0
 		},
 
-		isSameDateTime: (d1, d2) => d1.getTime() === d2.getTime(),
+		isSameDateTime: (d1, d2) => d1 && d2 && d1.getTime() === d2.getTime(),
 		isSameMonth: (d1, d2) =>
-			d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth(),
+			d1 &&
+			d2 &&
+			d1.getFullYear() === d2.getFullYear() &&
+			d1.getMonth() === d2.getMonth(),
 
 		isPastMonth(d) {
 			return this.beginningOfMonth(d) < this.beginningOfMonth(this.today())

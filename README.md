@@ -48,6 +48,7 @@ https://github.com/richardtallent/vue-simple-calendar-sample
 - Weeks can start on any day of the week (defaults to Sunday).
 - Easy to theme (using CSS) to integrate with your own site
 - Easy to customize using Vue slots
+- Date range selection (programmatic or via user drag-select)
 
 What this component _doesn't_ try to do:
 
@@ -158,30 +159,46 @@ Here's a minimal application example for an empty calendar, styled with the defa
 
 ## Props
 
-The following properties are supported, roughly in order of popularity.
+The following properties are supported, by area of function:
+
+### Grid Display
 
 - `showDate` - The period to show by default. Defaults to today's date (user local time). Any time component is ignored.
 - `displayPeriodUom` - The period type to show. By default this is `month`, _i.e._, it shows a calendar in month-sized chunks. Other allowed values are `year` and `week`.
 - `displayPeriodCount` - The _number_ of periods to show within the view. For example, if `displayPeriodUom` is `week` and `displayPeriodCount` is 2, the view will show a two-week period.
-- `items` - An array of items to show on the calendar. See _Calendar Item Properties_ below for more details.
-- `showTimes` - If true, shows the start and/or end time of an item beside the item title. Midnight is not shown, a midnight time is assumed to indicate an all-day or indeterminate time. (If you want to show midnight, use `00:00:01` and don't choose to show seconds.) The default is `false`.
-- `enableDragDrop` - If true, items are draggable, and dragging and dropping them emits events you can catch and respond to. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
-- `disablePast` - If true, prevents the user from navigating to previous periods. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
-- `disableFuture` - If true, prevents the user from navigating to future periods. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
-- `locale` - The BCP 47 language tag used to determine the month and day names. Defaults to the user's browser language setting.
 - `startingDayOfWeek` - The day of the week that starts each week. Defaults to `0` (Sunday), valid range is 0-6. Common non-default values would be
   `1` (Monday) for Europe or `6` (Saturday) for much of the Middle East.
+- `dateClasses` - Optional object, where the key is a date in ISO form (e.g., "2018-04-15") and the value is a string or array of additional CSS classes that should be applied to the main element for that date. This could be useful for dynamically highlighting selected dates, holidays, blocked-off dates, etc.
+- `periodChangedCallback` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `items` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
+
+### Grid Selection
+
+- `enableDateSelection` - If true, the user can "drag" their cursor across dates to select a date range. When the user starts dragging, a `date-selection-start` is emitted. As the user drags into other dates, `date-selection` events are emitted. When the user stop dragging, a `date-selection-finish` event is emitted. All of these events sent a **three-element array** payload. The first two elements are the new date range selected, the third is the original DOM drag event. Note that this represents what the _user selected_ -- if you want to highlight those dates, you'll need to pass the dates back as `selectionStart` and `selectionEnd` props. This allows you to modify the selection highlights as needed -- for example, clearing it on finish and performing some action (such as adding a new event, like Google Calendar).
+- `selectionStart` - the start of the date range you want to select. This date is decorated with the `selectionStart` class.
+- `selectionEnd` - the end of the date range you want to select. This date is decorated with the `selectionEnd` class.
+
+Note: Each date between `selectionStart` and `selectionEnd` (including them) has the `aria-selected` attribute. This is used in the default CSS theme to highlight these in yellow).
+
+### Header Display
+
+- `locale` - The BCP 47 language tag used to determine the month and day names. Defaults to the user's browser language setting.
 - `monthNameFormat` - The format to use for the month names. Possible values are `numeric`, `2-digit`, `narrow`, `short`, or `long`, and the default is `long`.
 - `weekdayNameFormat` - The format to use for the names of the days of the week. Possible values are `narrow`, `short`, or `long`, and the default is `short`.
+- `disablePast` - If true, prevents the user from navigating to previous periods. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
+- `disableFuture` - If true, prevents the user from navigating to future periods. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
+- `currentPeriodLabel` - Optional label for the "Today" button (the button in the header to return to the current period). If blank, this will show the current date period (_i.e._, the period where today's date would fall). If this has the special value `icons`, it will display an icon, where the icon depends on whether the current date period is in the past, is the displayed period, or is in the future. The default icons for this are `⇤`, `-`, and `⇥`, respectively. If you use any other string, the button will show the literal value you provide.
+- `currentPeriodLabelIcons` - Optional replacement for the above three icons. Pass this as a three-character string.
+
+### Items (Scheduled events to show on the calendar)
+
+- `items` - An array of items to show on the calendar. See _Calendar Item Properties_ below for more details.
+- `enableDragDrop` - If true, items are draggable, and dragging and dropping them emits events you can catch and respond to. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
+- `showTimes` - If true, shows the start and/or end time of an item beside the item title. Midnight is not shown, a midnight time is assumed to indicate an all-day or indeterminate time. (If you want to show midnight, use `00:00:01` and don't choose to show seconds.) The default is `false`.
 - `timeFormatOptions` - This takes an object containing `Intl.DateTimeFormat` options to be used to format the item times. The `locale` setting is automatically used. This option is ignored for browsers that don't support `Intl` (they will see the 24-hour, zero-padded time).
-- `dateClasses` - Optional object, where the key is a date in ISO form (e.g., "2018-04-15") and the value is a string or array of additional CSS classes that should be applied to the main element for that date. This could be useful for dynamically highlighting selected dates, holidays, blocked-off dates, etc.
+- `doEmitItemMouseEvents` - Optional, default is false. If true, emits `item-mouseenter` and `item-mouseleave` events when the mouse hovers over a calendar item. In most cases, styling the `isHovered` class is enough to handle hover interactions with a calendar item. However, if you want to, say, show a tooltip or menu when a user hovers over a calendar item, you may need access to the real-time mouse DOM events. Be sure that your use of these events doesn't conflict with the user's ability to click, drag, read, or otherwise interact with the calendar items. NOTE: if you use slots for your calendar items, this property is ignored. (#136)
 - `itemTop` - Optional string of a CSS height to be used as the baseline for where items are positioned relative the top of the week. By default, this is `1.4em`, the height of the standard `cv-day-number` element.
 - `itemContentHeight` - Optional CSS string of the total height of your items, _not including_ borders. The default is `1.4em` (1.0 from the font, 0.2 \* 2 from the padding.). You would only set this if you're overriding the item height. This doesn't actually change the item height, it is only used to position the items below one another.
 - `itemBorderHeight` - Optional CSS string of the sum of your items' top and bottom borders. The default is `2px`. You would only set this if you're overriding the item top and/or bottom border width. This doesn't actually change the borders, it is only used to position the items below one another.
-- `periodChangedCallback` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `items` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
-- `currentPeriodLabel` - Optional label for the "Today" button (the button in the header to return to the current period). If blank, this will show the current date period (_i.e._, the period where today's date would fall). If this has the special value `icons`, it will display an icon, where the icon depends on whether the current date period is in the past, is the displayed period, or is in the future. The default icons for this are `⇤`, `-`, and `⇥`, respectively. If you use any other string, the button will show the literal value you provide.
-- `currentPeriodLabelIcons` - Optional replacement for the above three icons. Pass this as a three-character string.
-- `doEmitItemMouseEvents` - Optional, default is false. If true, emits `item-mouseenter` and `item-mouseleave` events when the mouse hovers over a calendar item. In most cases, styling the `isHovered` class is enough to handle hover interactions with a calendar item. However, if you want to, say, show a tooltip or menu when a user hovers over a calendar item, you may need access to the real-time mouse DOM events. Be sure that your use of these events doesn't conflict with the user's ability to click, drag, read, or otherwise interact with the calendar items. NOTE: if you use slots for your calendar items, this property is ignored. (#136)
 
 Tips for Vue component properties:
 
@@ -202,19 +219,33 @@ Each item shown on the calendar can have the following properties. `id` and `sta
 
 ## Component Events
 
-You can create handlers for the following Vue events to add custom functionality:
+(Note: below, `calendarItem` refers to the **normalized** version of the calendar item involved in the activity. For more information, see the "item" slot below.)
 
-- `@click-date(date, calendarItems, windowEvent)`: fired when the user clicks a date
-- `@click-item(calendarItem, windowEvent)`: fired when the user clicks a calendar item
-- `@drag-start(calendarItem, windowEvent)`: fires when the user starts dragging a calendar item
-- `@drag-enter-date(calendarItem, date, windowEvent)`: fires when a calendar item is dragged over a date
-- `@drag-leave-date(calendarItem, date, windowEvent)`: fires when a calendar item is dragged out of a date without dropping it there
-- `@drag-over-date(calendarItem, date, windowEvent)`: fires multiple times as a calendar item is hovered over a date
-- `@drop-on-date(calendarItem, date, windowEvent)`: fired when a calendar item is dropped on a date
-- `@item-mouseenter(calendarItem, windowEvent)`: optional (controlled by doEmitItemMouseEvents prop), fires when the user's pointer hovers over a calendar item.
-- `@item-mouseleave(calendarItem, windowEvent)`: optional (controlled by doEmitItemMouseEvents prop), fires when the user's pointer leaves a calendar item.
+You can create handlers for the following Vue events to add custom functionality (with their payload array):
 
-In the above, `calendarItem` refers to the **normalized** version of the calendar item involved in the activity. For more information, see the "item" slot below.
+### Clicks
+
+- `@click-date([date, calendarItems, windowEvent])`: fires when the user clicks a date
+- `@click-item([calendarItem, windowEvent])`: fires when the user clicks a calendar item
+
+### Date selection (day drag and drop)
+
+- `@date-selection-start([startDate, endDate, windowEvent])`: fires when the user starts drag-selecting dates.
+- `@date-selection([startDate, endDate, windowEvent])`: fires as the user moves across dates while drag-selecting.
+- `@date-selection-finish([startDate, endDate, windowEvent])`: fires when the user stops drag-selecting dates (_i.e._, they release the mouse button)
+
+### Calendar Item Hover
+
+- `@item-mouseenter([calendarItem, windowEvent])`: optional (controlled by doEmitItemMouseEvents prop), fires when the user's pointer hovers over a calendar item.
+- `@item-mouseleave([calendarItem, windowEvent])`: optional (controlled by doEmitItemMouseEvents prop), fires when the user's pointer leaves a calendar item.
+
+### Calendar Item Drag and Drop
+
+- `@drag-start([calendarItem, windowEvent])`: fires when the user starts dragging a calendar item
+- `@drag-enter-date([calendarItem, date, windowEvent])`: fires when a calendar item is dragged over a date
+- `@drag-leave-date([calendarItem, date, windowEvent])`: fires when a calendar item is dragged out of a date without dropping it there
+- `@drag-over-date([calendarItem, date, windowEvent])`: fires multiple times as a calendar item is hovered over a date
+- `@drop-on-date([calendarItem, date, windowEvent])`: fires when a calendar item is dropped on a date
 
 ## Slots
 

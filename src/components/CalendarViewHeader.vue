@@ -4,6 +4,7 @@
 			<button
 				:disabled="!headerProps.previousYear"
 				class="previousYear"
+				aria-label="Previous Year"
 				@click.prevent="onInput(headerProps.previousYear)"
 			>
 				&lt;&lt;
@@ -11,12 +12,14 @@
 			<button
 				:disabled="!headerProps.previousPeriod"
 				class="previousPeriod"
+				aria-label="Previous Period"
 				@click.prevent="onInput(headerProps.previousPeriod)"
 			>
 				&lt;
 			</button>
 			<button
 				class="currentPeriod"
+				aria-label="Current Period"
 				@click.prevent="onInput(headerProps.currentPeriod)"
 			>
 				{{ headerProps.currentPeriodLabel }}
@@ -24,6 +27,7 @@
 			<button
 				:disabled="!headerProps.nextPeriod"
 				class="nextPeriod"
+				aria-label="Next Period"
 				@click.prevent="onInput(headerProps.nextPeriod)"
 			>
 				&gt;
@@ -31,6 +35,7 @@
 			<button
 				:disabled="!headerProps.nextYear"
 				class="nextYear"
+				aria-label="Next Year"
 				@click.prevent="onInput(headerProps.nextYear)"
 			>
 				&gt;&gt;
