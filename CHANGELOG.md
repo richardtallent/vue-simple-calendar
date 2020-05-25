@@ -22,6 +22,7 @@ Any reference to a "thing that is scheduled on the calendar" is now called an "i
 - `eventRow` is now `itemRow`
 - The header prop `fixedEvents` is now `fixedItems`
 - The `wrap-event-title-on-hover` CSS class is now `wrap-item-title-on-hover`
+- Due to the addition of optional week numbers, there's a `cv-weekdays` DIV now between `cw-week` and `cv-day`. This could impact some custom CSS theming (for example, if you used something like `.cv-weekdays > .cv-day` as a selector).
 
 ## Enhancements
 
@@ -29,6 +30,7 @@ Any reference to a "thing that is scheduled on the calendar" is now called an "i
 - Breaking: the `click-date` event now passes the list of calendar items falling on that date as the second argument (`windowEvent` is pushed to argument 3) #143
 - The `dragStart` event for an item now passes the item's `id` (stringified) into the `dataTransfer` data. This should make it easier to create custom drag/drop functionality where someone could drag a calendar item outside this component.
 - Now supports date range selection, and user drag-select! Enable with the `enable-date-selection` prop.
+- Now supports an optional "week number" column using the `displayWeekNumbers` property. This has a named slot to allow full control.
 
 ## 4.4.0 (2020-05-24)
 

@@ -6,6 +6,7 @@
 			:enable-date-selection="true"
 			:selection-start="selectionStart"
 			:selection-end="selectionEnd"
+			:displayWeekNumbers="false"
 			@date-selection-start="setSelection"
 			@date-selection="setSelection"
 			@date-selection-finish="finishSelection"
@@ -36,7 +37,7 @@ export default {
 			showDate: new Date(),
 			selectionStart: null,
 			selectionEnd: null,
-			items: Array(5)
+			items: Array(25)
 				.fill()
 				.map((_, i) => this.getRandomEvent(i)),
 		}
@@ -54,7 +55,7 @@ export default {
 		},
 		getRandomEvent(index) {
 			const startDay = Math.floor(Math.random() * 28 + 1)
-			const endDay = Math.floor(Math.random() * 9 + 1) + startDay
+			const endDay = Math.floor(Math.random() * 4 + 1) + startDay
 			var d = new Date()
 			return {
 				title: "Event " + (index + 1),
@@ -71,6 +72,7 @@ export default {
 @import "../static/css/holidays-us.css";
 
 div#app {
+	font-family: Avenir, Arial, Helvetica, sans-serif;
 	display: flex;
 	height: 87vh;
 	width: 87vw;

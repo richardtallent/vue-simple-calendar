@@ -18,6 +18,7 @@
 	>
 		<slot :header-props="headerProps" name="header" />
 		<div class="cv-header-days">
+			<div v-if="displayWeekNumbers" class="cv-weeknumber" />
 			<template v-for="(label, index) in weekdayNames">
 				<slot :index="getColumnDOWClass(index)" :label="label" name="dayHeader">
 					<div
@@ -40,77 +41,90 @@
 					'ws' + isoYearMonthDay(weekStart),
 				]"
 			>
-				<div
-					v-for="(day, dayIndex) in daysOfWeek(weekStart)"
-					:key="getColumnDOWClass(dayIndex)"
-					:draggable="enableDateSelection"
-					:class="[
-						'cv-day',
-						getColumnDOWClass(dayIndex),
-						'd' + isoYearMonthDay(day),
-						'd' + isoMonthDay(day),
-						'd' + paddedDay(day),
-						'instance' + instanceOfMonth(day),
-						{
-							today: isSameDate(day, today()),
-							outsideOfMonth: !isSameMonth(day, defaultedShowDate),
-							past: isInPast(day),
-							future: isInFuture(day),
-							last: isLastDayOfMonth(day),
-							lastInstance: isLastInstanceOfMonth(day),
-							hasItems: dayHasItems(day),
-							selectionStart: isSameDate(day, selectionStart),
-							selectionEnd: isSameDate(day, selectionEnd),
-						},
-						...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null),
-					]"
-					:aria-grabbed="enableDateSelection ? dayIsSelected(day) : 'undefined'"
-					:aria-label="day.getDate()"
-					:aria-selected="dayIsSelected(day)"
-					:aria-dropeffect="
-						enableDragDrop && currentDragItem
-							? 'move'
-							: enableDateSelection && dateSelectionOrigin
-							? 'execute'
-							: 'none'
-					"
-					@click="onClickDay(day, $event)"
-					@dragstart="onDragDateStart(day, $event)"
-					@drop.prevent="onDrop(day, $event)"
-					@dragover.prevent="onDragOver(day, $event)"
-					@dragenter.prevent="onDragEnter(day, $event)"
-					@dragleave.prevent="onDragLeave(day, $event)"
-				>
-					<div class="cv-day-number">
-						{{ day.getDate() }}
-					</div>
-					<slot :day="day" name="dayContent" />
-				</div>
-				<template v-for="i in getWeekItems(weekStart)">
+				<div v-if="displayWeekNumbers" class="cv-weeknumber">
 					<slot
-						:value="i"
-						:weekStartDate="weekStart"
-						:top="getItemTop(i)"
-						name="item"
+						name="weekNumber"
+						:date="weekStart"
+						:numberInYear="periodStartCalendarWeek + weekIndex"
+						:numberInPeriod="weekIndex + 1"
+						><span>{{ periodStartCalendarWeek + weekIndex }}</span></slot
 					>
-						<div
-							:key="i.id"
-							:draggable="enableDragDrop"
-							:aria-grabbed="
-								enableDragDrop ? i == currentDragItem : 'undefined'
-							"
-							:class="i.classes"
-							:title="i.title"
-							:style="`top:${getItemTop(i)};${i.originalItem.style}`"
-							class="cv-item"
-							@dragstart="onDragItemStart(i, $event)"
-							@mouseenter="onMouseEnterItem(i, $event)"
-							@mouseleave="onMouseLeaveItem(i, $event)"
-							@click.stop="onClickItem(i, $event)"
-							v-html="getItemTitle(i)"
-						/>
-					</slot>
-				</template>
+				</div>
+				<div class="cv-weekdays">
+					<div
+						v-for="(day, dayIndex) in daysOfWeek(weekStart)"
+						:key="getColumnDOWClass(dayIndex)"
+						:draggable="enableDateSelection"
+						:class="[
+							'cv-day',
+							getColumnDOWClass(dayIndex),
+							'd' + isoYearMonthDay(day),
+							'd' + isoMonthDay(day),
+							'd' + paddedDay(day),
+							'instance' + instanceOfMonth(day),
+							{
+								today: isSameDate(day, today()),
+								outsideOfMonth: !isSameMonth(day, defaultedShowDate),
+								past: isInPast(day),
+								future: isInFuture(day),
+								last: isLastDayOfMonth(day),
+								lastInstance: isLastInstanceOfMonth(day),
+								hasItems: dayHasItems(day),
+								selectionStart: isSameDate(day, selectionStart),
+								selectionEnd: isSameDate(day, selectionEnd),
+							},
+							...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null),
+						]"
+						:aria-grabbed="
+							enableDateSelection ? dayIsSelected(day) : 'undefined'
+						"
+						:aria-label="day.getDate()"
+						:aria-selected="dayIsSelected(day)"
+						:aria-dropeffect="
+							enableDragDrop && currentDragItem
+								? 'move'
+								: enableDateSelection && dateSelectionOrigin
+								? 'execute'
+								: 'none'
+						"
+						@click="onClickDay(day, $event)"
+						@dragstart="onDragDateStart(day, $event)"
+						@drop.prevent="onDrop(day, $event)"
+						@dragover.prevent="onDragOver(day, $event)"
+						@dragenter.prevent="onDragEnter(day, $event)"
+						@dragleave.prevent="onDragLeave(day, $event)"
+					>
+						<div class="cv-day-number">
+							{{ day.getDate() }}
+						</div>
+						<slot :day="day" name="dayContent" />
+					</div>
+					<template v-for="i in getWeekItems(weekStart)">
+						<slot
+							:value="i"
+							:weekStartDate="weekStart"
+							:top="getItemTop(i)"
+							name="item"
+						>
+							<div
+								:key="i.id"
+								:draggable="enableDragDrop"
+								:aria-grabbed="
+									enableDragDrop ? i == currentDragItem : 'undefined'
+								"
+								:class="i.classes"
+								:title="i.title"
+								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
+								class="cv-item"
+								@dragstart="onDragItemStart(i, $event)"
+								@mouseenter="onMouseEnterItem(i, $event)"
+								@mouseleave="onMouseLeaveItem(i, $event)"
+								@click.stop="onClickItem(i, $event)"
+								v-html="getItemTitle(i)"
+							/>
+						</slot>
+					</template>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -128,6 +142,7 @@ export default {
 		showDate: { type: Date, default: undefined },
 		displayPeriodUom: { type: String, default: "month" },
 		displayPeriodCount: { type: Number, default: 1 },
+		displayWeekNumbers: { type: Boolean, default: false },
 		locale: { type: String, default: undefined },
 		monthNameFormat: { type: String, default: "long" },
 		weekdayNameFormat: { type: String, default: "short" },
@@ -196,6 +211,18 @@ export default {
 				),
 				-1
 			)
+		},
+
+		periodStartCalendarWeek() {
+			const firstWeekStarts = this.beginningOfWeek(
+				this.beginningOfPeriod(this.periodStart, "year"),
+				this.startingDayOfWeek
+			)
+			const periodWeekStarts = this.beginningOfWeek(
+				this.periodStart,
+				this.startingDayOfWeek
+			)
+			return 1 + Math.floor(this.dayDiff(firstWeekStarts, periodWeekStarts) / 7)
 		},
 
 		/*
@@ -693,12 +720,19 @@ header are in the CalendarViewHeader component.
 	-ms-overflow-style: none;
 }
 
+.cv-weeknumber {
+	width: 2rem;
+	text-align: center;
+	border-width: 1px 1px 0 0;
+	border-style: solid;
+}
+
 /* Use flex basis of 0 on week row so all weeks will be same height regardless of content */
 .cv-week {
 	display: flex;
 	/* Shorthand flex: 1 1 0 not supported by IE11 */
 	flex-grow: 1;
-	flex-shrink: 0;
+	flex-shrink: 1;
 	flex-basis: 0;
 	flex-flow: row nowrap;
 	min-height: 3em;
@@ -709,9 +743,19 @@ header are in the CalendarViewHeader component.
 	width: 100%;
 	overflow-y: auto;
 	-ms-overflow-style: none;
+}
 
+.cv-weekdays {
+	display: flex;
+	/* Shorthand flex: 1 1 0 not supported by IE11 */
+	flex-grow: 1;
+	flex-shrink: 0;
+	flex-basis: 0;
+	flex-flow: row nowrap;
 	/* Days of the week go left to right even if user's language is RTL (#138) */
 	direction: ltr;
+	position: relative;
+	overflow-y: auto;
 }
 
 .cv-day {

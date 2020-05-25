@@ -1,16 +1,29 @@
-- [Introduction](#introduction)
-- [Demo](#demo)
+**NOTE: THIS README IS FOR VERSION 5.0, WHICH ISN'T QUITE OUT YET. PLEASE SEE THE RELEASES TAB FOR THE CURRENT RELEASED VERSION (4.4.0).**
+
+## Introduction
+
+**vue-simple-calendar** is a flexible, themeable, lightweight calendar component for Vue that supports multi-day scheduled items.
+
+## Demo
+
+Here's a live demo page, and the repo for it:
+https://www.tallent.us/vue-simple-calendar/
+https://github.com/richardtallent/vue-simple-calendar-sample
+
+## Table of Contents
+
 - [Features](#features)
 - [Browser Compatibility](#browser-compatibility)
 - [Installation and Usage](#installation-and-usage)
 - [Props](#props)
 - [Calendar Item Properties](#calendar-item-properties)
-- [Component Events](#component-events)
+- [Events](#events)
 - [Slots](#slots)
   - [header](#header)
   - [dayHeader](#dayHeader)
   - [dayContent](#dayContent)
   - [item](#item)
+  - [weekNumber](#item)
 - [Customizing the Look and Feel](#customizing-the-look-and-feel)
   - [Calendar classes](#calendar-classes)
   - [Week classes](#week-classes)
@@ -21,19 +34,9 @@
 - [FAQ](#faq)
 - [Build Setup](#build-setup)
 
-## Introduction
-
-**vue-simple-calendar** is a flexible, themeable, lightweight calendar component for Vue that supports multi-day scheduled items.
+## Features
 
 There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show scheduled activities (including multi-day items) on that grid. While the component goes beyond that simple use case, that is still the core focus.
-
-## Demo
-
-Here's a live demo page, and the repo for it:
-https://www.tallent.us/vue-simple-calendar/
-https://github.com/richardtallent/vue-simple-calendar-sample
-
-## Features
 
 - Shows a traditional month-grid calendar. Also supports weeks, years, or _multiple_ weeks, months, or years.
 - Can show scheduled "items," including multi-day items, with optional time of day.
@@ -57,7 +60,6 @@ What this component _doesn't_ try to do:
 - There is no built-in AJAX mechanism. This is also far too use-specific.
 - Only the Gregorian calendar is supported (7-day weeks, etc.).
 - It is not yet possible to "resize" items to cover more or fewer days. This may be added in the future.
-- There is no ability to drag and select a set of days (only single-day clicks are emitted as events). This may be added in the future.
 
 ## Browser compatibility
 
@@ -170,6 +172,7 @@ The following properties are supported, by area of function:
   `1` (Monday) for Europe or `6` (Saturday) for much of the Middle East.
 - `dateClasses` - Optional object, where the key is a date in ISO form (e.g., "2018-04-15") and the value is a string or array of additional CSS classes that should be applied to the main element for that date. This could be useful for dynamically highlighting selected dates, holidays, blocked-off dates, etc.
 - `periodChangedCallback` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `items` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
+- `displayWeekNumbers`: Adds a column for each week to show the "week number." By default, this appears to the left of the days and contains the calendar week number. The position can moved to the right using CSS. See the `weekNumber` slot for more details.
 
 ### Grid Selection
 
@@ -217,7 +220,7 @@ Each item shown on the calendar can have the following properties. `id` and `sta
 - `classes` - A String with any additional CSS classes you wish to assign to the item.
 - `style` - A String with any additional CSS styles you wish to apply to the item.
 
-## Component Events
+## Events
 
 (Note: below, `calendarItem` refers to the **normalized** version of the calendar item involved in the activity. For more information, see the "item" slot below.)
 
@@ -261,21 +264,21 @@ This named slot contains the component you want to use as the calendar's header.
 
 The parent `calendar-view` passes a property called `headerProps` to the header component. This property includes all of these values (basically, anything you would normally need to render a calendar header):
 
-- periodStart: the first date of the `displayPeriodUom` containing `showDate`
-- periodEnd: the last date of the `displayPeriodUom` containing `showDate` (the `displayPeriodCount` setting impacts this)
-- previousYear: one year before `periodStart`
-- previousPeriod: one `displayPeriodUom` before `periodStart` (_regardless_ of the `displayPeriodCount` setting)
-- nextPeriod: one `displayPeriodUom` after `periodStart` (_regardless_ of the `displayPeriodCount` setting)
-- previousFullPeriod: one `displayPeriodUom` before `periodStart` (takes the `displayPeriodCount` setting into consideration)
-- nextFullPeriod: one `displayPeriodUom` after `periodStart` (takes the `displayPeriodCount` setting into consideration)
-- nextYear: one year after `periodStart`
-- currentPeriod: the date at the beginning of the `displayPeriodUom` containing today's date (user local time)
-- currentPeriodLabel: the _computed_ label (using the logic described for the property of the same name on the calendar component above) of the period containing today's date.
-- displayLocale: the user's locale setting
-- displayFirstDate: the first date shown in the calendar (may differ from `periodStart`--_e.g._, if periodStart is June 1, 2018, displayFirstDate will be May 27, 2018)
-- displayLastDate: the last date shown in the calendar (ditto)
-- monthNames: an array of the formatted names of the months to use based on the locale and month format settings
-- fixedItems: a copy of the calendar items, normalized to all have start/end dates, "Untitled" if there is no title, etc.
+- `periodStart`: the first date of the `displayPeriodUom` containing `showDate`
+- `periodEnd`: the last date of the `displayPeriodUom` containing `showDate` (the `displayPeriodCount` setting impacts this)
+- `previousYear`: one year before `periodStart`
+- `previousPeriod`: one `displayPeriodUom` before `periodStart` (_regardless_ of the `displayPeriodCount` setting)
+- `nextPeriod`: one `displayPeriodUom` after `periodStart` (_regardless_ of the `displayPeriodCount` setting)
+- `previousFullPeriod`: one `displayPeriodUom` before `periodStart` (takes the `displayPeriodCount` setting into consideration)
+- `nextFullPeriod`: one `displayPeriodUom` after `periodStart` (takes the `displayPeriodCount` setting into consideration)
+- `nextYear`: one year after `periodStart`
+- `currentPeriod`: the date at the beginning of the `displayPeriodUom` containing today's date (user local time)
+- `currentPeriodLabel`: the _computed_ label (using the logic described for the property of the same name on the calendar component above) of the period containing today's date.
+- `displayLocale`: the user's locale setting
+- `displayFirstDate`: the first date shown in the calendar (may differ from `periodStart`--_e.g._, if periodStart is June 1, 2018, displayFirstDate will be May 27, 2018)
+- `displayLastDate`: the last date shown in the calendar (ditto)
+- `monthNames`: an array of the formatted names of the months to use based on the locale and month format settings
+- `fixedItems`: a copy of the calendar items, normalized to all have start/end dates, "Untitled" if there is no title, etc.
 
 Since `CalendarView` has some logic around whether the user should be able to navigate to the past or the future, some of these dates will be null if the corresponding action is disabled.
 
@@ -308,6 +311,18 @@ This optional named slot **replaces** the `div.item` for each item (not just the
 
 Note that `item` is a version of the calendar item _normalized_ to be shown on that week's row, it's not the bare item pulled from the `items` prop. This customized version parses and defaults the `startDate` and `endDate`, defaults missing `id` to a random number, defaults a blank title to "Untitled", and adds a number of `classes` values based on the position and role of the item as shown for that week (whether it continues from the previous week, etc.). The original item is passed back as `item.originalItem`.
 
+### weekNumber
+
+This optional named slot **replaces** the content shown in the "week number" column. By default, this shows the week number of that week within its year (given your chosen startingDayOfWeek, and where week "1" is the week that contains January 1). However, using the `weekNumber` slot, you can use this column to display anything -- a number, icons, text, etc. This slow passes three scoped variables:
+
+- `weekStart`: The date that begins the week
+- `numberInYear`: The calendar week number (_i.e._, the number that would have been displayed by default)
+- `numberInPeriod`: The number of the week within the period (the month, unless you've overridden the period shown)
+
+Using CSS, you can define your own width, colors, etc., and you can move the column to display after the days rather than before.
+
+Note that this column "belongs" to the week, so if the week scrolls due to the number of items that week, so will the contents of this column.
+
 ## Customizing the Look and Feel
 
 In addition to slots, this component is designed to allow for significant customization of the look and feel solely through CSS. Here's the structure of the markup generated by the component (combined with the default header component). Each line represents a Vue SLOT (all caps) or an HTML element (first word on the line). Indentation represents the hierarchy. Each word _after_ the first word is a class applied to the element. Classes in (parenthesis) are conditional. Loops (_i.e._, `v-for`) are shown in [brackets].
@@ -335,13 +350,16 @@ div cv-wrapper locale-X yYYYY mMM (past|future) period-X periodCount-X wrap-item
 		div cv-header-day dowX [x7]
 	div cv-weeks
 		div cv-week weekX wsYYYY-MM-DD [x # weeks in visible period]
-			div cv-day dowX dYYYY-MM-DD dMM-DD dDD wmX (past|today|future|last|outsideOfMonth|lastInstance) [x 7]
-				div cv-day-number
-				DAYCONTENT
-			ITEM
-				div cv-item offsetX spanX (continued|toBeContinued|hasUrl|hasItems) [x # of items]
-					span startTime (hasEndTime)
-					span endTime (hasStartTime)
+			(div cv-weeknumber)
+				span
+			dv-weekdays
+				div cv-day dowX dYYYY-MM-DD dMM-DD dDD wmX (past|today|future|last|outsideOfMonth|lastInstance|selectionStart|selectionEnd) [x 7]
+					div cv-day-number
+					DAYCONTENT
+				ITEM
+					div cv-item offsetX spanX (continued|toBeContinued|hasUrl|hasItems) [x # of items]
+						span startTime (hasEndTime)
+						span endTime (hasStartTime)
 ```
 
 where:
@@ -380,7 +398,7 @@ The current `displayPeriodCount` value (a number, usually `1`).
 
 #### week<i>X</i>
 
-Each week is numbered, starting with the first week of the visible period.
+Each week is numbered, starting with the first week of the visible period. (This is not the same as the value in the optional "week number" column.)
 
 #### ws<i>YYYY-MM-DD</i>
 
@@ -434,6 +452,14 @@ This class is added to days after the current date (local time).
 
 This class is added to the last day of the its month.
 
+#### selectionStart
+
+This class is added to the day specified by the selectionStart prop.
+
+#### selectionEnd
+
+This class is added to the day specified by the selectionEnd prop.
+
 ### Calendar Item classes
 
 #### offset<i>X</i>
@@ -456,7 +482,7 @@ This is added to an item when it is spills over into the following week. By defa
 
 This is added to an item when it has a `url` attribute (i.e., it is a hyperlink). By default, this is used to add a hovering underscore to item titles that are hyperlinked.
 
-#### **NEW IN 4.1** isHovered
+#### isHovered
 
 This is added for all item elements whose `id` matches the `id` of the item being hovered. (This allows proper hover styling--when items wrap to more than one week, they are represented by more than one element, so a standard `:hover` selector will only select the element being hovered, not the entire item.) Note that there is no default styling for this, it is solely provided so you can choose to style hovered items if you wish.
 
@@ -482,7 +508,7 @@ These classes are applied to the start and end time of an item, respectively.
 - [ ] I'm not 100% happy with the Intl time format options, especially to show time ranges compactly. Considering a custom formatter or the ability to pass a formatter function as a property.
 - [x] Rename the primary CSS classes (calendar-view, day, week, etc.) to depend far less on cascades, making it easier to customize the theme (breaking change for themes, targeted for 3.0.0).
 
-PRs and issues are welcome! For pull requests, please use the same code style -- there are linter configs included for styles, plain JavaScript, and Vue components. Use of Prettier is recommended.
+PRs and issues are welcome! For pull requests, please use the same code style -- there are linter configs included for styles, plain JavaScript, and Vue components. Use of Prettier is recommended. Please keep each PR related to a single feature, and ideally start an Issue so we can discuss the details.
 
 ## Inspiration
 
