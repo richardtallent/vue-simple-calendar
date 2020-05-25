@@ -467,6 +467,8 @@ export default {
 			// However, we don't use dataTransfer within the component. Instead, we just keep a handled on the item
 			// currently being dragged. This avoids having to look it up later.
 			this.currentDragItem = calendarItem
+			// Reset date selection origin so the onenter events aren't confused
+			this.dateSelectionOrigin = null
 			// Allow the calling application to add additional functionality.
 			this.$emit("drag-start", calendarItem, windowEvent)
 			return true
