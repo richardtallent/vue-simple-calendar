@@ -43,40 +43,40 @@ having to override as much.
 
 /* Events */
 
-.theme-default .cv-event {
+.theme-default .cv-item {
 	border-color: #e0e0f0;
 	border-radius: 0.5em;
 	background-color: #e7e7ff;
 	text-overflow: ellipsis;
 }
 
-.theme-default .cv-event.purple {
+.theme-default .cv-item.purple {
 	background-color: #f0e0ff;
 	border-color: #e7d7f7;
 }
 
-.theme-default .cv-event.orange {
+.theme-default .cv-item.orange {
 	background-color: #ffe7d0;
 	border-color: #f7e0c7;
 }
 
-.theme-default .cv-event.continued::before,
-.theme-default .cv-event.toBeContinued::after {
+.theme-default .cv-item.continued::before,
+.theme-default .cv-item.toBeContinued::after {
 	content: " \21e2 ";
 	color: #999;
 }
 
-.theme-default .cv-event.toBeContinued {
+.theme-default .cv-item.toBeContinued {
 	border-right-style: none;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
 
-.theme-default .cv-event.isHovered.hasUrl {
+.theme-default .cv-item.isHovered.hasUrl {
 	text-decoration: underline;
 }
 
-.theme-default .cv-event.continued {
+.theme-default .cv-item.continued {
 	border-left-style: none;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
@@ -84,8 +84,8 @@ having to override as much.
 
 /* Event Times */
 
-.theme-default .cv-event .startTime,
-.theme-default .cv-event .endTime {
+.theme-default .cv-item .startTime,
+.theme-default .cv-item .endTime {
 	font-weight: bold;
 	color: #666;
 }

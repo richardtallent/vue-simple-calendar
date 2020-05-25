@@ -253,27 +253,27 @@ export default {
 		},
 
 		// ******************************
-		// Events
+		// Calendar Items
 		// ******************************
-		normalizeEvent(event, isHovered) {
+		normalizeItem(item, isHovered) {
 			// Classes may be a string, an array, or null. Normalize to an array
-			const eventClasses = event.classes
-				? Array.isArray(event.classes)
-					? [...event.classes]
-					: [event.classes]
+			const itemClasses = item.classes
+				? Array.isArray(item.classes)
+					? [...item.classes]
+					: [item.classes]
 				: []
-			// Provides support for pseudo-hover of entire event when one part of it is hovered
-			if (isHovered) eventClasses.push("isHovered")
+			// Provides support for pseudo-hover of entire item when one part of it is hovered
+			if (isHovered) itemClasses.push("isHovered")
 			return {
-				originalEvent: event,
-				startDate: this.toLocalDate(event.startDate),
-				// For an event without an end date, the end date is the start date
-				endDate: this.toLocalDate(event.endDate || event.startDate),
-				classes: eventClasses,
-				// Events without a title are untitled
-				title: event.title || "Untitled",
-				// An ID is *required*. Auto-generating leads to weird bugs because these are used as keys and passed in events
-				id: event.id,
+				originalItem: item,
+				startDate: this.toLocalDate(item.startDate),
+				// For an item without an end date, the end date is the start date
+				endDate: this.toLocalDate(item.endDate || item.startDate),
+				classes: itemClasses,
+				// Items without a title are untitled
+				title: item.title || "Untitled",
+				// An ID is *required*. Auto-generating leads to weird bugs because these are used as keys and passed in items
+				id: item.id,
 			}
 		},
 	},

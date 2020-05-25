@@ -10,7 +10,7 @@
   - [header](#header)
   - [dayHeader](#dayHeader)
   - [dayContent](#dayContent)
-  - [event](#event)
+  - [item](#item)
 - [Customizing the Look and Feel](#customizing-the-look-and-feel)
   - [Calendar classes](#calendar-classes)
   - [Week classes](#week-classes)
@@ -23,9 +23,9 @@
 
 ## Introduction
 
-**vue-simple-calendar** is a flexible, themeable, lightweight _event calendar_ component for Vue.
+**vue-simple-calendar** is a flexible, themeable, lightweight calendar component for Vue that supports multi-day scheduled items.
 
-There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show events (including multi-day items) on that grid. While the component goes beyond that simple use case, that is still the core focus.
+There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show scheduled activities (including multi-day items) on that grid. While the component goes beyond that simple use case, that is still the core focus.
 
 ## Demo
 
@@ -35,8 +35,8 @@ https://github.com/richardtallent/vue-simple-calendar-sample
 
 ## Features
 
-- Shows a traditional month-grid calendar--or week, or year, or multiples of those.
-- Can show "events," including multi-day items, with optional times.
+- Shows a traditional month-grid calendar. Also supports weeks, years, or _multiple_ weeks, months, or years.
+- Can show scheduled "items," including multi-day items, with optional time of day.
 - If there are too many items to see in a week, you can scroll to see the others.
 - If there are too many weeks to see in the calendar component, you can scroll to see the others.
 - Optional support for dragging and dropping items between dates.
@@ -68,7 +68,7 @@ Drag and drop only works on desktop browsers -- the drag events on touch devices
 
 ### Browsers and Localization
 
-Note that `Intl` is not supported for Safari 9.1, iOS 9.3, and Opera Mini. For these browsers, the month names and weekday names will be blank and the calendar will have a `nointl` class. Use CSS content to provide the appropriate month and weekday names for the languages you support. For example:
+Note that `Intl` is not supported for _very_ old browsers. For these browsers, the month names and weekday names will be blank and the calendar will have a `nointl` class. Use CSS `content` to provide the appropriate month and weekday names for the languages you support. For example:
 
 ```CSS
 .calendar.nointl.locale-en.m01 .monthName::after { content: 'January'; }
@@ -88,14 +88,15 @@ In your application, you'll need to:
 
 - import the component and register it with Vue
 - import the default theme or any other theme you want to use (CSS)
-- create the `calendar-view` and `calendar-view-header` elements
+- create the `calendar-view`
+- create the `calendar-view-header` element as a child of the `calendar-view`, if you want a header for the calendar
 - wire up the properties and events
 
 Tips:
 
 - The component will fill its parent's height and width, so be sure the parent has a minimum height that is appropriate for the number of weeks and average items per week being shown.
 - The default calendar header emits an `input` event when a user clicks a button in the header to move the calendar backward or forward through time. The event's argument is the new date to be shown. You have to handle this event and pass the date back to the calendar to change the view.
-- To minimize impact of ancestor element layout on the calendar's functionality, it is **recommended** that the parent of the `<calendar-view>` component _only_ contain the component, and that the parent have the following styles (#71):
+- To minimize the impact of an ancestor element's layout on the calendar's functionality, it is **recommended** that the parent of the `<calendar-view>` component _only_ contain the component, and that the parent have the following styles (#71):
 
 ```CSS
 display: flex;
@@ -157,13 +158,13 @@ Here's a minimal application example for an empty calendar, styled with the defa
 
 ## Props
 
-The following properties are supported, roughly in order of popularity. Remember to use _kebab-case_ when specifying these properties using attributes on the `calendar-view` element (_e.g._, `<calendar-view month-name-format="long">`:
+The following properties are supported, roughly in order of popularity.
 
 - `showDate` - The period to show by default. Defaults to today's date (user local time). Any time component is ignored.
 - `displayPeriodUom` - The period type to show. By default this is `month`, _i.e._, it shows a calendar in month-sized chunks. Other allowed values are `year` and `week`.
 - `displayPeriodCount` - The _number_ of periods to show within the view. For example, if `displayPeriodUom` is `week` and `displayPeriodCount` is 2, the view will show a two-week period.
-- `events` - An array of items to show on the calendar. See _Calendar Item Properties_ below for more details.
-- `showEventTimes` - If true, shows the start and/or end time of an item beside the item title. Midnight is not shown, a midnight time is assumed to indicate an all-day or indeterminate time. (If you want to show midnight, use `00:00:01` and don't choose to show seconds.) The default is `false`.
+- `items` - An array of items to show on the calendar. See _Calendar Item Properties_ below for more details.
+- `showTimes` - If true, shows the start and/or end time of an item beside the item title. Midnight is not shown, a midnight time is assumed to indicate an all-day or indeterminate time. (If you want to show midnight, use `00:00:01` and don't choose to show seconds.) The default is `false`.
 - `enableDragDrop` - If true, items are draggable, and dragging and dropping them emits events you can catch and respond to. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
 - `disablePast` - If true, prevents the user from navigating to previous periods. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
 - `disableFuture` - If true, prevents the user from navigating to future periods. Default is `false`. (Note: since this is a Boolean value, you should use `v-bind` on the attribute.)
@@ -172,15 +173,20 @@ The following properties are supported, roughly in order of popularity. Remember
   `1` (Monday) for Europe or `6` (Saturday) for much of the Middle East.
 - `monthNameFormat` - The format to use for the month names. Possible values are `numeric`, `2-digit`, `narrow`, `short`, or `long`, and the default is `long`.
 - `weekdayNameFormat` - The format to use for the names of the days of the week. Possible values are `narrow`, `short`, or `long`, and the default is `short`.
-- `timeFormatOptions` - This takes an object containing `Intl.DateTimeFormat` options to be used to format the event times. The `locale` setting is automatically used. This option is ignored for browsers that don't support `Intl` (they will see the 24-hour, zero-padded time).
+- `timeFormatOptions` - This takes an object containing `Intl.DateTimeFormat` options to be used to format the item times. The `locale` setting is automatically used. This option is ignored for browsers that don't support `Intl` (they will see the 24-hour, zero-padded time).
 - `dateClasses` - Optional object, where the key is a date in ISO form (e.g., "2018-04-15") and the value is a string or array of additional CSS classes that should be applied to the main element for that date. This could be useful for dynamically highlighting selected dates, holidays, blocked-off dates, etc.
-- `eventTop` - Optional string of a CSS height to be used as the baseline for where items are positioned relative the top of the week. By default, this is `1.4em`, the height of the standard `cv-day-number` element.
-- `eventContentHeight` - Optional CSS string of the total height of your items, _not including_ borders. The default is `1.4em` (1.0 from the font, 0.2 \* 2 from the padding.). You would only set this if you're overriding the item height. This doesn't actually change the item height, it is only used to position the items below one another.
-- `eventBorderHeight` - Optional CSS string of the sum of your items' top and bottom borders. The default is `2px`. You would only set this if you're overriding the item top and/or bottom border width. This doesn't actually change the borders, it is only used to position the items below one another.
-- `periodChangedCallback` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `events` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
+- `itemTop` - Optional string of a CSS height to be used as the baseline for where items are positioned relative the top of the week. By default, this is `1.4em`, the height of the standard `cv-day-number` element.
+- `itemContentHeight` - Optional CSS string of the total height of your items, _not including_ borders. The default is `1.4em` (1.0 from the font, 0.2 \* 2 from the padding.). You would only set this if you're overriding the item height. This doesn't actually change the item height, it is only used to position the items below one another.
+- `itemBorderHeight` - Optional CSS string of the sum of your items' top and bottom borders. The default is `2px`. You would only set this if you're overriding the item top and/or bottom border width. This doesn't actually change the borders, it is only used to position the items below one another.
+- `periodChangedCallback` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `items` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
 - `currentPeriodLabel` - Optional label for the "Today" button (the button in the header to return to the current period). If blank, this will show the current date period (_i.e._, the period where today's date would fall). If this has the special value `icons`, it will display an icon, where the icon depends on whether the current date period is in the past, is the displayed period, or is in the future. The default icons for this are `⇤`, `-`, and `⇥`, respectively. If you use any other string, the button will show the literal value you provide.
 - `currentPeriodLabelIcons` - Optional replacement for the above three icons. Pass this as a three-character string.
 - `doEmitItemMouseEvents` - Optional, default is false. If true, emits `item-mouseenter` and `item-mouseleave` events when the mouse hovers over a calendar item. In most cases, styling the `isHovered` class is enough to handle hover interactions with a calendar item. However, if you want to, say, show a tooltip or menu when a user hovers over a calendar item, you may need access to the real-time mouse DOM events. Be sure that your use of these events doesn't conflict with the user's ability to click, drag, read, or otherwise interact with the calendar items. NOTE: if you use slots for your calendar items, this property is ignored. (#136)
+
+Tips for Vue component properties:
+
+- Remember to use _kebab-case_ when specifying these properties using attributes on the `calendar-view` element (_e.g._, `<calendar-view month-name-format="long">`:
+- Remember to use _binding_ (`:` prefix) for properties that should be a Boolean, number, array, or otherwise interpreted with JavaScript (_e.g._, `<calendar-view :show-times="true">`). You can omit the `:` for string properties with literal values.
 
 ## Calendar Item Properties
 
@@ -190,25 +196,25 @@ Each item shown on the calendar can have the following properties. `id` and `sta
 - `startDate` - The date the item starts on the calendar. This must be either passed as a JavaScript date object, or as a string following an ISO-like form of "yyyy-mm-dd HH:MM:SS" (time is optional, and within time, minutes and seconds are both optional).
 - `endDate` - The date the item ends on the calendar. Defaults to the same date as `startDate`. This must be either passed as a JavaScript date object, or as a string following an ISO-like form of "yyyy-mm-dd HH:MM:SS" (time is optional, and within time, minutes and seconds are both optional).
 - `title` - The name of the item shown on the calendar. Defaults to "Untitled".
-- `url` - The URL associated with the item. The component has no built-in action associated with this, but it does add a "hasUrl" class to the item. To "follow" the URL, you'll need to listen for the `click-event` event and take the appropriate action.
+- `url` - The URL associated with the item. The component has no built-in action associated with this, but it does add a "hasUrl" class to the item. To "follow" the URL, you'll need to listen for the `click-item` event and take the appropriate action.
 - `classes` - A String with any additional CSS classes you wish to assign to the item.
 - `style` - A String with any additional CSS styles you wish to apply to the item.
 
 ## Component Events
 
-The following Vue events are raised by the component, which you can catch in your calling application to respond to user actions:
+You can create handlers for the following Vue events to add custom functionality:
 
-- `click-date(date, windowEvent)`: fired when user clicks a date
-- `click-event(calendarItem, windowEvent)`: same as above, but deprecated.
-- `drag-start(calendarItem, windowEvent)`: fires when user starts dragging an item
-- `drag-enter-date(calendarItem, date, windowEvent)`: fires when an item is dragged over a date
-- `drag-leave-date(calendarItem, date, windowEvent)`: fires when an item is dragged out of a date without dropping it there
-- `drag-over-date(calendarItem, date, windowEvent)`: fires multiple times as an item is hovered over a date
-- `drop-on-date(calendarItem, date, windowEvent)`: fired when an item is dropped on a date
-- `item-mouseenter(calendarItem, windowEvent)`: optional (controlled by doEmitItemMouseEvents prop), fires when user's pointer hovers over a calendar item.
-- `item-mouseleave(calendarItem, windowEvent)`: optional (controlled by doEmitItemMouseEvents prop), fires when user's pointer leaves a calendar item.
+- `@click-date(date, calendarItems, windowEvent)`: fired when the user clicks a date
+- `@click-item(calendarItem, windowEvent)`: fired when the user clicks a calendar item
+- `@drag-start(calendarItem, windowEvent)`: fires when the user starts dragging a calendar item
+- `@drag-enter-date(calendarItem, date, windowEvent)`: fires when a calendar item is dragged over a date
+- `@drag-leave-date(calendarItem, date, windowEvent)`: fires when a calendar item is dragged out of a date without dropping it there
+- `@drag-over-date(calendarItem, date, windowEvent)`: fires multiple times as a calendar item is hovered over a date
+- `@drop-on-date(calendarItem, date, windowEvent)`: fired when a calendar item is dropped on a date
+- `@item-mouseenter(calendarItem, windowEvent)`: optional (controlled by doEmitItemMouseEvents prop), fires when the user's pointer hovers over a calendar item.
+- `@item-mouseleave(calendarItem, windowEvent)`: optional (controlled by doEmitItemMouseEvents prop), fires when the user's pointer leaves a calendar item.
 
-\*Note in the above, `calendarItem` refers to the **normalized** version of the calendar item involved in the activity. For more information, see the "event" slot below.
+In the above, `calendarItem` refers to the **normalized** version of the calendar item involved in the activity. For more information, see the "item" slot below.
 
 ## Slots
 
@@ -238,7 +244,7 @@ The parent `calendar-view` passes a property called `headerProps` to the header 
 - displayFirstDate: the first date shown in the calendar (may differ from `periodStart`--_e.g._, if periodStart is June 1, 2018, displayFirstDate will be May 27, 2018)
 - displayLastDate: the last date shown in the calendar (ditto)
 - monthNames: an array of the formatted names of the months to use based on the locale and month format settings
-- fixedEvents: an copy of the calendar items, normalized to all have start/end dates, "Untitled" if there is no title, etc.
+- fixedItems: a copy of the calendar items, normalized to all have start/end dates, "Untitled" if there is no title, etc.
 
 Since `CalendarView` has some logic around whether the user should be able to navigate to the past or the future, some of these dates will be null if the corresponding action is disabled.
 
@@ -261,15 +267,15 @@ This optional named slot allows you to provide your own contents within the date
 
 This slot passes one scoped variable: `day`, the date associated with the cell.
 
-### event
+### item
 
-This optional named slot **replaces** the `div.event` for each item (not just the contents of the items element, the entire element). Use this if you want to override _entirely_ how items are rendered. For example, on a small mobile device, you may want to show just a thin stripe, dots, or icons to indicate items, without titles or times. This slot passes three scoped variables:
+This optional named slot **replaces** the `div.item` for each item (not just the contents of the items element, the entire element). Use this if you want to override _entirely_ how items are rendered. For example, on a small mobile device, you may want to show just a thin stripe, dots, or icons to indicate items, without titles or times. This slot passes three scoped variables:
 
-- `event`: the _normalized_ calendar items
+- `value`: the _normalized_ calendar item
 - `weekStartDate`: the date of the first day of the week being rendered
-- `top`: the CSS `top` value that you should apply to the style of your item element so it appears in the proper place. Assumes standard metrics for items, so if you have your own metrics, you'll need to compute and apply the top position yourself using the `eventRow` value passed in the item.
+- `top`: the CSS `top` value that you should apply to the style of your item element so it appears in the proper place. Assumes standard metrics for items, so if you have your own metrics, you'll need to compute and apply the top position yourself using the `itemow` value passed in the item.
 
-Note that `event` is a version of the calendar item _normalized_ to be shown on that week's row, it's not the bare item pulled from the `events` prop. This customized version parses and defaults the `startDate` and `endDate`, defaults missing `id` to a random number, defaults a blank title to "Untitled", and adds a number of `classes` values based on the position and role of the item as shown for that week (whether it continues from the previous week, etc.). The original item is passed back as `event.originalEvent`.
+Note that `item` is a version of the calendar item _normalized_ to be shown on that week's row, it's not the bare item pulled from the `items` prop. This customized version parses and defaults the `startDate` and `endDate`, defaults missing `id` to a random number, defaults a blank title to "Untitled", and adds a number of `classes` values based on the position and role of the item as shown for that week (whether it continues from the previous week, etc.). The original item is passed back as `item.originalItem`.
 
 ## Customizing the Look and Feel
 
@@ -278,7 +284,7 @@ In addition to slots, this component is designed to allow for significant custom
 Note that the items are _not_ child nodes of the days, they are children of the week and positioned above the days. This allows items to span multiple days.
 
 ```
-div cv-wrapper locale-X yYYYY mMM (past|future) period-X periodCount-X wrap-event-title-on-hover
+div cv-wrapper locale-X yYYYY mMM (past|future) period-X periodCount-X wrap-item-title-on-hover
 	HEADER
 		div cv-header
 			div cv-header-nav
@@ -301,8 +307,8 @@ div cv-wrapper locale-X yYYYY mMM (past|future) period-X periodCount-X wrap-even
 			div cv-day dowX dYYYY-MM-DD dMM-DD dDD wmX (past|today|future|last|outsideOfMonth|lastInstance) [x 7]
 				div cv-day-number
 				DAYCONTENT
-			EVENT
-				div cv-event offsetX spanX (continued|toBeContinued|hasUrl) [x # of events]
+			ITEM
+				div cv-item offsetX spanX (continued|toBeContinued|hasUrl|hasItems) [x # of items]
 					span startTime (hasEndTime)
 					span endTime (hasStartTime)
 ```
@@ -349,9 +355,9 @@ Each week is numbered, starting with the first week of the visible period.
 
 Each week also has a class representing the date of the Sunday starting that week. This could be used to style entire weeks that have some special importance.
 
-#### wrap-event-title-on-hover
+#### wrap-item-title-on-hover
 
-If an even title is truncated, this enables an _optional_ behavior that will wrap the item to show the entire title when the user hovers over it.
+If an item title is truncated, this enables an _optional_ behavior that will wrap the item to show the entire title when the user hovers over it.
 
 ### Day classes
 
@@ -477,8 +483,8 @@ A third stylesheet, `static/css/holidays-us.css`, shows how simple it is to use 
 
 #### What styles can I _not_ override?
 
-- If you change the `cv-day-number` height, you'll need to set the `eventTop` property so first item is positioned below the day numbers.
-- If you change the `cv-event` height, you'll need to set the `eventContentHeight` and/or `eventBorderHeight` properties, so each item is positioned below the previous item. Every item must still have the same height.
+- If you change the `cv-day-number` height, you'll need to set the `itemTop` property so first item is positioned below the day numbers.
+- If you change the `cv-item` height, you'll need to set the `itemContentHeight` and/or `itemBorderHeight` properties, so each item is positioned below the previous item. Every item must still have the same height.
 - The calendar bases all metrics other than borders (which are in pixels for Reasons) on `em` units, so if you find the font size is not ideal, it's better to change the calendar's parent font size and let the calendar scale accordingly than to try to manually adjust each element within the calendar. It's generally a good web design practice to limit the number of font sizes in use, which is why everything in the calendar (other than the default header label) uses the same relative font size by default (`1.0em`).
 - The `z-index` of the weeks and items are managed using `style` declarations, they ensure that items for one week don't overlap the next week.
 

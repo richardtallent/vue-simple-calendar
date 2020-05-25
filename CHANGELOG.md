@@ -5,6 +5,30 @@
 - Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
 - Change from mixin to plain old imported functions.
 
+## 5.0.0 (2020-05-25, NOT RELEASED)
+
+## Main breaking change: Events to Items
+
+Any reference to a "thing that is scheduled on the calendar" is now called an "item" rather than an "event" due to the confusion possible with DOM and Vue-emitted events.
+
+- The `click-event` event is now called `click-item`
+- The `events` property is now called `items`.
+- The `event` slot is now the `item` slot, and the calendar item is passed as `value`
+- The `cv-event` CSS class is now `cv-item`
+- The `normalizeEvent` function is now `normalizeItem`
+- For all normalized calendar items, `originalEvent` is now `originalItem`
+- `showEventTimes` is now `showTimes
+- `eventTop`, `eventContentHeight`, and `eventBorderHeight` are now `item*`
+- `eventRow` is now `itemRow`
+- The header prop `fixedEvents` is now `fixedItems`
+- The `wrap-event-title-on-hover` CSS class is now `wrap-item-title-on-hover`
+
+## Enhancements
+
+- The DIVs for dates that have at least one calendar item crossing into them now have a `hasItems` class. (#143, thanks @SwithFr!)
+- Breaking: the `click-date` event now passes the list of calendar items falling on that date as the second argument (`windowEvent` is pushed to argument 3) #143
+- The `dragStart` event for an item now passes the item's `id` (stringified) into the `dataTransfer` data. This should make it easier to create custom drag/drop functionality where someone could drag a calendar item outside this component.
+
 ## 4.4.0 (2020-05-24)
 
 - Fix events showing incorrectly during the week of a DST change in the UK (#135 and #150, thanks @ghost and @robert-joscelyne)
@@ -190,7 +214,7 @@ In short, the curly braces are important.
 - Added `zIndex` prop to event scoped slot properties.
 - Formatted to meet newer eslint rules.
 - Corrected some minor positioning issues with events (including removing remaining em-based borders)
-- The `click-event` and `drag-*` events events now passes the **normalized** event (same as the "event" named slot). You can access your original event (_which is the one you should modify_) using the `originalEvent` attribute. While this is a minor breaking change, I wasn't quite ready to move up to 3.0, and this does make the API more consistent in how it passes events back to the caller.
+- The `click-event` and `drag-*` events events now passes the **normalized** event (same as the "event" named slot). You can access your original event (_which is the one you should modify_) using the `originalItem` attribute. While this is a minor breaking change, I wasn't quite ready to move up to 3.0, and this does make the API more consistent in how it passes events back to the caller.
 - **Known issue:** Babel is not currently transpiling correctly to provide IE11 support. Looking for assistance.
 
 ## 2.1.2 / 2.1.3 (2018.01.27)

@@ -56,6 +56,7 @@
 							future: isInFuture(day),
 							last: isLastDayOfMonth(day),
 							lastInstance: isLastInstanceOfMonth(day),
+							hasItems: dayHasItems(day),
 						},
 						...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null),
 					]"
@@ -68,25 +69,25 @@
 					<div class="cv-day-number">{{ day.getDate() }}</div>
 					<slot :day="day" name="dayContent" />
 				</div>
-				<template v-for="e in getWeekItems(weekStart)">
+				<template v-for="i in getWeekItems(weekStart)">
 					<slot
-						:event="e"
+						:value="i"
 						:weekStartDate="weekStart"
-						:top="getItemTop(e)"
-						name="event"
+						:top="getItemTop(i)"
+						name="item"
 					>
 						<div
-							:key="e.id"
+							:key="i.id"
 							:draggable="enableDragDrop"
-							:class="e.classes"
-							:title="e.title"
-							:style="`top:${getItemTop(e)};${e.originalEvent.style}`"
-							class="cv-event"
-							@dragstart="onDragStart(e, $event)"
-							@mouseenter="onMouseEnterItem(e, $event)"
-							@mouseleave="onMouseLeaveItem(e, $event)"
-							@click.stop="onClickItem(e, $event)"
-							v-html="getItemTitle(e)"
+							:class="i.classes"
+							:title="i.title"
+							:style="`top:${getItemTop(i)};${i.originalItem.style}`"
+							class="cv-item"
+							@dragstart="onDragStart(i, $event)"
+							@mouseenter="onMouseEnterItem(i, $event)"
+							@mouseleave="onMouseLeaveItem(i, $event)"
+							@click.stop="onClickItem(i, $event)"
+							v-html="getItemTitle(i)"
 						/>
 					</slot>
 				</template>
@@ -110,17 +111,17 @@ export default {
 		locale: { type: String, default: undefined },
 		monthNameFormat: { type: String, default: "long" },
 		weekdayNameFormat: { type: String, default: "short" },
-		showEventTimes: { type: Boolean, default: false },
+		showTimes: { type: Boolean, default: false },
 		timeFormatOptions: { type: Object, default: () => {} },
 		disablePast: { type: Boolean, default: false },
 		disableFuture: { type: Boolean, default: false },
 		enableDragDrop: { type: Boolean, default: false },
 		startingDayOfWeek: { type: Number, default: 0 },
-		events: { type: Array, default: () => [] },
+		items: { type: Array, default: () => [] },
 		dateClasses: { type: Object, default: () => {} },
-		eventTop: { type: String, default: "1.4em" },
-		eventContentHeight: { type: String, default: "1.4em" },
-		eventBorderHeight: { type: String, default: "2px" },
+		itemTop: { type: String, default: "1.4em" },
+		itemContentHeight: { type: String, default: "1.4em" },
+		itemBorderHeight: { type: String, default: "2px" },
 		periodChangedCallback: { type: Function, default: undefined },
 		currentPeriodLabel: { type: String, default: "" },
 		currentPeriodLabelIcons: { type: String, default: "⇤-⇥" },
@@ -219,8 +220,9 @@ export default {
 		// Ensure all item properties have suitable default
 		fixedItems() {
 			const self = this
-			return this.events.map((e) =>
-				self.normalizeEvent(
+			if (!this.items) return []
+			return this.items.map((e) =>
+				self.normalizeItem(
 					e,
 					self.currentHoveredItemId && e.id === self.currentHoveredItemId
 				)
@@ -287,7 +289,7 @@ export default {
 				displayFirstDate: this.displayFirstDate,
 				displayLastDate: this.displayLastDate,
 				monthNames: this.monthNames,
-				fixedEvents: this.fixedItems,
+				fixedItems: this.fixedItems,
 				periodLabel: this.periodLabel,
 			}
 		},
@@ -321,11 +323,16 @@ export default {
 		onClickDay(day, windowEvent) {
 			if (this.disablePast && this.isInPast(day)) return
 			if (this.disableFuture && this.isInFuture(day)) return
-			this.$emit("click-date", day, windowEvent)
+			this.$emit(
+				"click-date",
+				day,
+				this.findAndSortItemsInDateRange(day, day),
+				windowEvent
+			)
 		},
 
 		onClickItem(calendarItem, windowEvent) {
-			this.$emit("click-event", calendarItem, windowEvent)
+			this.$emit("click-item", calendarItem, windowEvent)
 		},
 
 		/*
@@ -384,20 +391,21 @@ export default {
 
 		onDragStart(calendarItem, windowEvent) {
 			if (!this.enableDragDrop) return false
-			// Not using dataTransfer.setData to store the item ID because it (a) doesn't allow access to the data being
-			// dragged during dragover, dragenter, and dragleave events, and because storing an ID requires an unnecessary
-			// lookup. This does limit the drop zones to areas within this instance of this component.
-			this.currentDragItem = calendarItem
 			// Firefox and possibly other browsers require dataTransfer to be set, even if the value is not used. IE11
-			// requires that the first argument be exactly "text" (not "text/plain", etc.).
-			windowEvent.dataTransfer.setData("text", "foo")
+			// requires that the first argument be exactly "text" (not "text/plain", etc.). The calendar item's ID is
+			// passed, allowing calling applications to receive items dragged outside the component.
+			windowEvent.dataTransfer.setData("text", calendarItem.id.toString())
+			// However, we don't use dataTransfer within the component. Instead, we just keep a handled on the item
+			// currently being dragged. This avoids having to look it up later.
+			this.currentDragItem = calendarItem
+			// Allow the calling application to add additional functionality.
 			this.$emit("drag-start", calendarItem, windowEvent)
 			return true
 		},
 
 		handleDragEvent(bubbleEventName, bubbleParam, windowEvent) {
 			if (!this.enableDragDrop) return false
-			// If the user drags an event FROM this calendar TO this calendar, currentDragItem will be initialized to the
+			// If the user drags an item FROM this calendar TO this calendar, currentDragItem will be initialized to the
 			// most recent item with a dragStart event. If not, we still emit the event, and the caller will need to
 			// determine what to do based on the third argument (windowEvent, which gives them access to `dataTransfer`).
 			// This allows developers to create custom calendars where things can be dragged in from the outside. This
@@ -434,25 +442,39 @@ export default {
 		// Calendar Items
 		// ******************************
 
+		itemComparer(a, b) {
+			if (a.startDate < b.startDate) return -1
+			if (b.startDate < a.startDate) return 1
+			if (a.endDate > b.endDate) return -1
+			if (b.endDate > a.endDate) return 1
+			return a.id < b.id ? -1 : 1
+		},
+
 		findAndSortItemsInWeek(weekStart) {
-			// Return a list of items that INCLUDE any day of a week starting on a
-			// particular day. Sorted so the items that start earlier are always
-			// shown first.
-			const items = this.fixedItems
+			// Return a list of items that INCLUDE any portion of a given week.
+			return this.findAndSortItemsInDateRange(
+				weekStart,
+				this.addDays(weekStart, 6)
+			)
+		},
+
+		findAndSortItemsInDateRange(startDate, endDate) {
+			// Return a list of items that INCLUDE any day within the date range,
+			// inclusive, sorted so items that start earlier are returned first.
+			return this.fixedItems
 				.filter(
 					(item) =>
-						item.startDate < this.addDays(weekStart, 7) &&
-						item.endDate >= weekStart,
+						item.endDate >= startDate &&
+						this.dateOnly(item.startDate) <= endDate,
 					this
 				)
-				.sort((a, b) => {
-					if (a.startDate < b.startDate) return -1
-					if (b.startDate < a.startDate) return 1
-					if (a.endDate > b.endDate) return -1
-					if (b.endDate > a.endDate) return 1
-					return a.id < b.id ? -1 : 1
-				})
-			return items
+				.sort(this.itemComparer)
+		},
+
+		dayHasItems(day) {
+			return this.fixedItems.find(
+				(d) => d.endDate >= day && this.dateOnly(d.startDate) <= day
+			)
 		},
 
 		getWeekItems(weekStart) {
@@ -464,7 +486,7 @@ export default {
 			for (let i = 0; i < items.length; i++) {
 				const ep = Object.assign({}, items[i], {
 					classes: [...items[i].classes],
-					eventRow: 0,
+					itemRow: 0,
 				})
 				const continued = ep.startDate < weekStart
 				const startOffset = continued
@@ -478,15 +500,15 @@ export default {
 				if (this.dayDiff(weekStart, ep.endDate) > 6)
 					ep.classes.push("toBeContinued")
 				if (this.isInPast(ep.endDate)) ep.classes.push("past")
-				if (ep.originalEvent.url) ep.classes.push("hasUrl")
+				if (ep.originalItem.url) ep.classes.push("hasUrl")
 				for (let d = 0; d < 7; d++) {
 					if (d === startOffset) {
 						let s = 0
 						while (itemRows[d][s]) s++
-						ep.eventRow = s
+						ep.itemRow = s
 						itemRows[d][s] = true
 					} else if (d < startOffset + span) {
-						itemRows[d][ep.eventRow] = true
+						itemRows[d][ep.itemRow] = true
 					}
 				}
 				ep.classes.push(`offset${startOffset}`)
@@ -523,16 +545,16 @@ export default {
 		},
 
 		getItemTitle(e) {
-			if (!this.showEventTimes) return e.title
+			if (!this.showTimes) return e.title
 			return this.getFormattedTimeRange(e) + " " + e.title
 		},
 
 		getItemTop(e) {
 			// Compute the top position of the item based on its assigned row within the given week.
-			const r = e.eventRow
-			const h = this.eventContentHeight
-			const b = this.eventBorderHeight
-			return `calc(${this.eventTop} + ${r}*${h} + ${r}*${b})`
+			const r = e.itemRow
+			const h = this.itemContentHeight
+			const b = this.itemBorderHeight
+			return `calc(${this.itemTop} + ${r}*${h} + ${r}*${b})`
 		},
 	},
 }
@@ -613,7 +635,7 @@ header are in the CalendarViewHeader component.
 	min-height: 3em;
 	border-width: 0;
 
-	/* Allow week events to scroll if they are too tall */
+	/* Allow week items to scroll if they are too tall */
 	position: relative;
 	width: 100%;
 	overflow-y: auto;
@@ -662,7 +684,7 @@ _:-ms-lang(x),
 	right: 0;
 }
 
-.cv-event {
+.cv-item {
 	position: absolute;
 	white-space: nowrap;
 	overflow: hidden;
@@ -673,7 +695,7 @@ _:-ms-lang(x),
 }
 
 /* Wrap to show entire item title on hover */
-.cv-wrapper.wrap-event-title-on-hover .cv-event:hover {
+.cv-wrapper.wrap-item-title-on-hover .cv-item:hover {
 	white-space: normal;
 	z-index: 1;
 }
@@ -685,20 +707,20 @@ _:-ms-lang(x),
 .cv-weeks,
 .cv-week,
 .cv-day,
-.cv-event {
+.cv-item {
 	border-style: solid;
 	border-color: #ddd;
 }
 
 /* Item Times */
-.cv-event .endTime::before {
+.cv-item .endTime::before {
 	content: "-";
 }
 
 /* Internal Metrics */
 .cv-header-day,
 .cv-day-number,
-.cv-event {
+.cv-item {
 	padding: 0.2em;
 }
 
@@ -707,65 +729,65 @@ _:-ms-lang(x),
 	margin-right: 0.5em;
 }
 
-.cv-event.offset0 {
+.cv-item.offset0 {
 	left: 0;
 }
 
-.cv-event.offset1 {
+.cv-item.offset1 {
 	left: calc((100% / 7));
 }
 
-.cv-event.offset2 {
+.cv-item.offset2 {
 	left: calc((200% / 7));
 }
 
-.cv-event.offset3 {
+.cv-item.offset3 {
 	left: calc((300% / 7));
 }
 
-.cv-event.offset4 {
+.cv-item.offset4 {
 	left: calc((400% / 7));
 }
 
-.cv-event.offset5 {
+.cv-item.offset5 {
 	left: calc((500% / 7));
 }
 
-.cv-event.offset6 {
+.cv-item.offset6 {
 	left: calc((600% / 7));
 }
 
 /* Metrics for items spanning dates */
 
-.cv-event.span1 {
+.cv-item.span1 {
 	width: calc((100% / 7) - 0.05em);
 }
 
-.cv-event.span2 {
+.cv-item.span2 {
 	width: calc((200% / 7) - 0.05em);
 }
 
-.cv-event.span3 {
+.cv-item.span3 {
 	width: calc((300% / 7) - 0.05em);
 	text-align: center;
 }
 
-.cv-event.span4 {
+.cv-item.span4 {
 	width: calc((400% / 7) - 0.05em);
 	text-align: center;
 }
 
-.cv-event.span5 {
+.cv-item.span5 {
 	width: calc((500% / 7) - 0.05em);
 	text-align: center;
 }
 
-.cv-event.span6 {
+.cv-item.span6 {
 	width: calc((600% / 7) - 0.05em);
 	text-align: center;
 }
 
-.cv-event.span7 {
+.cv-item.span7 {
 	width: calc((700% / 7) - 0.05em);
 	text-align: center;
 }

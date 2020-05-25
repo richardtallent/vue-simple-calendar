@@ -2,7 +2,7 @@
 	<div id="app">
 		<calendar-view
 			:show-date="showDate"
-			:events="events"
+			:items="items"
 			class="theme-default holiday-us-traditional holiday-us-official"
 		>
 			<calendar-view-header
@@ -28,19 +28,24 @@ export default {
 	data: function () {
 		return {
 			showDate: new Date(),
-			events: [
-				{
-					id: 1,
-					title: "test",
-					startDate: "2020-03-31",
-					endDate: "2020-03-31",
-				},
-			],
+			items: Array(5)
+				.fill()
+				.map((_, i) => this.getRandomEvent(i)),
 		}
 	},
 	methods: {
 		setShowDate(d) {
 			this.showDate = d
+		},
+		getRandomEvent(index) {
+			const startDay = Math.floor(Math.random() * 28 + 1)
+			const endDay = Math.floor(Math.random() * 9 + 1) + startDay
+			var d = new Date()
+			return {
+				title: "Event " + (index + 1),
+				startDate: Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), startDay),
+				endDate: Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), endDay),
+			}
 		},
 	},
 }
