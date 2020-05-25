@@ -9,7 +9,7 @@
 
 ## Main breaking change: Events to Items
 
-Any reference to a "thing that is scheduled on the calendar" is now called an "item" rather than an "event" due to the confusion possible with DOM and Vue-emitted events.
+Any reference to a "thing that is scheduled on the calendar" is now called an "item" rather than an "event" due to the confusion possible with DOM and Vue-emitted events. (#129)
 
 - The `click-event` event is now called `click-item`
 - The `events` property is now called `items`.
