@@ -33,7 +33,6 @@ having to override as much.
 	background-color: #e0e0e0;
 	border-color: #ccc;
 	color: #808080;
-	position: relative;
 }
 
 .theme-default .cv-weeknumber span {
@@ -99,6 +98,14 @@ having to override as much.
 	border-left-style: none;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
+}
+
+.cv-item.span3,
+.cv-item.span4,
+.cv-item.span5,
+.cv-item.span6,
+.cv-item.span7 {
+	text-align: center;
 }
 
 /* Event Times */

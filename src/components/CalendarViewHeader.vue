@@ -7,16 +7,15 @@
 				aria-label="Previous Year"
 				@click.prevent="onInput(headerProps.previousYear)"
 			>
-				&lt;&lt;
+				{{ previousYearLabel }}
 			</button>
 			<button
 				:disabled="!headerProps.previousPeriod"
 				class="previousPeriod"
 				aria-label="Previous Period"
 				@click.prevent="onInput(headerProps.previousPeriod)"
-			>
-				&lt;
-			</button>
+				v-html="previousPeriodLabel"
+			/>
 			<button
 				class="currentPeriod"
 				aria-label="Current Period"
@@ -30,7 +29,7 @@
 				aria-label="Next Period"
 				@click.prevent="onInput(headerProps.nextPeriod)"
 			>
-				&gt;
+				{{ nextPeriodLabel }}
 			</button>
 			<button
 				:disabled="!headerProps.nextYear"
@@ -38,7 +37,7 @@
 				aria-label="Next Year"
 				@click.prevent="onInput(headerProps.nextYear)"
 			>
-				&gt;&gt;
+				{{ nextYearLabel }}
 			</button>
 		</div>
 		<div class="periodLabel">
@@ -54,6 +53,10 @@ export default {
 			type: Object,
 			required: true,
 		},
+		previousYearLabel: { type: String, default: "<<" },
+		previousPeriodLabel: { type: String, default: "<" },
+		nextPeriodLabel: { type: String, default: ">" },
+		nextYearLabel: { type: String, default: ">>" },
 	},
 	methods: {
 		onInput(d) {

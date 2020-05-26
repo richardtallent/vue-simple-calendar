@@ -94,9 +94,7 @@
 						@dragenter.prevent="onDragEnter(day, $event)"
 						@dragleave.prevent="onDragLeave(day, $event)"
 					>
-						<div class="cv-day-number">
-							{{ day.getDate() }}
-						</div>
+						<div class="cv-day-number">{{ day.getDate() }}</div>
 						<slot :day="day" name="dayContent" />
 					</div>
 					<template v-for="i in getWeekItems(weekStart)">
@@ -724,9 +722,11 @@ header are in the CalendarViewHeader component.
 
 .cv-weeknumber {
 	width: 2rem;
+	position: relative;
 	text-align: center;
 	border-width: 1px 1px 0 0;
 	border-style: solid;
+	line-height: 1;
 }
 
 /* Use flex basis of 0 on week row so all weeks will be same height regardless of content */
@@ -774,6 +774,11 @@ header are in the CalendarViewHeader component.
 	direction: initial;
 }
 
+.cv-day-number {
+	height: auto;
+	align-self: flex-start;
+}
+
 /* 
 A bug in Microsoft Edge 41 (EdgeHTML 16) has been reported (#109) where days "disappear" because they are
 wrapping under the next week (despite the "nowrap" on cv-week). This appears to be an issue specifically
@@ -788,16 +793,14 @@ add this selector to your own CSS.
 		position: relative;
 	}
 }
-*/
-
 _:-ms-lang(x),
 .cv-day {
 	position: relative;
 }
-*/ .cv-day-number {
+.cv-day-number {
 	position: absolute;
 	right: 0;
-}
+}*/
 
 .cv-day[draggable],
 .cv-item[draggable] {
@@ -889,27 +892,22 @@ _:-ms-lang(x),
 
 .cv-item.span3 {
 	width: calc((300% / 7) - 0.05em);
-	text-align: center;
 }
 
 .cv-item.span4 {
 	width: calc((400% / 7) - 0.05em);
-	text-align: center;
 }
 
 .cv-item.span5 {
 	width: calc((500% / 7) - 0.05em);
-	text-align: center;
 }
 
 .cv-item.span6 {
 	width: calc((600% / 7) - 0.05em);
-	text-align: center;
 }
 
 .cv-item.span7 {
 	width: calc((700% / 7) - 0.05em);
-	text-align: center;
 }
 
 /* Hide scrollbars for the grid and the week */

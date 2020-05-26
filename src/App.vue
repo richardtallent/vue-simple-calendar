@@ -7,15 +7,24 @@
 			:selection-start="selectionStart"
 			:selection-end="selectionEnd"
 			:displayWeekNumbers="false"
+			:itemTop="themeOptions.top"
+			:itemContentHeight="themeOptions.height"
+			:itemBorderHeight="themeOptions.border"
+			:class="`theme-` + theme"
+			:currentPeriodLabel="themeOptions.currentPeriodLabel"
 			@date-selection-start="setSelection"
 			@date-selection="setSelection"
 			@date-selection-finish="finishSelection"
-			class="theme-default holiday-us-traditional holiday-us-official"
+			class="holiday-us-traditional holiday-us-official"
 		>
 			<calendar-view-header
 				slot="header"
 				slot-scope="{ headerProps }"
 				:header-props="headerProps"
+				:previousYearLabel="themeOptions.previousYearLabel"
+				:previousPeriodLabel="themeOptions.previousPeriodLabel"
+				:nextPeriodLabel="themeOptions.nextPeriodLabel"
+				:nextYearLabel="themeOptions.nextYearLabel"
 				@input="setShowDate"
 			/>
 		</calendar-view>
@@ -37,10 +46,36 @@ export default {
 			showDate: new Date(),
 			selectionStart: null,
 			selectionEnd: null,
+			theme: "gcal",
 			items: Array(25)
 				.fill()
 				.map((_, i) => this.getRandomEvent(i)),
 		}
+	},
+	computed: {
+		themeOptions() {
+			return this.theme == "gcal"
+				? {
+						top: "2.6em",
+						height: "2.1em",
+						border: "0px",
+						previousYearLabel: "\uE5CB\uE5CB",
+						previousPeriodLabel: "\uE5CB",
+						nextPeriodLabel: "\uE5CC",
+						nextYearLabel: "\uE5CC\uE5CC",
+						currentPeriodLabel: "Today",
+				  }
+				: {
+						top: "1.4em",
+						height: "1.4em",
+						border: "2px",
+						previousYearLabel: "<<",
+						previousPeriodLabel: "<",
+						nextPeriodLabel: ">",
+						nextYearLabel: ">>",
+						currentPeriodLabel: "",
+				  }
+		},
 	},
 	methods: {
 		setShowDate(d) {
@@ -58,6 +93,7 @@ export default {
 			const endDay = Math.floor(Math.random() * 4 + 1) + startDay
 			var d = new Date()
 			return {
+				id: index,
 				title: "Event " + (index + 1),
 				startDate: Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), startDay),
 				endDate: Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), endDay),
@@ -68,7 +104,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../static/css/default.css";
+@import "../static/css/gcal.css";
+//@import "../static/css/default.css";
 @import "../static/css/holidays-us.css";
 
 div#app {

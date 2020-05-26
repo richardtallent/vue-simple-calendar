@@ -31,6 +31,7 @@ Any reference to a "thing that is scheduled on the calendar" is now called an "i
 - The `dragStart` event for an item now passes the item's `id` (stringified) into the `dataTransfer` data. This should make it easier to create custom drag/drop functionality where someone could drag a calendar item outside this component.
 - Now supports date range selection, and user drag-select! Enable with the `enable-date-selection` prop.
 - Now supports an optional "week number" column using the `displayWeekNumbers` property. This has a named slot to allow full control.
+- New optional theme "gcal," intended to be an approximation of the Google Calendar (_e.g._, Material) look and feel. Requires some additional fonts and property overrides.
 
 ## 4.4.0 (2020-05-24)
 
