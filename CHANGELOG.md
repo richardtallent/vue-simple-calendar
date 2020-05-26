@@ -33,6 +33,18 @@ Any reference to a "thing that is scheduled on the calendar" is now called an "i
 - Now supports an optional "week number" column using the `displayWeekNumbers` property. This has a named slot to allow full control.
 - New optional theme "gcal," intended to be an approximation of the Google Calendar (_e.g._, Material) look and feel. Requires some additional fonts and property overrides.
 
+### To-Do for GCal before 5.0 release
+
+- Option for short month label in day number for 1st of each month
+- span-1 events with start time should have color dot and no background color
+- Events that cross the displayPeriod boundary should have pointed edge
+- Create bespoke sample app with all of the appropriate fonts, overrides, etc. and events using GCal palette
+- If possible, drag event selecting dates should create pseudo-event using CSS before/after content rather than highlighting the entire date block. Probably not possible but may be able to approximate.
+- CSS swipe transition between periods
+- Header button tooltips
+- Document new button properties, move to headerProps
+- Add and document header slot for additional buttons, etc. on the same flex row
+
 ## 4.4.0 (2020-05-24)
 
 - Fix events showing incorrectly during the week of a DST change in the UK (#135 and #150, thanks @ghost and @robert-joscelyne)
