@@ -40,6 +40,7 @@
 					'week' + (weekIndex + 1),
 					'ws' + isoYearMonthDay(weekStart),
 				]"
+				:style="weekStyles ? weekStyles[weekIndex] : undefined"
 			>
 				<div v-if="displayWeekNumbers" class="cv-weeknumber">
 					<slot
@@ -162,6 +163,7 @@ export default {
 		currentPeriodLabel: { type: String, default: "" },
 		currentPeriodLabelIcons: { type: String, default: "⇤-⇥" },
 		doEmitItemMouseEvents: { type: Boolean, default: false },
+		weekStyles: { type: Array, default: undefined },
 	},
 
 	data: () => ({
