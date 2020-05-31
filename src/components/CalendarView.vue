@@ -40,7 +40,11 @@
 					'week' + (weekIndex + 1),
 					'ws' + isoYearMonthDay(weekStart),
 				]"
-				:style="weekStyles ? weekStyles[weekIndex] : undefined"
+				:style="
+					weekStyles && weekStyles[weekIndex]
+						? weekStyles[weekIndex]
+						: undefined
+				"
 			>
 				<div v-if="displayWeekNumbers" class="cv-weeknumber">
 					<slot
