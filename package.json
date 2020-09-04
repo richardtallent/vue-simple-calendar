@@ -1,6 +1,6 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "4.4.0",
+	"version": "5.0.0",
 	"private": false,
 	"description": "Simple calendar event control",
 	"author": "richardtallent <richard@tallent.us>",
@@ -26,7 +26,9 @@
 		"eslint-config-tabsanity": "^1.0.25",
 		"eslint-plugin-prettier": "^3.1.4",
 		"eslint-plugin-vue": "^6.2.2",
+		"node-sass": "^4.14.1",
 		"prettier": "^2.1.1",
+		"sass-loader": "^10.0.2",
 		"vue-template-compiler": "^2.6.12"
 	},
 	"eslintConfig": {

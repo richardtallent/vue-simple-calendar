@@ -5,7 +5,21 @@
 - Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
 - Change from mixin to plain old imported functions.
 
-## 5.0.0 (2020-05-25, NOT RELEASED)
+## Future: Full GCal theme
+
+I originally intended for this to be part of v5.0, but it was holding things up, so I've deferred the full implementation for the future. There is a CSS file and some options in `App.vue` of this repo to serve as a starting point. Here's a short to-do list for creating a reasonable facsimile:
+
+- Option for short month label in day number for 1st of each month
+- span-1 events with start time should have color dot and no background color
+- Events that cross the displayPeriod boundary should have pointed edge
+- Create sample app with all of the appropriate fonts, overrides, etc. and events using GCal palette
+- If possible, drag event selecting dates should create pseudo-event using CSS before/after content rather than highlighting the entire date block. Probably not possible but may be able to approximate.
+- CSS swipe transition between periods
+- Header button tooltips
+- Document new button properties, move to headerProps
+- Add and document header slot for additional buttons, etc. on the same flex row
+
+## 5.0.0 (2020-09-04)
 
 ## Main breaking change: Events to Items
 
@@ -31,19 +45,6 @@ Any reference to a "thing that is scheduled on the calendar" is now called an "i
 - The `dragStart` event for an item now passes the item's `id` (stringified) into the `dataTransfer` data. This should make it easier to create custom drag/drop functionality where someone could drag a calendar item outside this component.
 - Now supports date range selection, and user drag-select! Enable with the `enable-date-selection` prop.
 - Now supports an optional "week number" column using the `displayWeekNumbers` property. This has a named slot to allow full control.
-- New optional theme "gcal," intended to be an approximation of the Google Calendar (_e.g._, Material) look and feel. Requires some additional fonts and property overrides.
-
-### To-Do for GCal before 5.0 release
-
-- Option for short month label in day number for 1st of each month
-- span-1 events with start time should have color dot and no background color
-- Events that cross the displayPeriod boundary should have pointed edge
-- Create bespoke sample app with all of the appropriate fonts, overrides, etc. and events using GCal palette
-- If possible, drag event selecting dates should create pseudo-event using CSS before/after content rather than highlighting the entire date block. Probably not possible but may be able to approximate.
-- CSS swipe transition between periods
-- Header button tooltips
-- Document new button properties, move to headerProps
-- Add and document header slot for additional buttons, etc. on the same flex row
 
 ## 4.4.0 (2020-05-24)
 

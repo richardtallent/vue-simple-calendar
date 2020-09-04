@@ -90,14 +90,15 @@ export default {
 		},
 		getRandomEvent(index) {
 			const startDay = Math.floor(Math.random() * 28 + 1)
-			const endDay = Math.floor(Math.random() * 4 + 1) + startDay
+			const endDay = Math.floor(Math.random() * 4) + startDay
 			var d = new Date()
-			return {
+			var i = {
 				id: index,
 				title: "Event " + (index + 1),
 				startDate: Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), startDay),
 				endDate: Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), endDay),
 			}
+			return i
 		},
 	},
 }

@@ -258,6 +258,7 @@ export default {
 				this.monthNameFormat
 			)
 		},
+
 		weekdayNames() {
 			return this.getFormattedWeekdayNames(
 				this.displayLocale,
@@ -287,6 +288,7 @@ export default {
 				this.monthNames
 			)
 		},
+
 		// Period that today's date sits within
 		currentPeriodStart() {
 			return this.beginningOfPeriod(
@@ -295,6 +297,7 @@ export default {
 				this.startingDayOfWeek
 			)
 		},
+
 		currentPeriodEnd() {
 			return this.addDays(
 				this.incrementPeriod(
@@ -305,6 +308,7 @@ export default {
 				-1
 			)
 		},
+
 		currentPeriodLabelFinal() {
 			const c = this.currentPeriodStart
 			const s = this.periodStart
@@ -319,6 +323,7 @@ export default {
 				return this.currentPeriodLabelIcons[Math.sign(c - s) + 1]
 			return this.currentPeriodLabel
 		},
+
 		headerProps() {
 			return {
 				// Dates for UI navigation
@@ -342,6 +347,7 @@ export default {
 				periodLabel: this.periodLabel,
 			}
 		},
+
 		periodRange() {
 			return {
 				periodStart: this.periodStart,
@@ -421,12 +427,14 @@ export default {
 		// ******************************
 		// Hover items (#95, #136)
 		// ******************************
+
 		onMouseEnterItem(calendarItem, windowEvent) {
 			this.currentHoveredItemId = calendarItem.id
 			if (this.doEmitItemMouseEvents) {
 				this.$emit("item-mouseenter", calendarItem, windowEvent)
 			}
 		},
+
 		onMouseLeaveItem(calendarItem, windowEvent) {
 			this.currentHoveredItemId = undefined
 			if (this.doEmitItemMouseEvents) {
