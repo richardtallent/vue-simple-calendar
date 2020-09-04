@@ -1,5 +1,3 @@
-**NOTE: THIS README IS FOR VERSION 5.0, WHICH ISN'T QUITE OUT YET. PLEASE SEE THE RELEASES TAB FOR THE CURRENT RELEASED VERSION (4.4.0).**
-
 ## Introduction
 
 **vue-simple-calendar** is a flexible, themeable, lightweight calendar component for Vue that supports multi-day scheduled items.
