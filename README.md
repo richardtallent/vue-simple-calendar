@@ -215,8 +215,8 @@ Each item shown on the calendar can have the following properties. `id` and `sta
 - `endDate` - The date the item ends on the calendar. Defaults to the same date as `startDate`. This must be either passed as a JavaScript date object, or as a string following an ISO-like form of "yyyy-mm-dd HH:MM:SS" (time is optional, and within time, minutes and seconds are both optional).
 - `title` - The name of the item shown on the calendar. Defaults to "Untitled".
 - `url` - The URL associated with the item. The component has no built-in action associated with this, but it does add a "hasUrl" class to the item. To "follow" the URL, you'll need to listen for the `click-item` event and take the appropriate action.
-- `classes` - A String with any additional CSS classes you wish to assign to the item.
-- `style` - A String with any additional CSS styles you wish to apply to the item.
+- `classes` - An array of strings with any additional CSS classes you wish to assign to the item.
+- `style` - A string with any additional CSS styles you wish to apply to the item.
 
 ## Events
 
