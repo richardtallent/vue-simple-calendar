@@ -6,25 +6,25 @@
 			:enable-date-selection="true"
 			:selection-start="selectionStart"
 			:selection-end="selectionEnd"
-			:displayWeekNumbers="false"
-			:itemTop="themeOptions.top"
-			:itemContentHeight="themeOptions.height"
-			:itemBorderHeight="themeOptions.border"
+			:display-week-numbers="false"
+			:item-top="themeOptions.top"
+			:item-content-height="themeOptions.height"
+			:item-border-height="themeOptions.border"
 			:class="`theme-` + theme"
-			:currentPeriodLabel="themeOptions.currentPeriodLabel"
+			:current-period-label="themeOptions.currentPeriodLabel"
+			class="holiday-us-traditional holiday-us-official"
 			@date-selection-start="setSelection"
 			@date-selection="setSelection"
 			@date-selection-finish="finishSelection"
-			class="holiday-us-traditional holiday-us-official"
 		>
 			<calendar-view-header
 				slot="header"
 				slot-scope="{ headerProps }"
 				:header-props="headerProps"
-				:previousYearLabel="themeOptions.previousYearLabel"
-				:previousPeriodLabel="themeOptions.previousPeriodLabel"
-				:nextPeriodLabel="themeOptions.nextPeriodLabel"
-				:nextYearLabel="themeOptions.nextYearLabel"
+				:previous-year-label="themeOptions.previousYearLabel"
+				:previous-period-label="themeOptions.previousPeriodLabel"
+				:next-period-label="themeOptions.nextPeriodLabel"
+				:next-year-label="themeOptions.nextYearLabel"
 				@input="setShowDate"
 			/>
 		</calendar-view>
@@ -97,6 +97,7 @@ export default {
 				title: "Event " + (index + 1),
 				startDate: Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), startDay),
 				endDate: Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), endDay),
+				classes: Math.random() > 0.9 ? ["custom-date-class-red"] : null,
 			}
 			return i
 		},
@@ -115,5 +116,9 @@ div#app {
 	height: 87vh;
 	width: 87vw;
 	margin-left: 6vw;
+}
+
+.cv-item.custom-date-class-red {
+	background-color: #ff6666;
 }
 </style>
