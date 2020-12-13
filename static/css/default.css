@@ -55,7 +55,7 @@ having to override as much.
 	background-color: #ffe;
 }
 
-.theme-default .cv-day[aria-selected] {
+.theme-default .cv-day[aria-selected="true"] {
 	background-color: #ffc;
 }
 

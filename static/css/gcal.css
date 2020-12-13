@@ -119,7 +119,7 @@ as of May 2020.
 	color: #fff;
 }
 
-.theme-gcal .cv-day[aria-selected] {
+.theme-gcal .cv-day[aria-selected="true"] {
 	background-color: #ffc;
 }
 

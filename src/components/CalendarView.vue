@@ -73,7 +73,7 @@
 								selectionStart: isSameDate(day, selectionStart),
 								selectionEnd: isSameDate(day, selectionEnd),
 							},
-							...((dateClasses && dateClasses[isoYearMonthDay(day)]) || null),
+							...((dateClasses && dateClasses[isoYearMonthDay(day)]) || []),
 						]"
 						:aria-grabbed="
 							enableDateSelection ? dayIsSelected(day) : 'undefined'
@@ -163,6 +163,8 @@ export default {
 		currentPeriodLabelIcons: { type: String, default: "⇤-⇥" },
 		doEmitItemMouseEvents: { type: Boolean, default: false },
 	},
+
+	emits: ["click-date"],
 
 	data: () => ({
 		currentDragItem: null,
