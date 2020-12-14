@@ -45,12 +45,15 @@
 		</div>
 	</div>
 </template>
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "vue"
+import { IHeaderProps } from "../IHeaderProps"
+
+export default defineComponent({
 	name: "CalendarViewHeader",
 	props: {
 		headerProps: {
-			type: Object,
+			type: Object as () => IHeaderProps,
 			required: true,
 		},
 		previousYearLabel: { type: String, default: "<<" },
@@ -58,12 +61,13 @@ export default {
 		nextPeriodLabel: { type: String, default: ">" },
 		nextYearLabel: { type: String, default: ">>" },
 	},
+	emits: ["input"],
 	methods: {
-		onInput(d) {
+		onInput(d: Date) {
 			this.$emit("input", d)
 		},
 	},
-}
+})
 </script>
 <style>
 .cv-header {

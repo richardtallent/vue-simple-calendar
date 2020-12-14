@@ -2,6 +2,8 @@
 
 **vue-simple-calendar** is a flexible, themeable, lightweight calendar component for Vue that supports multi-day scheduled items.
 
+**This branch is for version 6, not yet released. This new version will drop IE11 support, be migrated to Vue 3, and will add TypeScript support. Version 5 is available via npm.**
+
 ## Demo
 
 Here's a live demo page, and the repo for it:
@@ -37,7 +39,7 @@ https://github.com/richardtallent/vue-simple-calendar-sample
 There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show scheduled activities (including multi-day items) on that grid. While the component goes beyond that simple use case, that is still the core focus.
 
 - Shows a traditional month-grid calendar. Also supports weeks, years, or _multiple_ weeks, months, or years.
-- Can show scheduled "items," including multi-day items, with optional time of day.
+- Can show scheduled "items," including multi-day items, with an optional time of day.
 - If there are too many items to see in a week, you can scroll to see the others.
 - If there are too many weeks to see in the calendar component, you can scroll to see the others.
 - Optional support for dragging and dropping items between dates.
@@ -47,7 +49,7 @@ There are other great calendar components out there, but most are either intende
 - No external dependencies (Moment, JQuery, etc.).
 - Various user events (clicks, drags, etc.) are emitted by the calendar component.
 - Weeks can start on any day of the week (defaults to Sunday).
-- Easy to theme (using CSS) to integrate with your own site
+- Easy to customize the theme (using CSS) to integrate with your own site
 - Easy to customize using Vue slots
 - Date range selection (programmatic or via user drag-select)
 
@@ -159,7 +161,7 @@ Here's a minimal application example for an empty calendar, styled with the defa
 
 ## Props
 
-The following properties are supported, by area of function:
+The following properties are supported, by functional area:
 
 ### Grid Display
 
@@ -174,7 +176,7 @@ The following properties are supported, by area of function:
 
 ### Grid Selection
 
-- `enableDateSelection` - If true, the user can "drag" their cursor across dates to select a date range. When the user starts dragging, a `date-selection-start` is emitted. As the user drags into other dates, `date-selection` events are emitted. When the user stop dragging, a `date-selection-finish` event is emitted. All of these events sent a **three-element array** payload. The first two elements are the new date range selected, the third is the original DOM drag event. Note that this represents what the _user selected_ -- if you want to highlight those dates, you'll need to pass the dates back as `selectionStart` and `selectionEnd` props. This allows you to modify the selection highlights as needed -- for example, clearing it on finish and performing some action (such as adding a new event, like Google Calendar).
+- `enableDateSelection` - If true, the user can "drag" their cursor across dates to select a date range. When the user starts dragging, a `date-selection-start` is emitted. As the user drags into other dates, `date-selection` events are emitted. When the user stop dragging, a `date-selection-finish` event is emitted. All of these events sent a **three-element array** payload. The first two elements are the new date range selected, the third is the original DOM drag event. Note that this represents what the _user selected_ -- if you want to highlight those dates, you'll need to pass the dates back as `selectionStart` and `selectionEnd` props. This allows you to modify the selection highlights as needed (for example, performing some action (such as adding a new event, like Google Calendar) and clearing it when that action is complete).
 - `selectionStart` - the start of the date range you want to select. This date is decorated with the `selectionStart` class.
 - `selectionEnd` - the end of the date range you want to select. This date is decorated with the `selectionEnd` class.
 
@@ -199,7 +201,7 @@ Note: Each date between `selectionStart` and `selectionEnd` (including them) has
 - `doEmitItemMouseEvents` - Optional, default is false. If true, emits `item-mouseenter` and `item-mouseleave` events when the mouse hovers over a calendar item. In most cases, styling the `isHovered` class is enough to handle hover interactions with a calendar item. However, if you want to, say, show a tooltip or menu when a user hovers over a calendar item, you may need access to the real-time mouse DOM events. Be sure that your use of these events doesn't conflict with the user's ability to click, drag, read, or otherwise interact with the calendar items. NOTE: if you use slots for your calendar items, this property is ignored. (#136)
 - `itemTop` - Optional string of a CSS height to be used as the baseline for where items are positioned relative the top of the week. By default, this is `1.4em`, the height of the standard `cv-day-number` element.
 - `itemContentHeight` - Optional CSS string of the total height of your items, _not including_ borders. The default is `1.4em` (1.0 from the font, 0.2 \* 2 from the padding.). You would only set this if you're overriding the item height. This doesn't actually change the item height, it is only used to position the items below one another.
-- `itemBorderHeight` - Optional CSS string of the sum of your items' top and bottom borders. The default is `2px`. You would only set this if you're overriding the item top and/or bottom border width. This doesn't actually change the borders, it is only used to position the items below one another.
+- `itemBorderHeight` - Optional CSS string of the sum of your items' top and bottom borders. The default is `2px`. You would only set this if you're overriding the item's top and/or bottom border width. This doesn't change the borders, it is only used to position the items below one another.
 
 Tips for Vue component properties:
 
@@ -212,7 +214,7 @@ Each item shown on the calendar can have the following properties. `id` and `sta
 
 - `id` - A unique identifier for the item. This is required and must be unique.
 - `startDate` - The date the item starts on the calendar. This must be either passed as a JavaScript date object, or as a string following an ISO-like form of "yyyy-mm-dd HH:MM:SS" (time is optional, and within time, minutes and seconds are both optional).
-- `endDate` - The date the item ends on the calendar. Defaults to the same date as `startDate`. This must be either passed as a JavaScript date object, or as a string following an ISO-like form of "yyyy-mm-dd HH:MM:SS" (time is optional, and within time, minutes and seconds are both optional).
+- `endDate` - The date the item ends on the calendar. Defaults to the same date as `startDate`. This must be either passed as a JavaScript date object, or as a string following an ISO-like form of `yyyy-mm-dd HH:MM:SS` (time is optional, and within time, minutes and seconds are both optional).
 - `title` - The name of the item shown on the calendar. Defaults to "Untitled".
 - `url` - The URL associated with the item. The component has no built-in action associated with this, but it does add a "hasUrl" class to the item. To "follow" the URL, you'll need to listen for the `click-item` event and take the appropriate action.
 - `classes` - An array of strings with any additional CSS classes you wish to assign to the item.
@@ -285,7 +287,7 @@ The developer implementing her own header simply needs to create a header compon
 - Receives this information and displays it with appropriate UI elements (suggested property name: `headerProps`)
 - Emits an event when the user wants to change the calendar period (suggested event name: `input`)
 
-Note above that both `previousPeriod` and `previousFullPeriod` are provided, as well as `nextPeriod` and `nextFullPeriod`. The reason for this distinction is to allow the developer to decide how the calendar's Previous and Next buttons should move through time if `displayPeriodCount` is greater than 1. My personal preference is to move forward and backward by one week / month, allowing the user to pinpoint the exact date window they wish to see. But in some applications (a "quarterly" calednar, for example, or a calendar with set two-week periods), it may be better for the buttons to jump backward and forward based on the `displayPeriodCount` setting. This gives the developer both options -- just choose which interaction you want to use, and use those dates to set the new `showDate`.
+Note above that both `previousPeriod` and `previousFullPeriod` are provided, as well as `nextPeriod` and `nextFullPeriod`. The reason for this distinction is to allow the developer to decide how the calendar's Previous and Next buttons should move through time if `displayPeriodCount` is greater than 1. My personal preference is to move forward and backward by one week / month, allowing the user to pinpoint the exact date window they wish to see. But in some applications (a "quarterly" calendar, for example, or a calendar with set two-week periods), it may be better for the buttons to jump backward and forward based on the `displayPeriodCount` setting. This gives the developer both options -- just choose which interaction you want to use, and use those dates to set the new `showDate`.
 
 ### dayHeader
 
@@ -448,15 +450,15 @@ This class is added to days after the current date (local time).
 
 #### last
 
-This class is added to the last day of the its month.
+This class is added to the last day of its month.
 
 #### selectionStart
 
-This class is added to the day specified by the selectionStart prop.
+This class is added to the day specified by the `selectionStart` prop.
 
 #### selectionEnd
 
-This class is added to the day specified by the selectionEnd prop.
+This class is added to the day specified by the `selectionEnd` prop.
 
 ### Calendar Item classes
 
@@ -490,7 +492,7 @@ I'm open to other suggestions, provided they are easily calculated and there's s
 
 These classes are applied to the start and end time of an item, respectively.
 
-## Future plans
+## Plans
 
 - [x] Keep it simple, not a kitchen-sink control.
 - [x] Better docs.
@@ -504,7 +506,7 @@ These classes are applied to the start and end time of an item, respectively.
 - [ ] Apple Calendar theme (would love help with this)
 - [ ] Outlook Calendar theme (would love help with this)
 - [ ] I'm not 100% happy with the Intl time format options, especially to show time ranges compactly. Considering a custom formatter or the ability to pass a formatter function as a property.
-- [x] Rename the primary CSS classes (calendar-view, day, week, etc.) to depend far less on cascades, making it easier to customize the theme (breaking change for themes, targeted for 3.0.0).
+- [x] Rename the primary CSS classes (`calendar-view`, `day`, `week`, etc.) to depend far less on cascades, making it easier to customize the theme (breaking change for themes, targeted for 3.0.0).
 
 ## Contributions
 
@@ -527,7 +529,7 @@ This project was inspired by Monthly.js, a JQuery-based control I've contributed
 
 Because Vue is awesome. I've been using it since early 2017 in production, and I've migrated my applications from ExtJS, JQuery, and Riot to Vue components. If you prefer React or Angular, it should be reasonably easy to port it. If you do, please let me know, maybe we can coordinate on feature upgrades!
 
-#### Can you add "X" feature?
+#### Can you add feature "X"?
 
 Maybe. Depends if it fits the core functionality of viewing a calendar grid. I don't want to create something that replicates all possible calendar views, and definitely don't want to add functionality for creating or editing calendar items (that should be handled by the application/component hosting the view).
 
@@ -545,7 +547,7 @@ A third stylesheet, `static/css/holidays-us.css`, shows how simple it is to use 
 
 #### What styles can I _not_ override?
 
-- If you change the `cv-day-number` height, you'll need to set the `itemTop` property so first item is positioned below the day numbers.
+- If you change the `cv-day-number` height, you'll need to set the `itemTop` property so the first item is positioned below the day numbers.
 - If you change the `cv-item` height, you'll need to set the `itemContentHeight` and/or `itemBorderHeight` properties, so each item is positioned below the previous item. Every item must still have the same height.
 - The calendar bases all metrics other than borders (which are in pixels for Reasons) on `em` units, so if you find the font size is not ideal, it's better to change the calendar's parent font size and let the calendar scale accordingly than to try to manually adjust each element within the calendar. It's generally a good web design practice to limit the number of font sizes in use, which is why everything in the calendar (other than the default header label) uses the same relative font size by default (`1.0em`).
 - The `z-index` of the weeks and items are managed using `style` declarations, they ensure that items for one week don't overlap the next week.

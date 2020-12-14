@@ -17,43 +17,43 @@
 			@date-selection="setSelection"
 			@date-selection-finish="finishSelection"
 		>
-			<calendar-view-header
-				slot="header"
-				slot-scope="{ headerProps }"
-				:header-props="headerProps"
-				:previous-year-label="themeOptions.previousYearLabel"
-				:previous-period-label="themeOptions.previousPeriodLabel"
-				:next-period-label="themeOptions.nextPeriodLabel"
-				:next-year-label="themeOptions.nextYearLabel"
-				@input="setShowDate"
-			/>
+			<template #header="{ headerProps }">
+				<calendar-view-header
+					:header-props="headerProps"
+					:previous-year-label="themeOptions.previousYearLabel"
+					:previous-period-label="themeOptions.previousPeriodLabel"
+					:next-period-label="themeOptions.nextPeriodLabel"
+					:next-year-label="themeOptions.nextYearLabel"
+					@input="setShowDate"
+				/>
+			</template>
 		</calendar-view>
 	</div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue"
 import CalendarView from "./components/CalendarView.vue"
 import CalendarViewHeader from "./components/CalendarViewHeader.vue"
+import { ICalendarItem, INormalizedCalendarItem } from "./ICalendarItem"
 
-export default {
+class AppState {
+	showDate: Date = new Date()
+	selectionStart: Date | null = null
+	selectionEnd: Date | null = null
+	theme: string = "gcal"
+	items: Array<ICalendarItem> = []
+}
+
+export default defineComponent({
 	name: "CalendarDemoApp",
 	components: {
 		CalendarView,
 		CalendarViewHeader,
 	},
-	data: function () {
-		return {
-			showDate: new Date(),
-			selectionStart: null,
-			selectionEnd: null,
-			theme: "gcal",
-			items: Array(25)
-				.fill()
-				.map((_, i) => this.getRandomEvent(i)),
-		}
-	},
+	data: () => new AppState(),
 	computed: {
-		themeOptions() {
+		themeOptions(): any {
 			return this.theme == "gcal"
 				? {
 						top: "2.6em",
@@ -77,32 +77,39 @@ export default {
 				  }
 		},
 	},
+	mounted() {
+		this.items = [...Array(25)].map((_, i) => this.getRandomEvent(i))
+	},
 	methods: {
-		setShowDate(d) {
+		setShowDate(d: Date) {
 			this.showDate = d
 		},
-		setSelection(dateRange) {
+		setSelection(dateRange: Array<Date>) {
 			this.selectionEnd = dateRange[1]
 			this.selectionStart = dateRange[0]
 		},
-		finishSelection(dateRange) {
+		finishSelection(dateRange: Array<Date>) {
 			this.setSelection(dateRange)
 		},
-		getRandomEvent(index) {
+		getRandomEvent(index: number): ICalendarItem {
 			const startDay = Math.floor(Math.random() * 28 + 1)
 			const endDay = Math.floor(Math.random() * 4) + startDay
 			var d = new Date()
 			var i = {
-				id: index,
+				id: index.toString(),
 				title: "Event " + (index + 1),
-				startDate: Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), startDay),
-				endDate: Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), endDay),
+				startDate: new Date(
+					Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), startDay)
+				),
+				endDate: new Date(
+					Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), endDay)
+				),
 				classes: Math.random() > 0.9 ? ["custom-date-class-red"] : null,
 			}
 			return i
 		},
 	},
-}
+})
 </script>
 
 <style lang="scss">
@@ -115,7 +122,8 @@ div#app {
 	display: flex;
 	height: 87vh;
 	width: 87vw;
-	margin-left: 6vw;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .cv-item.custom-date-class-red {

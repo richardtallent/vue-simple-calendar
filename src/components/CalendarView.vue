@@ -3,16 +3,16 @@
 		aria-label="Calendar"
 		:class="[
 			'cv-wrapper',
-			'locale-' + languageCode(displayLocale),
+			'locale-' + CalendarMath.languageCode(displayLocale),
 			'locale-' + displayLocale,
 			'y' + periodStart.getFullYear(),
-			'm' + paddedMonth(periodStart),
+			'm' + CalendarMath.paddedMonth(periodStart),
 			'period-' + displayPeriodUom,
 			'periodCount-' + displayPeriodCount,
 			{
-				past: isPastMonth(periodStart),
-				future: isFutureMonth(periodStart),
-				noIntl: !supportsIntl,
+				past: CalendarMath.isPastMonth(periodStart),
+				future: CalendarMath.isFutureMonth(periodStart),
+				noIntl: !CalendarMath.supportsIntl,
 			},
 		]"
 	>
@@ -38,7 +38,7 @@
 				:class="[
 					'cv-week',
 					'week' + (weekIndex + 1),
-					'ws' + isoYearMonthDay(weekStart),
+					'ws' + CalendarMath.isoYearMonthDay(weekStart),
 				]"
 			>
 				<div v-if="displayWeekNumbers" class="cv-weeknumber">
@@ -52,28 +52,33 @@
 				</div>
 				<div class="cv-weekdays">
 					<div
-						v-for="(day, dayIndex) in daysOfWeek(weekStart)"
+						v-for="(day, dayIndex) in CalendarMath.daysOfWeek(weekStart)"
 						:key="getColumnDOWClass(dayIndex)"
 						:draggable="enableDateSelection"
 						:class="[
 							'cv-day',
 							getColumnDOWClass(dayIndex),
-							'd' + isoYearMonthDay(day),
-							'd' + isoMonthDay(day),
-							'd' + paddedDay(day),
-							'instance' + instanceOfMonth(day),
+							'd' + CalendarMath.isoYearMonthDay(day),
+							'd' + CalendarMath.isoMonthDay(day),
+							'd' + CalendarMath.paddedDay(day),
+							'instance' + CalendarMath.instanceOfMonth(day),
 							{
-								today: isSameDate(day, today()),
-								outsideOfMonth: !isSameMonth(day, defaultedShowDate),
-								past: isInPast(day),
-								future: isInFuture(day),
-								last: isLastDayOfMonth(day),
-								lastInstance: isLastInstanceOfMonth(day),
+								today: CalendarMath.isSameDate(day, CalendarMath.today()),
+								outsideOfMonth: !CalendarMath.isSameMonth(
+									day,
+									defaultedShowDate
+								),
+								past: CalendarMath.isInPast(day),
+								future: CalendarMath.isInFuture(day),
+								last: CalendarMath.isLastDayOfMonth(day),
+								lastInstance: CalendarMath.isLastInstanceOfMonth(day),
 								hasItems: dayHasItems(day),
-								selectionStart: isSameDate(day, selectionStart),
-								selectionEnd: isSameDate(day, selectionEnd),
+								selectionStart: CalendarMath.isSameDate(day, selectionStart),
+								selectionEnd: CalendarMath.isSameDate(day, selectionEnd),
 							},
-							...((dateClasses && dateClasses[isoYearMonthDay(day)]) || []),
+							...((dateClasses &&
+								dateClasses[CalendarMath.isoYearMonthDay(day)]) ||
+								[]),
 						]"
 						:aria-grabbed="
 							enableDateSelection ? dayIsSelected(day) : 'undefined'
@@ -128,13 +133,15 @@
 	</div>
 </template>
 
-<script>
-import CalendarMathMixin from "./CalendarMathMixin"
+<script lang="ts">
+import CalendarMath from "./CalendarMath"
+import CalendarViewState from "../CalendarViewState"
+import { defineComponent } from "vue"
+import { ICalendarItem, INormalizedCalendarItem } from "../ICalendarItem"
+import { IHeaderProps } from "../IHeaderProps"
 
-export default {
+export default defineComponent({
 	name: "CalendarView",
-
-	mixins: [CalendarMathMixin],
 
 	props: {
 		showDate: { type: Date, default: undefined },
@@ -153,7 +160,7 @@ export default {
 		selectionEnd: { type: Date, default: null },
 		enableDragDrop: { type: Boolean, default: false },
 		startingDayOfWeek: { type: Number, default: 0 },
-		items: { type: Array, default: () => [] },
+		items: { type: Array as () => Array<ICalendarItem>, default: () => [] },
 		dateClasses: { type: Object, default: () => {} },
 		itemTop: { type: String, default: "1.4em" },
 		itemContentHeight: { type: String, default: "1.4em" },
@@ -164,47 +171,58 @@ export default {
 		doEmitItemMouseEvents: { type: Boolean, default: false },
 	},
 
-	emits: ["click-date"],
+	emits: [
+		"input",
+		"period-changed",
+		"click-date",
+		"click-item",
+		"item-mouseenter",
+		"item-mouseleave",
+		"drag-start",
+		"drag-over-date",
+		"drag-enter-date",
+		"drag-leave-date",
+		"drop-on-date",
+		"date-selection",
+		"date-selection-start",
+		"date-selection-finish",
+	],
 
-	data: () => ({
-		currentDragItem: null,
-		dateSelectionOrigin: null,
-		currentHoveredItemId: undefined,
-	}),
+	data: () => new CalendarViewState(),
 
 	computed: {
 		/*
 		Props cannot default to computed/method returns, so create defaulted version of this
 		property and use it rather than the bare prop (Vue Issue #6013).
 		*/
-		displayLocale() {
-			return this.locale || this.getDefaultBrowserLocale()
+		displayLocale(): string {
+			return this.locale || CalendarMath.getDefaultBrowserLocale()
 		},
 
 		/*
 		ShowDate, but defaulted to today. Needed both for periodStart below and for the
 		"outside of month" class. Any time component passed as part of showDate is discarded.
 		*/
-		defaultedShowDate() {
-			if (this.showDate) return this.dateOnly(this.showDate)
-			return this.today()
+		defaultedShowDate(): Date {
+			if (this.showDate) return CalendarMath.dateOnly(this.showDate)
+			return CalendarMath.today()
 		},
 
 		/*
 		Given the showDate, defaulted to today, computes the beginning and end of the period
 		that the date falls within.
 		*/
-		periodStart() {
-			return this.beginningOfPeriod(
+		periodStart(): Date {
+			return CalendarMath.beginningOfPeriod(
 				this.defaultedShowDate,
 				this.displayPeriodUom,
 				this.startingDayOfWeek
 			)
 		},
 
-		periodEnd() {
-			return this.addDays(
-				this.incrementPeriod(
+		periodEnd(): Date {
+			return CalendarMath.addDays(
+				CalendarMath.incrementPeriod(
 					this.periodStart,
 					this.displayPeriodUom,
 					this.displayPeriodCount
@@ -213,16 +231,19 @@ export default {
 			)
 		},
 
-		periodStartCalendarWeek() {
-			const firstWeekStarts = this.beginningOfWeek(
-				this.beginningOfPeriod(this.periodStart, "year"),
+		periodStartCalendarWeek(): number {
+			const firstWeekStarts = CalendarMath.beginningOfWeek(
+				CalendarMath.beginningOfPeriod(this.periodStart, "year", 0),
 				this.startingDayOfWeek
 			)
-			const periodWeekStarts = this.beginningOfWeek(
+			const periodWeekStarts = CalendarMath.beginningOfWeek(
 				this.periodStart,
 				this.startingDayOfWeek
 			)
-			return 1 + Math.floor(this.dayDiff(firstWeekStarts, periodWeekStarts) / 7)
+			return (
+				1 +
+				Math.floor(CalendarMath.dayDiff(firstWeekStarts, periodWeekStarts) / 7)
+			)
 		},
 
 		/*
@@ -230,39 +251,44 @@ export default {
 		be the same as the intended period, since the period may not start and stop evenly
 		on the starting day of the week.
 		*/
-		displayFirstDate() {
-			return this.beginningOfWeek(this.periodStart, this.startingDayOfWeek)
+		displayFirstDate(): Date {
+			return CalendarMath.beginningOfWeek(
+				this.periodStart,
+				this.startingDayOfWeek
+			)
 		},
 
-		displayLastDate() {
-			return this.endOfWeek(this.periodEnd, this.startingDayOfWeek)
+		displayLastDate(): Date {
+			return CalendarMath.endOfWeek(this.periodEnd, this.startingDayOfWeek)
 		},
 
 		/*
 		Create an array of dates, where each date represents the beginning of a week that
 		should be rendered in the view for the current period.
 		*/
-		weeksOfPeriod() {
+		weeksOfPeriod(): Array<Date> {
 			// Returns an array of object representing the date of the beginning of each week
 			// included in the view.
 			const numWeeks = Math.floor(
-				(this.dayDiff(this.displayFirstDate, this.displayLastDate) + 1) / 7
+				(CalendarMath.dayDiff(this.displayFirstDate, this.displayLastDate) +
+					1) /
+					7
 			)
-			return Array(numWeeks)
-				.fill()
-				.map((_, i) => this.addDays(this.displayFirstDate, i * 7))
+			return [...Array(numWeeks)].map((_, i) =>
+				CalendarMath.addDays(this.displayFirstDate, i * 7)
+			)
 		},
 
 		// Cache the names based on current locale and format settings
-		monthNames() {
-			return this.getFormattedMonthNames(
+		monthNames(): Array<string> {
+			return CalendarMath.getFormattedMonthNames(
 				this.displayLocale,
 				this.monthNameFormat
 			)
 		},
 
-		weekdayNames() {
-			return this.getFormattedWeekdayNames(
+		weekdayNames(): Array<string> {
+			return CalendarMath.getFormattedWeekdayNames(
 				this.displayLocale,
 				this.weekdayNameFormat,
 				this.startingDayOfWeek
@@ -270,39 +296,26 @@ export default {
 		},
 
 		// Ensure all item properties have suitable default
-		fixedItems() {
+		fixedItems(): Array<INormalizedCalendarItem> {
 			const self = this
 			if (!this.items) return []
-			return this.items.map((e) =>
-				self.normalizeItem(
-					e,
-					self.currentHoveredItemId && e.id === self.currentHoveredItemId
-				)
-			)
-		},
-
-		// Creates the HTML to render the date range for the calendar header.
-		periodLabel() {
-			return this.formattedPeriod(
-				this.periodStart,
-				this.periodEnd,
-				this.displayPeriodUom,
-				this.monthNames
+			return this.items.map((item) =>
+				CalendarMath.normalizeItem(item, item.id === self.currentHoveredItemId)
 			)
 		},
 
 		// Period that today's date sits within
-		currentPeriodStart() {
-			return this.beginningOfPeriod(
-				this.today(),
+		currentPeriodStart(): Date {
+			return CalendarMath.beginningOfPeriod(
+				CalendarMath.today(),
 				this.displayPeriodUom,
 				this.startingDayOfWeek
 			)
 		},
 
-		currentPeriodEnd() {
-			return this.addDays(
-				this.incrementPeriod(
+		currentPeriodEnd(): Date {
+			return CalendarMath.addDays(
+				CalendarMath.incrementPeriod(
 					this.currentPeriodStart,
 					this.displayPeriodUom,
 					this.displayPeriodCount
@@ -311,22 +324,34 @@ export default {
 			)
 		},
 
-		currentPeriodLabelFinal() {
+		// Creates the HTML to render the date range for the calendar header.
+		periodLabel(): string {
+			return CalendarMath.formattedPeriod(
+				this.periodStart,
+				this.periodEnd,
+				this.displayPeriodUom,
+				this.monthNames
+			)
+		},
+
+		currentPeriodLabelFinal(): string {
 			const c = this.currentPeriodStart
 			const s = this.periodStart
 			if (!this.currentPeriodLabel)
-				return this.formattedPeriod(
+				return CalendarMath.formattedPeriod(
 					c,
 					this.currentPeriodEnd,
 					this.displayPeriodUom,
 					this.monthNames
 				)
 			if (this.currentPeriodLabel === "icons")
-				return this.currentPeriodLabelIcons[Math.sign(c - s) + 1]
+				return this.currentPeriodLabelIcons[
+					Math.sign(c.getTime() - s.getTime()) + 1
+				]
 			return this.currentPeriodLabel
 		},
 
-		headerProps() {
+		headerProps(): IHeaderProps {
 			return {
 				// Dates for UI navigation
 				previousYear: this.getIncrementedPeriod(-12),
@@ -377,9 +402,9 @@ export default {
 		// UI Events
 		// ******************************
 
-		onClickDay(day, windowEvent) {
-			if (this.disablePast && this.isInPast(day)) return
-			if (this.disableFuture && this.isInFuture(day)) return
+		onClickDay(day: Date, windowEvent: Event): void {
+			if (this.disablePast && CalendarMath.isInPast(day)) return
+			if (this.disableFuture && CalendarMath.isInFuture(day)) return
 			this.$emit(
 				"click-date",
 				day,
@@ -388,7 +413,7 @@ export default {
 			)
 		},
 
-		onClickItem(calendarItem, windowEvent) {
+		onClickItem(calendarItem: ICalendarItem, windowEvent: Event): void {
 			this.$emit("click-item", calendarItem, windowEvent)
 		},
 
@@ -397,7 +422,7 @@ export default {
 		not change based on startingDayOfWeek (i.e., Sunday is always 0). This function
 		computes the dow for a given day index.
 		*/
-		getColumnDOWClass(dayIndex) {
+		getColumnDOWClass(dayIndex: number): string {
 			return "dow" + ((dayIndex + this.startingDayOfWeek) % 7)
 		},
 
@@ -410,19 +435,19 @@ export default {
 		number of the current display units. Returns null if said move would result in a
 		disallowed display period.
 		*/
-		getIncrementedPeriod(count) {
-			const newStartDate = this.incrementPeriod(
+		getIncrementedPeriod(count: number): Date | null {
+			const newStartDate = CalendarMath.incrementPeriod(
 				this.periodStart,
 				this.displayPeriodUom,
 				count
 			)
-			const newEndDate = this.incrementPeriod(
+			const newEndDate = CalendarMath.incrementPeriod(
 				newStartDate,
 				this.displayPeriodUom,
 				this.displayPeriodCount
 			)
-			if (this.disablePast && newEndDate <= this.today()) return null
-			if (this.disableFuture && newStartDate > this.today()) return null
+			if (this.disablePast && newEndDate <= CalendarMath.today()) return null
+			if (this.disableFuture && newStartDate > CalendarMath.today()) return null
 			return newStartDate
 		},
 
@@ -430,15 +455,15 @@ export default {
 		// Hover items (#95, #136)
 		// ******************************
 
-		onMouseEnterItem(calendarItem, windowEvent) {
+		onMouseEnterItem(calendarItem: ICalendarItem, windowEvent: Event): void {
 			this.currentHoveredItemId = calendarItem.id
 			if (this.doEmitItemMouseEvents) {
 				this.$emit("item-mouseenter", calendarItem, windowEvent)
 			}
 		},
 
-		onMouseLeaveItem(calendarItem, windowEvent) {
-			this.currentHoveredItemId = undefined
+		onMouseLeaveItem(calendarItem: ICalendarItem, windowEvent: Event): void {
+			this.currentHoveredItemId = ""
 			if (this.doEmitItemMouseEvents) {
 				this.$emit("item-mouseleave", calendarItem, windowEvent)
 			}
@@ -448,15 +473,15 @@ export default {
 		// Dragging across days (selection)
 		// ******************************
 
-		onDragDateStart(day, windowEvent) {
+		onDragDateStart(day: Date, windowEvent: DragEvent): boolean {
 			if (!this.enableDateSelection) return false
 			// Push the date where the selection started into dataTransfer. This is not used by this component, but
 			// a value required in Firefox and possibly other browsers.
-			windowEvent.dataTransfer.setData("text", day.toString())
+			windowEvent.dataTransfer?.setData("text", day.toString())
 			let img = new Image()
 			img.src =
 				"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
-			windowEvent.dataTransfer.setDragImage(img, 10, 10)
+			windowEvent.dataTransfer?.setDragImage(img, 10, 10)
 			this.dateSelectionOrigin = day
 			this.emitDateSelection("date-selection-start", day, windowEvent)
 			return true
@@ -466,12 +491,15 @@ export default {
 		// Drag and drop items
 		// ******************************
 
-		onDragItemStart(calendarItem, windowEvent) {
+		onDragItemStart(
+			calendarItem: INormalizedCalendarItem,
+			windowEvent: DragEvent
+		): boolean {
 			if (!this.enableDragDrop) return false
 			// Firefox and possibly other browsers require dataTransfer to be set, even if the value is not used. IE11
 			// requires that the first argument be exactly "text" (not "text/plain", etc.). The calendar item's ID is
 			// passed, allowing calling applications to receive items dragged outside the component.
-			windowEvent.dataTransfer.setData("text", calendarItem.id.toString())
+			windowEvent.dataTransfer?.setData("text", calendarItem.id)
 			// However, we don't use dataTransfer within the component. Instead, we just keep a handled on the item
 			// currently being dragged. This avoids having to look it up later.
 			this.currentDragItem = calendarItem
@@ -482,7 +510,15 @@ export default {
 			return true
 		},
 
-		handleDragEvent(bubbleEventName, bubbleParam, windowEvent) {
+		handleDragEvent(
+			bubbleEventName:
+				| "drag-over-date"
+				| "drag-enter-date"
+				| "drag-leave-date"
+				| "drop-on-date",
+			bubbleParam: any,
+			windowEvent: Event
+		): boolean {
 			if (!this.enableDragDrop) return false
 			// If the user drags an item FROM this calendar TO this calendar, currentDragItem will be initialized to the
 			// most recent item with a dragStart event. If not, we still emit the event, and the caller will need to
@@ -498,38 +534,49 @@ export default {
 			return true
 		},
 
-		onDragOver(day, windowEvent) {
+		onDragOver(day: Date, windowEvent: Event): void {
 			this.handleDragEvent("drag-over-date", day, windowEvent)
 		},
 
-		onDragEnter(day, windowEvent) {
+		onDragEnter(day: Date, windowEvent: Event) {
 			if (this.enableDateSelection && this.dateSelectionOrigin) {
 				// User is selecting dates, not items.
 				this.emitDateSelection("date-selection", day, windowEvent)
 				return
 			}
 			if (!this.handleDragEvent("drag-enter-date", day, windowEvent)) return
-			windowEvent.target.classList.add("draghover")
+			const el = windowEvent.target as HTMLElement
+			el.classList.add("draghover")
 		},
 
-		onDragLeave(day, windowEvent) {
+		onDragLeave(day: Date, windowEvent: Event): void {
 			// User is selecting dates, not items. No emit.
-			if (this.enableDateSelection && this.currentSelectionStartDate) return
+			if (this.enableDateSelection && this.selectionStart) return
 			if (!this.handleDragEvent("drag-leave-date", day, windowEvent)) return
-			windowEvent.target.classList.remove("draghover")
+			const el = windowEvent.target as HTMLElement
+			el.classList.remove("draghover")
 		},
 
-		onDrop(day, windowEvent) {
+		onDrop(day: Date, windowEvent: Event): void {
 			if (this.enableDateSelection && this.dateSelectionOrigin) {
 				// User is selecting dates, not items.
 				this.emitDateSelection("date-selection-finish", day, windowEvent)
 				return
 			}
 			if (!this.handleDragEvent("drop-on-date", day, windowEvent)) return
-			windowEvent.target.classList.remove("draghover")
+			const el = windowEvent.target as HTMLElement
+			el.classList.remove("draghover")
 		},
 
-		emitDateSelection(eventName, toDate, windowEvent) {
+		emitDateSelection(
+			eventName:
+				| "date-selection"
+				| "date-selection-start"
+				| "date-selection-finish",
+			toDate: Date,
+			windowEvent: Event
+		): void {
+			if (!this.dateSelectionOrigin) return
 			this.$emit(
 				eventName,
 				toDate <= this.dateSelectionOrigin
@@ -542,7 +589,7 @@ export default {
 		// Calendar Items
 		// ******************************
 
-		itemComparer(a, b) {
+		itemComparer(a: INormalizedCalendarItem, b: INormalizedCalendarItem) {
 			if (a.startDate < b.startDate) return -1
 			if (b.startDate < a.startDate) return 1
 			if (a.endDate > b.endDate) return -1
@@ -550,45 +597,49 @@ export default {
 			return a.id < b.id ? -1 : 1
 		},
 
-		findAndSortItemsInWeek(weekStart) {
+		findAndSortItemsInWeek(weekStart: Date): Array<INormalizedCalendarItem> {
 			// Return a list of items that INCLUDE any portion of a given week.
 			return this.findAndSortItemsInDateRange(
 				weekStart,
-				this.addDays(weekStart, 6)
+				CalendarMath.addDays(weekStart, 6)
 			)
 		},
 
-		findAndSortItemsInDateRange(startDate, endDate) {
+		findAndSortItemsInDateRange(
+			startDate: Date,
+			endDate: Date
+		): Array<INormalizedCalendarItem> {
 			// Return a list of items that INCLUDE any day within the date range,
 			// inclusive, sorted so items that start earlier are returned first.
 			return this.fixedItems
 				.filter(
 					(item) =>
 						item.endDate >= startDate &&
-						this.dateOnly(item.startDate) <= endDate,
+						CalendarMath.dateOnly(item.startDate) <= endDate,
 					this
 				)
 				.sort(this.itemComparer)
 		},
 
-		dayHasItems(day) {
-			return this.fixedItems.find(
-				(d) => d.endDate >= day && this.dateOnly(d.startDate) <= day
+		dayHasItems(day: Date): boolean {
+			return !!this.fixedItems.find(
+				(d) => d.endDate >= day && CalendarMath.dateOnly(d.startDate) <= day
 			)
 		},
 
-		dayIsSelected(day) {
-			if (!this.selectionStart || day < this.selectionStart) return false
-			if (!this.selectionEnd || day > this.selectionEnd) return false
+		dayIsSelected(day: Date): boolean {
+			if (!this.selectionStart || !this.selectionEnd) return false
+			if (day < CalendarMath.dateOnly(this.selectionStart)) return false
+			if (day > CalendarMath.dateOnly(this.selectionEnd)) return false
 			return true
 		},
 
-		getWeekItems(weekStart) {
+		getWeekItems(weekStart: Date): Array<ICalendarItem> {
 			// Return a list of items that CONTAIN the week starting on a day.
 			// Sorted so the items that start earlier are always shown first.
 			const items = this.findAndSortItemsInWeek(weekStart)
 			const results = []
-			const itemRows = [[], [], [], [], [], [], []]
+			const itemRows: Array<Array<boolean>> = [[], [], [], [], [], [], []]
 			for (let i = 0; i < items.length; i++) {
 				const ep = Object.assign({}, items[i], {
 					classes: [...items[i].classes],
@@ -597,15 +648,18 @@ export default {
 				const continued = ep.startDate < weekStart
 				const startOffset = continued
 					? 0
-					: this.dayDiff(weekStart, ep.startDate)
+					: CalendarMath.dayDiff(weekStart, ep.startDate)
 				const span = Math.min(
 					7 - startOffset,
-					this.dayDiff(this.addDays(weekStart, startOffset), ep.endDate) + 1
+					CalendarMath.dayDiff(
+						CalendarMath.addDays(weekStart, startOffset),
+						ep.endDate
+					) + 1
 				)
 				if (continued) ep.classes.push("continued")
-				if (this.dayDiff(weekStart, ep.endDate) > 6)
+				if (CalendarMath.dayDiff(weekStart, ep.endDate) > 6)
 					ep.classes.push("toBeContinued")
-				if (this.isInPast(ep.endDate)) ep.classes.push("past")
+				if (CalendarMath.isInPast(ep.endDate)) ep.classes.push("past")
 				if (ep.originalItem.url) ep.classes.push("hasUrl")
 				for (let d = 0; d < 7; d++) {
 					if (d === startOffset) {
@@ -625,45 +679,45 @@ export default {
 		},
 
 		/*
-		Creates the HTML to prefix the item title showing the item's start and/or
+		Creates the HTML to prefix the item title showing the items start and/or
 		end time. Midnight is not displayed.
 		*/
-		getFormattedTimeRange(e) {
-			const startTime = this.formattedTime(
-				e.startDate,
-				this.displayLocale,
-				this.timeFormatOptions
-			)
-			let endTime = ""
-			if (!this.isSameDateTime(e.startDate, e.endDate)) {
-				endTime = this.formattedTime(
-					e.endDate,
+		getFormattedTimeRange(item: INormalizedCalendarItem): string {
+			const startTime =
+				'<span class="startTime">' +
+				CalendarMath.formattedTime(
+					item.startDate,
 					this.displayLocale,
 					this.timeFormatOptions
-				)
+				) +
+				"</span>"
+			let endTime = ""
+			if (!CalendarMath.isSameDateTime(item.startDate, item.endDate)) {
+				endTime =
+					//'<span class="endTime">' +
+					CalendarMath.formattedTime(
+						item.endDate,
+						this.displayLocale,
+						this.timeFormatOptions
+					) + "</span>"
 			}
-			return (
-				(startTime !== ""
-					? `<span class="startTime">${startTime}</span>`
-					: "") +
-				(endTime !== "" ? `<span class="endTime">${endTime}</span>` : "")
-			)
+			return startTime + endTime
 		},
 
-		getItemTitle(e) {
-			if (!this.showTimes) return e.title
-			return this.getFormattedTimeRange(e) + " " + e.title
+		getItemTitle(item: INormalizedCalendarItem): string {
+			if (!this.showTimes) return item.title
+			return this.getFormattedTimeRange(item) + " " + item.title
 		},
 
-		getItemTop(e) {
+		getItemTop(item: INormalizedCalendarItem): string {
 			// Compute the top position of the item based on its assigned row within the given week.
-			const r = e.itemRow
+			const r = item.itemRow
 			const h = this.itemContentHeight
 			const b = this.itemBorderHeight
 			return `calc(${this.itemTop} + ${r}*${h} + ${r}*${b})`
 		},
 	},
-}
+})
 </script>
 <!--
 

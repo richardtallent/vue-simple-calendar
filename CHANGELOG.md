@@ -10,14 +10,21 @@
 I originally intended for this to be part of v5.0, but it was holding things up, so I've deferred the full implementation for the future. There is a CSS file and some options in `App.vue` of this repo to serve as a starting point. Here's a short to-do list for creating a reasonable facsimile:
 
 - Option for short month label in day number for 1st of each month
-- span-1 events with start time should have color dot and no background color
-- Events that cross the displayPeriod boundary should have pointed edge
-- Create sample app with all of the appropriate fonts, overrides, etc. and events using GCal palette
+- `span-1` events with start time should have a color dot and should not have a `background-color`
+- Events that cross the `displayPeriod` boundary should have a pointed edge
+- Create a sample app with all of the appropriate fonts, overrides, etc. and events using the Google Calendar palette
 - If possible, drag event selecting dates should create pseudo-event using CSS before/after content rather than highlighting the entire date block. Probably not possible but may be able to approximate.
 - CSS swipe transition between periods
 - Header button tooltips
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
+
+## 6.0.0 (IN DEVELOPMENT, the live version in the GitHub `main` branch)
+
+- I've lost the ability (and will) to test for IE11 anymore, so it is no longer targets.
+- Upgraded to Vue 3. This shouldn't cause an issue for people using it with Vue 2.
+- Migrated to TypeScript. Needed an excuse to learn it.
+- `CalendarMathMixin` is now `CalendarMath`, a normal class
 
 ## 5.0.0 (2020-09-04)
 
@@ -67,7 +74,7 @@ Any reference to a "thing that is scheduled on the calendar" is now called an "i
 - The `click-date` and `click-event` events are emitted with the DOM click event as the second argument
 - Added the `doEmitItemMouseEvents` option to emit `item-mouseover` and `item-mouseout` events when the mouse hovers over a calendar item (#136)
 - Began renaming calendar "events" to calendar "items" in documentation and code where possible without breaking compatibility. Using the term "event" is confusing when the component also deals with a number of _DOM_ events. In version 5.0, there will be some breaking changes around this, but it'll just be renaming some props, slots, etc.
-- Updated to Vue CLI 4, updated all dependencies. Still stuck on ESLint 5 since cli-plugin-eslint isn't caught up yet.
+- Updated to Vue CLI 4, updated all dependencies. Still stuck on ESLint 5 since `cli-plugin-eslint` isn't caught up yet.
 
 ## 4.2.2 (2019-05-01)
 
@@ -96,13 +103,13 @@ Any reference to a "thing that is scheduled on the calendar" is now called an "i
 ## 4.1.0 (2018-10-05)
 
 - Fix where dowX class improperly assigned when startingDayOfWeek != 0 (#93)
-- Add pseudo-hover class (isHovered) to all event elements in view whose id matches the event being hovered (#95)
+- Add pseudo-hover class (`isHovered`) to all event elements in the view whose id matches the event being hovered (#95)
 - Renamed prop `onPeriodChange` to `periodChangedCallback` to resolve issue for JSX users (#94) **BREAKING CHANGE**
-- Hopefully where initial call of periodChangedCallback was not firing for all users, or was firing duplicates (could not reproduce, #94, #98)
+- Hopefully fix where the initial call of `periodChangedCallback` was not firing for all users, or was firing duplicates (could not reproduce, #94, #98)
 
 ## 4.0.1, 4.0.2 (2018-08-25)
 
-- Fix main setting
+- Fix the "main" setting
 - Fix exports
 
 ## 4.0.0 (2018-08-25)
@@ -171,10 +178,10 @@ In short, the curly braces are important.
 ### Bug fixes and non-breaking changes
 
 - Added `style` property to events to allow pass-through of arbitrary CSS attributes (thanks @apalethorpe!)
-- Added optional behavior to wrap to show entire event title on hover (thanks @jiujiuwen!)
+- Added optional behavior to show the entire event title (wrapped) on hover (thanks @jiujiuwen!)
 - Fixed where if the passed showDate value has a time component, events on the first of the week on a one-week calendar are not shown. #80 (thanks @MrSnoozles!)
 - Added `previousFullPeriod`/`nextFullPeriod` to `headerProps` to provide more flexibility to how the previous/next buttons operats. #79 (thanks @lochstar!)
-- Added `label` to `headerProps`, as part of the move to get rid of th default header and require use of the header slot.
+- Added `label` to `headerProps`, as part of the move to get rid of the default header and require a header slot.
 
 ## 3.0.2 (2018-05-16)
 
@@ -194,12 +201,12 @@ In short, the curly braces are important.
 - Removed need for eventRowX class. Top position CSS is now computed dynamically based on the row and passed to the event slot as "top".
 - Removed limitation of 20 event rows per week
 - Default header buttons no longer use CSS content for their labels
-- The `dayContent` slot now does **not** contain the `cv-date-number` div, making it easier to provide your own content without having to duplicate the day number.
-- The `content` element within each day has been removed, as it is no longer needed. The default theme now uses box-shadow rather than border to highlight the date when dragging an event.
+- The `dayContent` slot now does **not** contain the `cv-date-number` div. This makes it easier to provide your own content without having to duplicate the day number.
+- The `content` element within each day has been removed, as it is no longer needed. The default theme now uses `box-shadow` instead of `border` to highlight the date when dragging an event.
 - Fixed drag and drop issue in Firefox (#57)
 - Implemented new custom header capability, and refactored the default header as a separate component with the same interface
 - Upgraded to webpack 4.7
-- Refactored periodLabel from CSS logic into a reusable function
+- Refactored `periodLabel` from CSS logic into a reusable function
 - Transpilation to ES5 appears to be functioning properly
 - Activating the default theme now requires a class ("theme-default") (#45)
 - Fixed and tested polyfill in the same application in IE11
@@ -236,7 +243,7 @@ In short, the curly braces are important.
 
 ## 2.1.2 / 2.1.3 (2018.01.27)
 
-- Prevent click-date events for future dates when disableFuture is true (feature parity with disablePast). Fixes #40.
+- Prevent `click-date` events for future dates when `disableFuture` is `true` (feature parity with disablePast). Fixes #40.
 
 ## 2.1.0 / 2.1.1 (2018.01.25)
 
@@ -274,7 +281,7 @@ This means there are some breaking changes:
 - The component is now called **calendar-view** rather than **calendar-month**, to better reflect the flexibility of the period shown. (The package is still `vue-simple-calendar`.)
 - Because of the above, the CSS class of the root element has also changed to **calendar-view**.
 - The CSS class of the element containing the body of the view has changed from **month** to **weeks**, since periods other than a single month can be shown.
-- If you pass dates as strings, they MUST be in ISO form ("yyyy-mm-dd hh:mm:ss"). The time portion is optional, and within time, the minutes and seconds are also optional.
+- If you pass dates as strings, they MUST be in ISO form (`yyyy-mm-dd hh:mm:ss`). The time portion is optional, and within time, the minutes and seconds are also optional.
 - The header has been refactored to take better advantage of flexbox, increase the header text size, and group the buttons. This should make it easier to customize, but if you have a custom theme, it may need some updates.
 - If the calendar is too short to view the entire period, the calendar body is scrollable (scroll bars are hidden, use touch or scroll wheel).
 - If an individual week is too short to view all events in the week, the week's events are scrollable (scroll bars are hidden, use touch or scroll wheel).
