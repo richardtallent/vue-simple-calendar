@@ -47,7 +47,7 @@
 						:date="weekStart"
 						:numberInYear="periodStartCalendarWeek + weekIndex"
 						:numberInPeriod="weekIndex + 1"
-						><span>{{ periodStartCalendarWeek + weekIndex }}</span></slot
+					><span>{{ periodStartCalendarWeek + weekIndex }}</span></slot
 					>
 				</div>
 				<div class="cv-weekdays">
@@ -89,8 +89,8 @@
 							enableDragDrop && currentDragItem
 								? 'move'
 								: enableDateSelection && dateSelectionOrigin
-								? 'execute'
-								: 'none'
+									? 'execute'
+									: 'none'
 						"
 						@click="onClickDay(day, $event)"
 						@dragstart="onDragDateStart(day, $event)"

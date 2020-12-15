@@ -1,4 +1,4 @@
-import { ICalendarItem } from './ICalendarItem';
+import { ICalendarItem } from "./ICalendarItem";
 
 interface IHeaderProps {
 	periodStart: Date
