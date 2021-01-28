@@ -2,11 +2,11 @@
 
 **vue-simple-calendar** is a flexible, themeable, lightweight calendar component for Vue that supports multi-day scheduled items.
 
-**This branch is for version 6, not yet released. This new version will drop IE11 support, be migrated to Vue 3, and will add TypeScript support. Version 5 is available via npm.**
+**This branch is for version 6, not yet released. This new version will drop IE11 support, be migrated to Vue 3 and Vite, and will add TypeScript support. Version 5 is available via npm.**
 
 ## Demo
 
-Here's a live demo page, and the repo for it:
+Here is a live demo page and the repo for it:
 https://www.tallent.us/vue-simple-calendar/
 https://github.com/richardtallent/vue-simple-calendar-sample
 
@@ -36,7 +36,7 @@ https://github.com/richardtallent/vue-simple-calendar-sample
 
 ## Features
 
-There are other great calendar components out there, but most are either intended to be used as date pickers, or had way too many features for me. I wanted something that would simply show a month as a grid, and show scheduled activities (including multi-day items) on that grid. While the component goes beyond that simple use case, that is still the core focus.
+There are other great calendar components out there, but most are either intended to be used as date pickers or had way too many features for me. I wanted something that would simply show a month as a grid and show scheduled activities (including multi-day items) on that grid. While the component goes beyond that simple use case, that is still the core focus.
 
 - Shows a traditional month-grid calendar. Also supports weeks, years, or _multiple_ weeks, months, or years.
 - Can show scheduled "items," including multi-day items, with an optional time of day.
@@ -53,7 +53,7 @@ There are other great calendar components out there, but most are either intende
 - Easy to customize using Vue slots
 - Date range selection (programmatic or via user drag-select)
 
-What this component _doesn't_ try to do:
+What this component _does not_ try to do:
 
 - There will be no "agenda" view (time-of-day grid). Adding this view would require too much additional complexity.
 - There is no interface for managing calendar items. This is far too use-specific.
@@ -63,15 +63,9 @@ What this component _doesn't_ try to do:
 
 ## Browser compatibility
 
-The _intent_ is to maintain compatibility with Chrome, Firefox, IE11, Edge, OS X Safari, iOS Safari, and the Android Silk browser. Note that this component is designed first for desktop web applications, not mobile, so while the component may _operate_ on a mobile device, the limited resolution may not allow for much in the way of useful functionality.
+As of version 6, compatibility is limited to relatively modern browsers (_i.e._, not IE11). Please note that this component is designed first for desktop web applications, not mobile, so while the component may _operate_ on a mobile device, the limited resolution may not allow for much in the way of useful functionality. Also, drag and drop only works on desktop browsers -- the drag events on touch devices are very different, I haven't had time to dig into them yet.
 
-The ES6 language features used in this component are converted to ES5 by Babel using webpack. However, if you're targeting IE11 or another ancient browser, you'll need to import `babel-polyfill` in your webpack entry file so it sets up the additional functions not supported by your browser. These polyfills can't be included in a project more than once, which is why they are not used in the compilation step for this component prior to being published on npm. If you aren't using webpack, you'll need to include the polyfill using a `<script>` tag. The details of using these polyfills is outside the scope of this documentation.
-
-Drag and drop only works on desktop browsers -- the drag events on touch devices are very different, I haven't had time to dig into them yet.
-
-### Browsers and Localization
-
-Note that `Intl` is not supported for _very_ old browsers. For these browsers, the month names and weekday names will be blank and the calendar will have a `nointl` class. Use CSS `content` to provide the appropriate month and weekday names for the languages you support. For example:
+If your browser doesn't support `Intl`, the month names and weekday names will be blank and the calendar will have a `nointl` class. Use CSS `content` to provide the appropriate month and weekday names for the languages you support. For example:
 
 ```CSS
 .calendar.nointl.locale-en.m01 .monthName::after { content: 'January'; }
@@ -87,12 +81,12 @@ Install the component using npm:
 npm i --save vue-simple-calendar
 ```
 
-In your application, you'll need to:
+In your application, you will need to:
 
 - import the component and register it with Vue
 - import the default theme or any other theme you want to use (CSS)
-- create the `calendar-view`
-- create the `calendar-view-header` element as a child of the `calendar-view`, if you want a header for the calendar
+- create the `calendar-view` component
+- create the `calendar-view-header` component as a child of the `calendar-view` if you want a header for the calendar
 - wire up the properties and events
 
 Tips:
@@ -213,7 +207,7 @@ Tips for Vue component properties:
 Each item shown on the calendar can have the following properties. `id` and `startDate` are required, and `title` is strongly recommended.
 
 - `id` - A unique identifier for the item. This is required and must be unique.
-- `startDate` - The date the item starts on the calendar. This must be either passed as a JavaScript date object, or as a string following an ISO-like form of "yyyy-mm-dd HH:MM:SS" (time is optional, and within time, minutes and seconds are both optional).
+- `startDate` - The date the item starts on the calendar. This must be either passed as a JavaScript date object or as a string following an ISO-like form of "yyyy-mm-dd HH:MM:SS" (time is optional, and within time, minutes and seconds are both optional).
 - `endDate` - The date the item ends on the calendar. Defaults to the same date as `startDate`. This must be either passed as a JavaScript date object, or as a string following an ISO-like form of `yyyy-mm-dd HH:MM:SS` (time is optional, and within time, minutes and seconds are both optional).
 - `title` - The name of the item shown on the calendar. Defaults to "Untitled".
 - `url` - The URL associated with the item. The component has no built-in action associated with this, but it does add a "hasUrl" class to the item. To "follow" the URL, you'll need to listen for the `click-item` event and take the appropriate action.

@@ -7,6 +7,7 @@
 			:selection-start="selectionStart"
 			:selection-end="selectionEnd"
 			:display-week-numbers="false"
+			:enable-drag-drop="true"
 			:item-top="themeOptions.top"
 			:item-content-height="themeOptions.height"
 			:item-border-height="themeOptions.border"
@@ -16,6 +17,7 @@
 			@date-selection-start="setSelection"
 			@date-selection="setSelection"
 			@date-selection-finish="finishSelection"
+			@drop-on-date="onDrop"
 		>
 			<template #header="{ headerProps }">
 				<calendar-view-header
@@ -36,6 +38,7 @@ import { defineComponent } from "vue"
 import CalendarView from "./components/CalendarView.vue"
 import CalendarViewHeader from "./components/CalendarViewHeader.vue"
 import { ICalendarItem, INormalizedCalendarItem } from "./ICalendarItem"
+import CalendarMath from "./components/CalendarMath"
 
 class AppState {
 	showDate: Date = new Date()
@@ -98,15 +101,18 @@ export default defineComponent({
 			var i = {
 				id: index.toString(),
 				title: "Event " + (index + 1),
-				startDate: new Date(
-					Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), startDay)
-				),
-				endDate: new Date(
-					Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), endDay)
-				),
+				startDate: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), startDay)),
+				endDate: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), endDay)),
 				classes: Math.random() > 0.9 ? ["custom-date-class-red"] : null,
 			}
 			return i
+		},
+		onDrop(item: INormalizedCalendarItem, date: Date) {
+			// Determine the delta between the old start date and the date chosen,
+			// and apply that delta to both the start and end date to move the item.
+			const eLength = CalendarMath.dayDiff(item.startDate, date)
+			item.originalItem.startDate = CalendarMath.addDays(item.startDate, eLength)
+			item.originalItem.endDate = CalendarMath.addDays(item.endDate, eLength)
 		},
 	},
 })
@@ -114,7 +120,8 @@ export default defineComponent({
 
 <style>
 @import "../static/css/gcal.css";
-/*@import "../static/css/default.css";*/
+
+/* @import "../static/css/default.css"; */
 @import "../static/css/holidays-us.css";
 
 div#app {
@@ -127,6 +134,6 @@ div#app {
 }
 
 .cv-item.custom-date-class-red {
-	background-color: #ff6666;
+	background-color: #f66;
 }
 </style>

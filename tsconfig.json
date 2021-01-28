@@ -1,38 +1,21 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "strict": true,
-    "jsx": "preserve",
-    "importHelpers": true,
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "types": [
-      "webpack-env"
-    ],
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ]
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"moduleResolution": "node",
+		"strict": true,
+		"sourceMap": true,
+		"lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+		"types": ["vite/client"],
+		"importHelpers": true,
+		"esModuleInterop": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		},
+		"noUnusedLocals": true,
+		"noUnusedParameters": true
+	},
+	"include": ["src/**/*.ts", "src/**/*.vue"],
+	"exclude": ["node_modules", "dist"]
 }
