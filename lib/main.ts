@@ -1,6 +1,6 @@
-import CalendarView from "./CalendarView.vue"
-import CalendarViewHeader from "./CalendarViewHeader.vue"
-import CalendarMath from "./CalendarMath.ts"
+import CalendarView from "../src/CalendarView.vue"
+import CalendarViewHeader from "../src/CalendarViewHeader.vue"
+import CalendarMath from "../src/CalendarMath"
 
 // Export the compiled Vue components, and also the mixin for those who wish to use
 // those methods in their own custom headers, etc.

@@ -63,6 +63,11 @@ Traditional US Holidays
 	content: "\1F383";
 }
 
+/* St. Valentine's Day - February 14 */
+.cv-wrapper.holiday-us-traditional .d02-14 .cv-day-number::before {
+	content: "\1F498";
+}
+
 /*
 ****************************************************
 Official US Holidays
@@ -104,9 +109,7 @@ Official US Holidays
 }
 
 /* Memorial Day - last Monday in May */
-.cv-wrapper.holiday-us-official.m05
-	.day.dow1.lastInstance
-	.cv-day-number::before {
+.cv-wrapper.holiday-us-official.m05 .day.dow1.lastInstance .cv-day-number::before {
 	content: "\1F1FA\1F1F8";
 }
 

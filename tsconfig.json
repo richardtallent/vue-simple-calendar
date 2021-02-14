@@ -16,6 +16,6 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true
 	},
-	"include": ["src/**/*.ts", "src/**/*.vue"],
+	"include": ["src/**/*.ts", "src/**/*.vue", "vue-shim.d.ts"],
 	"exclude": ["node_modules", "dist"]
 }

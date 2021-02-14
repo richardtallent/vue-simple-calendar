@@ -1,9 +1,10 @@
+# Changelog
+
 ## Future?
 
 - Mobile-compatible drag and drop (#21)
 - Handles to drag events to make them longer or shorter
 - Add month name to the 1st of the month when viewing multiple months (probably using classes to hide/show)
-- Change from mixin to plain old imported functions.
 
 ## Future: Full GCal theme
 
@@ -24,7 +25,9 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - I've lost the ability (and will) to test for IE11 anymore, so it is no longer targets.
 - Upgraded to Vue 3. This shouldn't cause an issue for people using it with Vue 2.
 - Migrated to TypeScript. Needed an excuse to learn it.
+- Now using Vite instead of vue-cli for the development and built process.
 - `CalendarMathMixin` is now `CalendarMath`, a normal class
+- Added St. Valentine's Day to the US Traditional Holiday theme
 
 ## 5.0.0 (2020-09-04)
 
@@ -128,7 +131,10 @@ Here's a minimal example:
 
 ```HTML
 <calendar-view :show-date="dt">
-	<calendar-view-header slot="header" slot-scope="{ headerProps }" :header-props="headerProps" @input="setShowDate" />
+	<calendar-view-header
+		#header="{ headerProps }"
+		:header-props="headerProps"
+		@input="setShowDate" />
 </calendar-view>
 ```
 
@@ -150,8 +156,6 @@ export default {
 	[...]
 }
 ```
-
-The example above uses ES6 concepts and webpack's `import` statement, so some adjustments are needed if you're instantiating this component in a file that isn't compiled via webpack and babel.
 
 #### The show-date-change event no longer exists
 

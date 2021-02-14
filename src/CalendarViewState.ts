@@ -1,5 +1,5 @@
 import { INormalizedCalendarItem } from "./ICalendarItem"
-import CalendarMath from "./components/CalendarMath"
+import CalendarMath from "./CalendarMath"
 
 class CalendarViewState {
 	currentDragItem: INormalizedCalendarItem | null = null

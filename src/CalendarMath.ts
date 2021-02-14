@@ -1,4 +1,4 @@
-import { ICalendarItem, INormalizedCalendarItem } from "../ICalendarItem"
+import { ICalendarItem, INormalizedCalendarItem } from "./ICalendarItem"
 
 /*
 ***********************************************************

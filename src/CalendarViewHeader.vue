@@ -1,12 +1,7 @@
 <template>
 	<div class="cv-header">
 		<div class="cv-header-nav">
-			<button
-				:disabled="!headerProps.previousYear"
-				class="previousYear"
-				aria-label="Previous Year"
-				@click.prevent="onInput(headerProps.previousYear)"
-			>
+			<button :disabled="!headerProps.previousYear" class="previousYear" aria-label="Previous Year" @click.prevent="onInput(headerProps.previousYear)">
 				{{ previousYearLabel }}
 			</button>
 			<button
@@ -16,27 +11,13 @@
 				@click.prevent="onInput(headerProps.previousPeriod)"
 				v-html="previousPeriodLabel"
 			/>
-			<button
-				class="currentPeriod"
-				aria-label="Current Period"
-				@click.prevent="onInput(headerProps.currentPeriod)"
-			>
+			<button class="currentPeriod" aria-label="Current Period" @click.prevent="onInput(headerProps.currentPeriod)">
 				{{ headerProps.currentPeriodLabel }}
 			</button>
-			<button
-				:disabled="!headerProps.nextPeriod"
-				class="nextPeriod"
-				aria-label="Next Period"
-				@click.prevent="onInput(headerProps.nextPeriod)"
-			>
+			<button :disabled="!headerProps.nextPeriod" class="nextPeriod" aria-label="Next Period" @click.prevent="onInput(headerProps.nextPeriod)">
 				{{ nextPeriodLabel }}
 			</button>
-			<button
-				:disabled="!headerProps.nextYear"
-				class="nextYear"
-				aria-label="Next Year"
-				@click.prevent="onInput(headerProps.nextYear)"
-			>
+			<button :disabled="!headerProps.nextYear" class="nextYear" aria-label="Next Year" @click.prevent="onInput(headerProps.nextYear)">
 				{{ nextYearLabel }}
 			</button>
 		</div>
@@ -47,7 +28,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue"
-import { IHeaderProps } from "../IHeaderProps"
+import { IHeaderProps } from "./IHeaderProps"
 
 export default defineComponent({
 	name: "CalendarViewHeader",

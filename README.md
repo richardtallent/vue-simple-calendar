@@ -1,3 +1,5 @@
+# VueSimpleCalendar
+
 ## Introduction
 
 **vue-simple-calendar** is a flexible, themeable, lightweight calendar component for Vue that supports multi-day scheduled items.
@@ -110,20 +112,20 @@ Here's a minimal application example for an empty calendar, styled with the defa
 		<calendar-view
 			:show-date="showDate"
 			class="theme-default holiday-us-traditional holiday-us-official">
-			<calendar-view-header
-				slot="header"
-				slot-scope="t"
-				:header-props="t.headerProps"
-				@input="setShowDate" />
+			<template #header="{ headerProps }">
+				<calendar-view-header
+					:header-props="headerProps"
+					@input="setShowDate" />
+			</template>
 		</calendar-view>
 	</div>
 </template>
 <script>
 	import { CalendarView, CalendarViewHeader } from "vue-simple-calendar"
-	// The next two lines are processed by webpack. If you're using the component without webpack compilation,
-	// you should just create <link> elements for these. Both are optional, you can create your own theme if you prefer.
-	require("vue-simple-calendar/static/css/default.css")
-	require("vue-simple-calendar/static/css/holidays-us.css")
+	import from "vue-simple-calendar/dist/style.css"
+	// The next two lines are optional themes
+	import from "vue-simple-calendar/static/css/default.css"
+	import from "vue-simple-calendar/static/css/holidays-us.css"
 
 	export default {
 		name: 'app',
@@ -164,7 +166,7 @@ The following properties are supported, by functional area:
 - `displayPeriodCount` - The _number_ of periods to show within the view. For example, if `displayPeriodUom` is `week` and `displayPeriodCount` is 2, the view will show a two-week period.
 - `startingDayOfWeek` - The day of the week that starts each week. Defaults to `0` (Sunday), valid range is 0-6. Common non-default values would be
   `1` (Monday) for Europe or `6` (Saturday) for much of the Middle East.
-- `dateClasses` - Optional object, where the key is a date in ISO form (e.g., "2018-04-15") and the value is a string or array of additional CSS classes that should be applied to the main element for that date. This could be useful for dynamically highlighting selected dates, holidays, blocked-off dates, etc. **NOTE:** For an example of how to use this property and associated styling, please refer to the (https://github.com/richardtallent/vue-simple-calendar-sample)[demo app], which uses this prop to put a dagger emoji on the "ides" of the current month (the 13th or 15th, depending on the month) and some other icons on the 21st.
+- `dateClasses` - Optional object, where the key is a date in ISO form (e.g., "2018-04-15") and the value is a string or array of additional CSS classes that should be applied to the main element for that date. This could be useful for dynamically highlighting selected dates, holidays, blocked-off dates, etc. **NOTE:** For an example of how to use this property and associated styling, please refer to the [demo app](https://github.com/richardtallent/vue-simple-calendar-sample), which uses this prop to put a dagger emoji on the "ides" of the current month (the 13th or 15th, depending on the month) and some other icons on the 21st.
 - `periodChangedCallback` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `items` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
 - `displayWeekNumbers`: Adds a column for each week to show the "week number." By default, this appears to the left of the days and contains the calendar week number. The position can moved to the right using CSS. See the `weekNumber` slot for more details.
 
@@ -323,7 +325,7 @@ In addition to slots, this component is designed to allow for significant custom
 
 Note that the items are _not_ child nodes of the days, they are children of the week and positioned above the days. This allows items to span multiple days.
 
-```
+```text
 div cv-wrapper locale-X yYYYY mMM (past|future) period-X periodCount-X wrap-item-title-on-hover
 	HEADER
 		div cv-header
@@ -360,7 +362,7 @@ where:
 
 ### Calendar classes
 
-#### locale-<i>X</i>
+#### locale-_X_
 
 Two locale classes are added--one for the user's full locale, the other for just the first two letters (the language),
 both in lowercase. You could use this information to hide or show specific holidays, or to localize text using CSS `content`.
@@ -368,11 +370,11 @@ Example:
 
 > locale-en locale-en-us
 
-#### y<i>YYYY</i>
+#### y*YYYY*
 
 The full year of the starting period of the current view.
 
-#### m<i>MM</i>
+#### m*MM*
 
 The month (01-12) of the starting period of the current view.
 
@@ -390,11 +392,11 @@ The current `displayPeriodCount` value (a number, usually `1`).
 
 ### Week classes
 
-#### week<i>X</i>
+#### week*X*
 
 Each week is numbered, starting with the first week of the visible period. (This is not the same as the value in the optional "week number" column.)
 
-#### ws<i>YYYY-MM-DD</i>
+#### ws*YYYY-MM-DD*
 
 Each week also has a class representing the date of the Sunday starting that week. This could be used to style entire weeks that have some special importance.
 
@@ -404,11 +406,11 @@ If an item title is truncated, this enables an _optional_ behavior that will wra
 
 ### Day classes
 
-#### dow<i>X</i>
+#### dow*X*
 
 This class is for the day of the week, ranging from 0 to 6. This allows you to easily style certain days of the week (say, weekend days) differently from other days. The same class is also added to the weekday headers.
 
-#### d<i>YYYY-MM-DD</i> / d<i>MM-DD</i> / d<i>DD</i>
+#### d*YYYY-MM-DD* / d*MM-DD* / d*DD*
 
 Each day in the grid is given three special classes -- one for the month and day (01/01-12/31), one for the day (01-31), and one for the entire ISO 8601 date. This allows easy styling of holidays and other special days using CSS alone (rather than using calendar items).
 
@@ -416,7 +418,7 @@ The demo calendar has some examples of using these to add holiday emoji beside t
 
 > d2017-05-23 d05-23 d23
 
-#### instance<i>X</i>
+#### instance*X*
 
 The instance of the weekday within _the day's_ month. For example, the class `instance1` is added to the _first_ Sunday, Monday, etc. of the month. Note that since this is relative to the day, not the "main" month being shown, days visible from the previous or next month will also have these classes, relative to their own month.
 
@@ -456,11 +458,11 @@ This class is added to the day specified by the `selectionEnd` prop.
 
 ### Calendar Item classes
 
-#### offset<i>X</i>
+#### offset*X*
 
 This class on an item represents the day of the week when the item starts _on this week_. If an item spans more than one week, the offset for the second week, etc. would be `offset0` (Sunday).
 
-#### span<i>X</i>
+#### span*X*
 
 This class on an item represents the width of the item display _that week_, in days. For example, if an item spans from a Thursday to the next Wednesday, it would have `span3` on the first week and `span4` on the second week.
 
@@ -515,23 +517,23 @@ These classes are applied to the start and end time of an item, respectively.
 
 This project was inspired by Monthly.js, a JQuery-based control I've contributed to. Unfortunately, I wasn't able to port the code and still do things the Vue / Vanilla JS way, but I did borrow some of the concepts from that component.
 
-# FAQ
+## FAQ
 
 (Ok, not really frequently-asked, but just random stuff.)
 
-#### Why Vue?
+### Why Vue?
 
 Because Vue is awesome. I've been using it since early 2017 in production, and I've migrated my applications from ExtJS, JQuery, and Riot to Vue components. If you prefer React or Angular, it should be reasonably easy to port it. If you do, please let me know, maybe we can coordinate on feature upgrades!
 
-#### Can you add feature "X"?
+### Can you add feature "X"?
 
 Maybe. Depends if it fits the core functionality of viewing a calendar grid. I don't want to create something that replicates all possible calendar views, and definitely don't want to add functionality for creating or editing calendar items (that should be handled by the application/component hosting the view).
 
-#### Why not use moment.js?
+### Why not use moment.js?
 
 Moment.js is great, but I would only need a tiny fraction of its capabilities, and for simplicity, I wanted to not have any dependencies (other than Vue of course).
 
-#### Why is the style so "plain"?
+### Why is the style so "plain"?
 
 The **baseline** style (what you get with no external CSS files imported) is intended to be as bare as possible while still providing full functionality and legibility. The idea here is to make integrating this component into your own theme as easy as possible by inheriting what it can from your parent application and minimizing the places where you may need to override its choices.
 
@@ -539,7 +541,7 @@ The **default theme** stylesheet builds on this baseline to provide a restrained
 
 A third stylesheet, `static/css/holidays-us.css`, shows how simple it is to use CSS to style specific days using CSS selectors (it adds emoji icons for various holidays).
 
-#### What styles can I _not_ override?
+### What styles can I _not_ override?
 
 - If you change the `cv-day-number` height, you'll need to set the `itemTop` property so the first item is positioned below the day numbers.
 - If you change the `cv-item` height, you'll need to set the `itemContentHeight` and/or `itemBorderHeight` properties, so each item is positioned below the previous item. Every item must still have the same height.

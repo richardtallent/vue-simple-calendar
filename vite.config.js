@@ -1,13 +1,14 @@
 import vue from "@vitejs/plugin-vue"
+import typescript from "rollup-plugin-typescript2"
 const path = require("path")
 
 module.exports = {
-	plugins: [vue()],
+	plugins: [vue(), typescript()],
+	esbuild: false,
 	build: {
-		cssCodeSplit: true,
-		sourcemap: true,
+		sourcemap: false,
 		lib: {
-			entry: path.resolve(__dirname, "src/components/bundle.js"),
+			entry: path.resolve(__dirname, "lib/main.ts"),
 			name: "CalendarView",
 		},
 		rollupOptions: {

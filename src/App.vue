@@ -35,10 +35,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import CalendarView from "./components/CalendarView.vue"
-import CalendarViewHeader from "./components/CalendarViewHeader.vue"
+import CalendarView from "./CalendarView.vue"
+import CalendarViewHeader from "./CalendarViewHeader.vue"
 import { ICalendarItem, INormalizedCalendarItem } from "./ICalendarItem"
-import CalendarMath from "./components/CalendarMath"
+import CalendarMath from "./CalendarMath"
 
 class AppState {
 	showDate: Date = new Date()
