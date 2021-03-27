@@ -1,12 +1,13 @@
+import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
-import typescript from "rollup-plugin-typescript2"
+//import typescript from "rollup-plugin-typescript2"
 const path = require("path")
 
-module.exports = {
-	plugins: [vue(), typescript()],
-	esbuild: false,
+export default defineConfig({
+	plugins: [vue()],
 	build: {
 		sourcemap: false,
+		//esbuild: false,
 		lib: {
 			entry: path.resolve(__dirname, "lib/main.ts"),
 			name: "CalendarView",
@@ -22,4 +23,4 @@ module.exports = {
 			},
 		},
 	},
-}
+})

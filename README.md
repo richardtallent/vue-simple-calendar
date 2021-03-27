@@ -4,7 +4,8 @@
 
 **vue-simple-calendar** is a flexible, themeable, lightweight calendar component for Vue that supports multi-day scheduled items.
 
-**This branch is for version 6, not yet released. This new version will drop IE11 support, be migrated to Vue 3 and Vite, and will add TypeScript support. Version 5 is available via npm.**
+**Important:** Version 6.0, released 2021-03-27, drops IE11 support and has been migrated to Vue 3 and Vite.
+Version 5 is still is available via npm if you need Vue 2 or IE11 support, but it will not be maintained going forward.
 
 ## Demo
 
@@ -65,17 +66,22 @@ What this component _does not_ try to do:
 
 ## Browser compatibility
 
-As of version 6, compatibility is limited to relatively modern browsers (_i.e._, not IE11). Please note that this component is designed first for desktop web applications, not mobile, so while the component may _operate_ on a mobile device, the limited resolution may not allow for much in the way of useful functionality. Also, drag and drop only works on desktop browsers -- the drag events on touch devices are very different, I haven't had time to dig into them yet.
+This component is compatible with relatively modern browsers (_i.e._, not IE11). Please note that this component is designed first for desktop web applications, not mobile, so while the component may _operate_ on a mobile device, the limited resolution may not allow for much in the way of useful functionality. Also, drag and drop only works on desktop browsers -- the drag events on touch devices are very different, I haven't had time to dig into them yet.
 
-If your browser doesn't support `Intl`, the month names and weekday names will be blank and the calendar will have a `nointl` class. Use CSS `content` to provide the appropriate month and weekday names for the languages you support. For example:
+## TypeScript Support
 
-```CSS
-.calendar.nointl.locale-en.m01 .monthName::after { content: 'January'; }
-```
+For some reason, it seems to be nearly impossible to get Vite to be configured to both emit `.d.ts`
+files on build and to allow use of `npm run dev`. The `typescript2` plugin (recommended by some Vue
+experts) just seems to break HMR. So I've given up for now, until the Vite powers that be decide to
+make a functional template for libraries that builds typescript declarations. This has been the only
+real fly in the ointment for me migrating to Vite. If you have ideas, I'm all ears! In the meantime,
+I've decided I can no longer allow this issue to prevent me from releasing the new version.
 
 ## Installation and Usage
 
-_(This assumes you already have a web application set up for using Vue. If you're starting a new project, look up the documentation for the Vue CLI, which will allow you to initialize a new project with webpack, etc.)_
+_(This assumes you already have a web application set up for using Vue. If you're starting a new project,
+look up the documentation for the Vue CLI, which will allow you to initialize a new project with webpack,
+etc.)_
 
 Install the component using npm:
 

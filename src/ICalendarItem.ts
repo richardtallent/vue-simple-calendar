@@ -1,6 +1,4 @@
-
 interface ICalendarItem {
-
 	// Required
 	id: string
 	startDate: Date
@@ -11,14 +9,15 @@ interface ICalendarItem {
 	url?: string
 	classes?: Array<string> | null
 	style?: string
-
 }
 
 interface INormalizedCalendarItem extends ICalendarItem {
-	endDate: Date,
+	endDate: Date
 	originalItem: ICalendarItem
 	classes: Array<string>
 	itemRow?: number
 }
 
-export { ICalendarItem, INormalizedCalendarItem }
+type DateTimeFormatOption = "long" | "short" | "narrow" | undefined
+
+export { ICalendarItem, INormalizedCalendarItem, DateTimeFormatOption }

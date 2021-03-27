@@ -9,13 +9,12 @@
 		"types": ["vite/client"],
 		"importHelpers": true,
 		"esModuleInterop": true,
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["src/*"]
-		},
 		"noUnusedLocals": true,
-		"noUnusedParameters": true
+		"noUnusedParameters": true,
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"outDir": "dist"
 	},
-	"include": ["src/**/*.ts", "src/**/*.vue", "vue-shim.d.ts"],
+	"include": ["src/**/*.ts", "src/**/*.vue", "lib/**/*.ts"],
 	"exclude": ["node_modules", "dist"]
 }

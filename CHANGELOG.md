@@ -20,7 +20,7 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
-## 6.0.0 (IN DEVELOPMENT, the live version in the GitHub `main` branch)
+## 6.0.0 (2021-03-27)
 
 - I've lost the ability (and will) to test for IE11 anymore, so it is no longer targets.
 - Upgraded to Vue 3. This shouldn't cause an issue for people using it with Vue 2.

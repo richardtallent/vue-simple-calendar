@@ -104,8 +104,8 @@
 <script lang="ts">
 import CalendarMath from "./CalendarMath"
 import CalendarViewState from "./CalendarViewState"
-import { defineComponent } from "vue"
-import { ICalendarItem, INormalizedCalendarItem } from "./ICalendarItem"
+import { defineComponent, PropType } from "vue"
+import { ICalendarItem, INormalizedCalendarItem, DateTimeFormatOption } from "./ICalendarItem"
 import { IHeaderProps } from "./IHeaderProps"
 
 export default defineComponent({
@@ -117,8 +117,8 @@ export default defineComponent({
 		displayPeriodCount: { type: Number, default: 1 },
 		displayWeekNumbers: { type: Boolean, default: false },
 		locale: { type: String, default: undefined },
-		monthNameFormat: { type: String, default: "long" },
-		weekdayNameFormat: { type: String, default: "short" },
+		monthNameFormat: { type: String as PropType<DateTimeFormatOption>, default: "long" },
+		weekdayNameFormat: { type: String as PropType<DateTimeFormatOption>, default: "short" },
 		showTimes: { type: Boolean, default: false },
 		timeFormatOptions: { type: Object, default: () => {} },
 		disablePast: { type: Boolean, default: false },
@@ -624,6 +624,7 @@ header are in the CalendarViewHeader component.
 /* Use flex basis of 0 on week row so all weeks will be same height regardless of content */
 .cv-week {
 	display: flex;
+
 	/* Shorthand flex: 1 1 0 not supported by IE11 */
 	flex-grow: 1;
 	flex-shrink: 1;
@@ -641,11 +642,13 @@ header are in the CalendarViewHeader component.
 
 .cv-weekdays {
 	display: flex;
+
 	/* Shorthand flex: 1 1 0 not supported by IE11 */
 	flex-grow: 1;
 	flex-shrink: 0;
 	flex-basis: 0;
 	flex-flow: row nowrap;
+
 	/* Days of the week go left to right even if user's language is RTL (#138) */
 	direction: ltr;
 	position: relative;
@@ -654,6 +657,7 @@ header are in the CalendarViewHeader component.
 
 .cv-day {
 	display: flex;
+
 	/* Shorthand flex: 1 1 0 not supported by IE11 */
 	flex-grow: 1;
 	flex-shrink: 0;
@@ -662,6 +666,7 @@ header are in the CalendarViewHeader component.
 	position: sticky; /* When week's items are scrolled, keep the day content fixed */
 	top: 0;
 	border-width: 1px 1px 0 0;
+
 	/* Restore user's direction setting (overridden for week) */
 	direction: initial;
 }
@@ -671,7 +676,7 @@ header are in the CalendarViewHeader component.
 	align-self: flex-start;
 }
 
-/* 
+/*
 A bug in Microsoft Edge 41 (EdgeHTML 16) has been reported (#109) where days "disappear" because they are
 wrapping under the next week (despite the "nowrap" on cv-week). This appears to be an issue specifically
 with our metrics and the sticky positioning. I was not able to reproduce this issue in Edge 38, 42, or 44.
@@ -692,7 +697,8 @@ _:-ms-lang(x),
 .cv-day-number {
 	position: absolute;
 	right: 0;
-}*/
+}
+*/
 
 .cv-day[draggable],
 .cv-item[draggable] {
@@ -705,6 +711,7 @@ _:-ms-lang(x),
 	overflow: hidden;
 	background-color: #f7f7f7;
 	border-width: 1px;
+
 	/* Restore user's direction setting (overridden for week) */
 	direction: initial;
 }

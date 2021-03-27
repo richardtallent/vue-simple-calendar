@@ -1,4 +1,4 @@
-import { ICalendarItem, INormalizedCalendarItem } from "./ICalendarItem"
+import { ICalendarItem, INormalizedCalendarItem, DateTimeFormatOption } from "./ICalendarItem"
 
 /*
 ***********************************************************
@@ -199,7 +199,7 @@ export default {
 
 	supportsIntl: (): boolean => typeof Intl !== "undefined",
 
-	getFormattedMonthNames(locale: string, format: string): Array<string> {
+	getFormattedMonthNames(locale: string, format: DateTimeFormatOption): Array<string> {
 		// Use the provided locale and format if possible to obtain the name of the month
 		if (!this.supportsIntl()) return [...Array(12)].map((_) => "")
 		const formatter = new Intl.DateTimeFormat(locale, { month: format })
@@ -207,7 +207,7 @@ export default {
 		return [...Array(12)].map((_, i) => formatter.format(new Date(2017, i, 1)))
 	},
 
-	getFormattedWeekdayNames(locale: string, format: string, startingDayOfWeek: number): Array<string> {
+	getFormattedWeekdayNames(locale: string, format: DateTimeFormatOption, startingDayOfWeek: number): Array<string> {
 		// Use the provided locale and format if possible to obtain the name of the days of the week
 		if (!this.supportsIntl()) return [...Array(7)].map((_) => "")
 		const formatter = new Intl.DateTimeFormat(locale, { weekday: format })
