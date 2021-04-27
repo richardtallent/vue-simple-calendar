@@ -1,6 +1,6 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "5.0.0",
+	"version": "5.0.1",
 	"private": false,
 	"description": "Simple calendar event control",
 	"author": "richardtallent <richard@tallent.us>",
@@ -14,7 +14,8 @@
 	"main": "dist/CalendarView.umd.js",
 	"dependencies": {
 		"core-js": "^3.7.0",
-		"vue": "^2.6.12"
+		"vue": "^2.6.12",
+		"webpack": "^4.45.0"
 	},
 	"devDependencies": {
 		"@vue/cli-plugin-babel": "^4.5.8",
@@ -22,13 +23,12 @@
 		"@vue/cli-service": "^4.5.8",
 		"@vue/eslint-config-prettier": "^6.0.0",
 		"babel-eslint": "^10.1.0",
-		"eslint": "^7.13.0",
 		"eslint-config-tabsanity": "^1.0.25",
 		"eslint-plugin-prettier": "^3.1.4",
 		"eslint-plugin-vue": "^7.1.0",
 		"node-sass": "^5.0.0",
 		"prettier": "^2.1.2",
-		"sass-loader": "^10.1.0",
+		"sass-loader": "^10.1.1",
 		"vue-template-compiler": "^2.6.12"
 	},
 	"eslintConfig": {

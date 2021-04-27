@@ -19,6 +19,11 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 5.0.1 (2021-04-27)
+
+- Last release with Vue 2 and IE11 support.
+- This just rolls up some dependency updates and minor tweaks from 5.0.
+
 ## 5.0.0 (2020-09-04)
 
 ## Main breaking change: Events to Items
