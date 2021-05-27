@@ -482,7 +482,7 @@ export default defineComponent({
 			return true
 		},
 
-		getWeekItems(weekStart: Date): Array<ICalendarItem> {
+		getWeekItems(weekStart: Date): Array<INormalizedCalendarItem> {
 			// Return a list of items that CONTAIN the week starting on a day.
 			// Sorted so the items that start earlier are always shown first.
 			const items = this.findAndSortItemsInWeek(weekStart)
