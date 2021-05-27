@@ -539,10 +539,13 @@ export default defineComponent({
 
 		getItemTop(item: INormalizedCalendarItem): string {
 			// Compute the top position of the item based on its assigned row within the given week.
+			// Regular expression is used to separate unit from its value, so it can do a propper math operation
 			const r = item.itemRow
-			const h = this.itemContentHeight
-			const b = this.itemBorderHeight
-			return `calc(${this.itemTop} + ${r}*${h} + ${r}*${b})`
+			const h = this.itemContentHeight.match(/[\d\.]+|\D+/g);
+			const b = this.itemBorderHeight.match(/[\d\.]+|\D+/g);
+
+			// the second place in each of the arrays should be the css unit, and it is placed after each operation
+			return `calc(${this.itemTop} + ${r*h[0]}${h[1]} + ${r*b[0]}${b[1]})`
 		},
 	},
 })
