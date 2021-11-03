@@ -526,7 +526,7 @@ export default defineComponent({
 			let endTime = ""
 			if (!CalendarMath.isSameDateTime(item.startDate, item.endDate)) {
 				endTime =
-					//'<span class="endTime">' +
+					'<span class="endTime">' +
 					CalendarMath.formattedTime(item.endDate, this.displayLocale, this.timeFormatOptions) + "</span>"
 			}
 			return startTime + endTime
