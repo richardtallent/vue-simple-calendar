@@ -63,8 +63,8 @@
 							},
 							...((dateClasses && dateClasses[CalendarMath.isoYearMonthDay(day)]) || []),
 						]"
-						:aria-grabbed="enableDateSelection ? dayIsSelected(day) : 'undefined'"
-						:aria-label="day.getDate()"
+						:aria-grabbed="enableDateSelection ? dayIsSelected(day) : undefined"
+						:aria-label="day.getDate().toString()"
 						:aria-selected="dayIsSelected(day)"
 						:aria-dropeffect="enableDragDrop && currentDragItem ? 'move' : enableDateSelection && dateSelectionOrigin ? 'execute' : 'none'"
 						@click="onClickDay(day, $event)"
@@ -82,7 +82,7 @@
 							<div
 								:key="i.id"
 								:draggable="enableDragDrop"
-								:aria-grabbed="enableDragDrop ? i == currentDragItem : 'undefined'"
+								:aria-grabbed="enableDragDrop ? i == currentDragItem : undefined"
 								:class="i.classes"
 								:title="i.title"
 								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
@@ -530,7 +530,7 @@ export default defineComponent({
 			let endTime = ""
 			if (!CalendarMath.isSameDateTime(item.startDate, item.endDate)) {
 				endTime =
-					//'<span class="endTime">' +
+					'<span class="endTime">' +
 					CalendarMath.formattedTime(item.endDate, this.displayLocale, this.timeFormatOptions) + "</span>"
 			}
 			return startTime + endTime
@@ -549,6 +549,11 @@ export default defineComponent({
 			return `calc(${this.itemTop} + ${r}*${h} + ${r}*${b})`
 		},
 	},
+
+	setup() {
+		return { CalendarMath }
+	},
+
 })
 </script>
 <!--

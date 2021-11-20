@@ -129,10 +129,10 @@ Here's a minimal application example for an empty calendar, styled with the defa
 <script>
 	import { CalendarView, CalendarViewHeader } from "vue-simple-calendar"
 	
-	import "vue-simple-calendar/dist/style.css"
+	import "..relative-path-to-node_modules/vue-simple-calendar/dist/style.css"
 	// The next two lines are optional themes
-	import "vue-simple-calendar/static/css/default.css"
-	import "vue-simple-calendar/static/css/holidays-us.css"
+	import "..relative-path-to-node_modules/vue-simple-calendar/static/css/default.css"
+	import "..relative-path-to-node_modules/vue-simple-calendar/static/css/holidays-us.css"
 
 	export default {
 		name: 'app',
