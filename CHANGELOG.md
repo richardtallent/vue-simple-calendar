@@ -20,6 +20,11 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 6.0.2 (2021-11-20)
+
+- Pass URL to normalized items (fixes #190)
+- Updated dependencies
+
 ## 6.0.1 (2021-04-27)
 
 - Just minor dependency updates

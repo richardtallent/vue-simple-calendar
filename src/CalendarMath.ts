@@ -241,6 +241,8 @@ export default {
 			title: item.title || "Untitled",
 			// An ID is *required*. Auto-generating leads to weird bugs because these are used as keys and passed in items
 			id: item.id,
+			// Pass the URL along
+			url: item.url,
 		}
 	},
 }

@@ -158,6 +158,10 @@ export default defineComponent({
 
 	data: () => new CalendarViewState(),
 
+	setup() {
+		return { CalendarMath }
+	},
+
 	computed: {
 		/*
 		Props cannot default to computed/method returns, so create defaulted version of this
