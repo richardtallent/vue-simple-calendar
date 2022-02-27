@@ -20,6 +20,11 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 6.0.4 (2022-02-27)
+
+- Updated dependencies
+- Migrated to script setup (no impact on how this is used, just the code)
+
 ## 6.0.3 (2021-11-20)
 
 - Pass URL to normalized items (fixes #190)
@@ -313,7 +318,7 @@ This means there are some breaking changes:
 - Some basic colors, borders, etc. have been moved from the default theme into the component's core CSS, allowing the component to have a more appealing look with no theme in place and a better starting point for custom themes.
 - Reversed the circle-arrow labels to return to the current period. These are now clockwise to "go forward" to return to the current period, counter-clockwise to "go back" to return to the current period.
 
-#### Props Added in 2.0
+### Props Added in 2.0
 
 - `showEventTimes` - If true, shows the start and/or end time of an event beside the event title. Midnight is not shown, a midnight time is assumed to indicate an all-day or indeterminate time. (If you want to show midnight, use `00:00:01` and don't choose to show seconds.) The default is `false`.
 - `timeFormatOptions` - This takes an object containing `Intl.DateTimeFormat` options to be used to format the event times. The `locale` setting is automatically used. This option is ignored for browsers that don't support `Intl` (they will see the 24-hour, zero-padded time).
