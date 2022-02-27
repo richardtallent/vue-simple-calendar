@@ -99,6 +99,8 @@ In your application, you will need to:
 
 Tips:
 
+- Remember to use _kebab-case_ when specifying these properties using attributes on the `calendar-view` element (_e.g._, `<calendar-view month-name-format="long">`)
+- Remember to use _data binding_ (`:` prefix) for properties that should be a `Boolean`, `Number`, `Array`, or otherwise interpreted with JavaScript (_e.g._, `<calendar-view :show-times="true">`). You can omit the `:` for `String` properties with literal values.
 - The component will fill its parent's height and width, so be sure the parent has a minimum height that is appropriate for the number of weeks and average items per week being shown.
 - The default calendar header emits an `input` event when a user clicks a button in the header to move the calendar backward or forward through time. The event's argument is the new date to be shown. You have to handle this event and pass the date back to the calendar to change the view.
 - To minimize the impact of an ancestor element's layout on the calendar's functionality, it is **recommended** that the parent of the `<calendar-view>` component _only_ contain the component, and that the parent have the following styles (#71):
@@ -128,7 +130,7 @@ Here's a minimal application example for an empty calendar, styled with the defa
 </template>
 <script>
 	import { CalendarView, CalendarViewHeader } from "vue-simple-calendar"
-	
+
 	import "..relative-path-to-node_modules/vue-simple-calendar/dist/style.css"
 	// The next two lines are optional themes
 	import "..relative-path-to-node_modules/vue-simple-calendar/static/css/default.css"
@@ -205,11 +207,6 @@ Note: Each date between `selectionStart` and `selectionEnd` (including them) has
 - `itemTop` - Optional string of a CSS height to be used as the baseline for where items are positioned relative the top of the week. By default, this is `1.4em`, the height of the standard `cv-day-number` element.
 - `itemContentHeight` - Optional CSS string of the total height of your items, _not including_ borders. The default is `1.4em` (1.0 from the font, 0.2 \* 2 from the padding.). You would only set this if you're overriding the item height. This doesn't actually change the item height, it is only used to position the items below one another.
 - `itemBorderHeight` - Optional CSS string of the sum of your items' top and bottom borders. The default is `2px`. You would only set this if you're overriding the item's top and/or bottom border width. This doesn't change the borders, it is only used to position the items below one another.
-
-Tips for Vue component properties:
-
-- Remember to use _kebab-case_ when specifying these properties using attributes on the `calendar-view` element (_e.g._, `<calendar-view month-name-format="long">`:
-- Remember to use _binding_ (`:` prefix) for properties that should be a Boolean, number, array, or otherwise interpreted with JavaScript (_e.g._, `<calendar-view :show-times="true">`). You can omit the `:` for string properties with literal values.
 
 ## Calendar Item Properties
 
