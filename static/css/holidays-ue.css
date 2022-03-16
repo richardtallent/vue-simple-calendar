@@ -1,0 +1,47 @@
+/*
+********************************************************************************************************
+This theme adds emoji next to important national holidays of Ukraine.
+
+To activate this theme, include the CSS and decorate the calendar instance with the `holidays-ue` class.
+********************************************************************************************************
+*/
+
+.cv-wrapper.holiday-ue .d10-14 .cv-day-number::before {
+	content: "\1F1FA\1F1E6";
+}
+
+.cv-wrapper.holiday-ue .d10-14 .cv-day-number:hover::after {
+	content: "Defender of Ukraine Day";
+}
+
+.cv-wrapper.holiday-ue .d05-09 .cv-day-number::before {
+	content: "\1F33A";
+}
+
+.cv-wrapper.holiday-ue .d05-09 .cv-day-number:hover::after {
+	content: "Victory Day";
+}
+
+.cv-wrapper.holiday-ue .d06-28 .cv-day-number::before {
+	content: "\1F4DC";
+}
+
+.cv-wrapper.holiday-ue .d06-28 .cv-day-number:hover::after {
+	content: "Ukrainian Constitution Day";
+}
+
+.cv-wrapper.holiday-ue .d07-28 .cv-day-number::before {
+	content: "\1F1FA\1F1E6";
+}
+
+.cv-wrapper.holiday-ue .d07-28 .cv-day-number:hover::after {
+	content: "Day of Ukrainian Statehood";
+}
+
+.cv-wrapper.holiday-ue .d08-24 .cv-day-number::before {
+	content: "\1F531";
+}
+
+.cv-wrapper.holiday-ue .d08-24 .cv-day-number:hover::after {
+	content: "Ukrainian Independence Day";
+}

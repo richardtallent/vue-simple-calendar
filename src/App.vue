@@ -13,7 +13,7 @@
 			:item-border-height="themeOptions.border"
 			:class="`theme-${state.theme}`"
 			:current-period-label="themeOptions.currentPeriodLabel"
-			class="holiday-us-traditional holiday-us-official"
+			class="holiday-us-traditional holiday-us-official holiday-ue"
 			@date-selection-start="setSelection"
 			@date-selection="setSelection"
 			@date-selection-finish="finishSelection"
@@ -112,6 +112,7 @@ onMounted(() => (state.items = [...Array(25)].map((_, i) => getRandomEvent(i))))
 
 /* @import "../static/css/default.css"; */
 @import "../static/css/holidays-us.css";
+@import "../static/css/holidays-ue.css";
 
 div#app {
 	font-family: Avenir, Arial, Helvetica, sans-serif;

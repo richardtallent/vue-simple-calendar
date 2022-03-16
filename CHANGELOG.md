@@ -20,6 +20,11 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## (Unreleased, 2022-03-15)
+
+- Added optional Ukrainian calendar CSS file. ✊ 🇺🇦
+- Used said calendar to test and demo a new CSS-only feature: tagging holidays with hoverable tooltips.
+
 ## 6.0.4 (2022-02-27)
 
 - Updated dependencies

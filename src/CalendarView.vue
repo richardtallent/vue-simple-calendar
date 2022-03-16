@@ -618,6 +618,19 @@ header are in the CalendarViewHeader component.
 	align-self: flex-start;
 }
 
+/* Default styling for holiday hover descriptions */
+
+.cv-day-number:hover::after {
+	position: absolute;
+	top: 1rem;
+	background-color: var(--cal-holiday-bg, #f7f7f7);
+	border: var(--cal-holiday-border, 1px solid #f0f0f0);
+	box-shadow: 0.1rem 0.1rem 0.2rem var(--cal-holiday-shadow, rgba(0, 0, 0, 0.25));
+	padding: 0.2rem;
+	margin: 0.5rem;
+	line-height: 1.2;
+}
+
 /*
 A bug in Microsoft Edge 41 (EdgeHTML 16) has been reported (#109) where days "disappear" because they are
 wrapping under the next week (despite the "nowrap" on cv-week). This appears to be an issue specifically
