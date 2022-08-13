@@ -1,6 +1,6 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "6.0.5",
+	"version": "6.0.7",
 	"private": false,
 	"description": "Simple Vue 3 calendar event control",
 	"author": "richardtallent <richard@tallent.us>",
@@ -11,7 +11,7 @@
 	},
 	"homepage": "https://tallent.us/vue-simple-calendar/",
 	"main": "./dist/vue-simple-calendar.umd.js",
-	"module": "./dist/vue-simple-calendar.es.js",
+	"module": "./dist/vue-simple-calendar.mjs",
 	"types": "./dist/lib/main.d.ts",
 	"style": "./dist/style.css",
 	"files": [
@@ -20,7 +20,7 @@
 	],
 	"exports": {
 		".": {
-			"import": "./dist/vue-simple-calendar.es.js",
+			"import": "./dist/vue-simple-calendar.mjs",
 			"require": "./dist/vue-simple-calendar.umd.js"
 		}
 	},

@@ -20,6 +20,14 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 6.0.7 (2022-08-12)
+
+- Fix module export in package.json
+
+## 6.0.6 (2022-08-12)
+
+- Fix module export in package.json
+
 ## 6.0.5 (2022-08-12)
 
 - Added optional Ukrainian calendar CSS file. ✊ 🇺🇦
