@@ -84,7 +84,7 @@
 								:draggable="enableDragDrop"
 								:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
 								:class="i.classes"
-								:title="i.title"
+								:title="i.tooltip || i.title"
 								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
 								class="cv-item"
 								@dragstart="onDragItemStart(i, $event)"
