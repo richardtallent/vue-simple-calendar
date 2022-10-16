@@ -1,14 +1,14 @@
 import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
 import dts from "vite-plugin-dts"
-//import typescript from "rollup-plugin-typescript2"
 const path = require("path")
+
+// Use this config file to build the libary
 
 export default defineConfig({
 	plugins: [dts(), vue()],
 	build: {
 		sourcemap: false,
-		//esbuild: false,
 		lib: {
 			entry: path.resolve(__dirname, "lib/main.ts"),
 			name: "CalendarView",
