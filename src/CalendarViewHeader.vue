@@ -1,23 +1,23 @@
 <template>
 	<div class="cv-header">
 		<div class="cv-header-nav">
-			<button :disabled="!headerProps.previousYear" class="previousYear" aria-label="Previous Year" @click.prevent="onInput(headerProps.previousYear)">
+			<button :disabled="!headerProps.previousYear" class="previousYear" aria-label="Previous Year" @click.prevent="onInput(headerProps.previousYear!)">
 				{{ previousYearLabel }}
 			</button>
 			<button
 				:disabled="!headerProps.previousPeriod"
 				class="previousPeriod"
 				aria-label="Previous Period"
-				@click.prevent="onInput(headerProps.previousPeriod)"
+				@click.prevent="onInput(headerProps.previousPeriod!)"
 				v-html="previousPeriodLabel"
 			/>
 			<button class="currentPeriod" aria-label="Current Period" @click.prevent="onInput(headerProps.currentPeriod)">
 				{{ headerProps.currentPeriodLabel }}
 			</button>
-			<button :disabled="!headerProps.nextPeriod" class="nextPeriod" aria-label="Next Period" @click.prevent="onInput(headerProps.nextPeriod)">
+			<button :disabled="!headerProps.nextPeriod" class="nextPeriod" aria-label="Next Period" @click.prevent="onInput(headerProps.nextPeriod!)">
 				{{ nextPeriodLabel }}
 			</button>
-			<button :disabled="!headerProps.nextYear" class="nextYear" aria-label="Next Year" @click.prevent="onInput(headerProps.nextYear)">
+			<button :disabled="!headerProps.nextYear" class="nextYear" aria-label="Next Year" @click.prevent="onInput(headerProps.nextYear!)">
 				{{ nextYearLabel }}
 			</button>
 		</div>
@@ -40,9 +40,11 @@ defineProps({
 	nextYearLabel: { type: String, default: ">>" },
 })
 
-const emit = defineEmits(["input"])
+const emit = defineEmits<{
+	(e: "input", day: Date): void
+}>()
 
-const onInput = (d: Date) => emit("input", d)
+const onInput = (d: Date): void => emit("input", d)
 </script>
 <style>
 .cv-header {

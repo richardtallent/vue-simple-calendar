@@ -164,22 +164,22 @@ const props = withDefaults(
 	}
 )
 
-const emit = defineEmits([
-	"input",
-	"period-changed",
-	"click-date",
-	"click-item",
-	"item-mouseenter",
-	"item-mouseleave",
-	"drag-start",
-	"drag-over-date",
-	"drag-enter-date",
-	"drag-leave-date",
-	"drop-on-date",
-	"date-selection",
-	"date-selection-start",
-	"date-selection-finish",
-])
+const emit = defineEmits<{
+	//(e: "input", payload: foo, windowEvent: Event): void
+	(e: "period-changed"): void
+	(e: "click-date", day: Date, itemsInRange: INormalizedCalendarItem[], windowEvent: Event): void
+	(e: "click-item", item: ICalendarItem, windowEvent: Event): void
+	(e: "item-mouseenter", item: ICalendarItem, windowEvent: Event): void
+	(e: "item-mouseleave", item: ICalendarItem, windowEvent: Event): void
+	(e: "drag-start", item: ICalendarItem, windowEvent: Event): void
+	(e: "drag-over-date", currentDragItem: INormalizedCalendarItem, day: Date, windowEvent: Event): void
+	(e: "drag-enter-date", currentDragItem: INormalizedCalendarItem, day: Date, windowEvent: Event): void
+	(e: "drag-leave-date", currentDragItem: INormalizedCalendarItem, day: Date, windowEvent: Event): void
+	(e: "drop-on-date", currentDragItem: INormalizedCalendarItem, day: Date, windowEvent: Event): void
+	(e: "date-selection", selectedDateRange: [Date, Date], windowEvent: Event): void
+	(e: "date-selection-start", selectedDateRange: [Date, Date], windowEvent: Event): void
+	(e: "date-selection-finish", selectedDateRange: [Date, Date], windowEvent: Event): void
+}>()
 
 const state = reactive(new CalendarViewState())
 
@@ -352,7 +352,7 @@ const onDragDateStart = (day: Date, windowEvent: DragEvent): boolean => {
 	img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
 	windowEvent.dataTransfer?.setDragImage(img, 10, 10)
 	state.dateSelectionOrigin = day
-	emitDateSelection("date-selection-start", day, windowEvent)
+	emit("date-selection-start", getSelectedDateRange(day), windowEvent)
 	return true
 }
 
@@ -370,38 +370,33 @@ const onDragItemStart = (calendarItem: INormalizedCalendarItem, windowEvent: Dra
 	// currently being dragged. This avoids having to look it up later.
 	state.currentDragItem = calendarItem
 	// Reset date selection origin so the onenter events aren't confused
-	state.dateSelectionOrigin = null
+	state.dateSelectionOrigin = undefined
 	// Allow the calling application to add additional functionality.
 	emit("drag-start", calendarItem, windowEvent)
 	return true
 }
 
-const handleDragEvent = (
-	bubbleEventName: "drag-over-date" | "drag-enter-date" | "drag-leave-date" | "drop-on-date",
-	bubbleParam: any,
-	windowEvent: Event
-): boolean => {
-	if (!props.enableDragDrop) return false
-	// If the user drags an item FROM this calendar TO this calendar, currentDragItem will be initialized to the
-	// most recent item with a dragStart event. If not, we still emit the event, and the caller will need to
-	// determine what to do based on the third argument (windowEvent, which gives them access to `dataTransfer`).
-	// This allows developers to create custom calendars where things can be dragged in from the outside. This
-	// also allows developers using scoped slots for items to handle the drag and drop themselves.
-	emit(bubbleEventName, state.currentDragItem, bubbleParam, windowEvent)
-	return true
-}
+// If the user drags an item FROM this calendar TO this calendar, currentDragItem will be initialized to the
+// most recent item with a dragStart event. If not, we still emit the event, and the caller will need to
+// determine what to do based on the third argument (windowEvent, which gives them access to `dataTransfer`).
+// This allows developers to create custom calendars where things can be dragged in from the outside. This
+// also allows developers using scoped slots for items to handle the drag and drop themselves.
+
+// Non-null assertion used because the selection origin is pre-checked in all use cases
+const getSelectedDateRange = (d: Date): [Date, Date] => (d <= state.dateSelectionOrigin! ? [d, state.dateSelectionOrigin!] : [state.dateSelectionOrigin!, d])
 
 const onDragOver = (day: Date, windowEvent: Event): void => {
-	handleDragEvent("drag-over-date", day, windowEvent)
+	if (!props.enableDragDrop) return
+	emit("drag-over-date", state.currentDragItem!, day, windowEvent)
 }
 
 const onDragEnter = (day: Date, windowEvent: Event) => {
 	if (props.enableDateSelection && state.dateSelectionOrigin) {
 		// User is selecting dates, not items.
-		emitDateSelection("date-selection", day, windowEvent)
-		return
+		emit("date-selection", getSelectedDateRange(day), windowEvent)
 	}
-	if (!handleDragEvent("drag-enter-date", day, windowEvent)) return
+	if (!props.enableDragDrop) return
+	emit("drag-enter-date", state.currentDragItem!, day, windowEvent)
 	const el = windowEvent.target as HTMLElement
 	el.classList.add("draghover")
 }
@@ -409,7 +404,8 @@ const onDragEnter = (day: Date, windowEvent: Event) => {
 const onDragLeave = (day: Date, windowEvent: Event): void => {
 	// User is selecting dates, not items. No emit.
 	if (props.enableDateSelection && props.selectionStart) return
-	if (!handleDragEvent("drag-leave-date", day, windowEvent)) return
+	if (!props.enableDragDrop) return
+	emit("drag-leave-date", state.currentDragItem!, day, windowEvent)
 	const el = windowEvent.target as HTMLElement
 	el.classList.remove("draghover")
 }
@@ -417,17 +413,13 @@ const onDragLeave = (day: Date, windowEvent: Event): void => {
 const onDrop = (day: Date, windowEvent: Event): void => {
 	if (props.enableDateSelection && state.dateSelectionOrigin) {
 		// User is selecting dates, not items.
-		emitDateSelection("date-selection-finish", day, windowEvent)
+		emit("date-selection-finish", getSelectedDateRange(day), windowEvent)
 		return
 	}
-	if (!handleDragEvent("drop-on-date", day, windowEvent)) return
+	if (!props.enableDragDrop) return
+	emit("drop-on-date", state.currentDragItem!, day, windowEvent)
 	const el = windowEvent.target as HTMLElement
 	el.classList.remove("draghover")
-}
-
-const emitDateSelection = (eventName: "date-selection" | "date-selection-start" | "date-selection-finish", toDate: Date, windowEvent: Event): void => {
-	if (!state.dateSelectionOrigin) return
-	emit(eventName, toDate <= state.dateSelectionOrigin ? [toDate, state.dateSelectionOrigin, windowEvent] : [state.dateSelectionOrigin, toDate, windowEvent])
 }
 
 // ******************************

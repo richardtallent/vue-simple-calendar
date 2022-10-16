@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<h1 class="title" style="padding-top: 1rem; padding-left: 1rem">vue-simple-calendar v6.1.0</h1>
+		<h1 class="title" style="padding-top: 1rem; padding-left: 1rem">vue-simple-calendar v6.2.0</h1>
 		<div style="padding-bottom: 1rem; padding-left: 1rem">
 			<input type="radio" name="exampleMode" v-model="exampleMode" value="Simple" /> Simple
 			<input type="radio" name="exampleMode" v-model="exampleMode" value="Full" /> Full

@@ -2,8 +2,8 @@ import { INormalizedCalendarItem } from "./ICalendarItem"
 import CalendarMath from "./CalendarMath"
 
 class CalendarViewState {
-	currentDragItem: INormalizedCalendarItem | null = null
-	dateSelectionOrigin: Date | null = null
+	currentDragItem?: INormalizedCalendarItem = undefined
+	dateSelectionOrigin?: Date = undefined
 	currentHoveredItemId: string = ""
 	CalendarMath: object = CalendarMath
 }

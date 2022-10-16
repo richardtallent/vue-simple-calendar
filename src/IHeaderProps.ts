@@ -1,4 +1,4 @@
-import { ICalendarItem } from "./ICalendarItem";
+import { ICalendarItem } from "./ICalendarItem"
 
 interface IHeaderProps {
 	periodStart: Date
@@ -11,12 +11,12 @@ interface IHeaderProps {
 	nextYear: Date | null
 	currentPeriod: Date
 	currentPeriodLabel: string
-	periodLabel: string,
+	periodLabel: string
 	displayLocale: string
 	displayFirstDate: Date
 	displayLastDate: Date
-	monthNames: Array<string>
-	fixedItems: Array<ICalendarItem>
+	monthNames: string[]
+	fixedItems: ICalendarItem[]
 }
 
 export { IHeaderProps }

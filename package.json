@@ -1,6 +1,6 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "6.1.0",
+	"version": "6.2.0",
 	"private": false,
 	"description": "Simple Vue 3 calendar event control",
 	"author": "richardtallent <richard@tallent.us>",
@@ -56,7 +56,7 @@
 	},
 	"eslintConfig": {
 		"extends": [
-			"plugin:vue/vue3-essential",
+			"plugin:vue/vue3-recommended",
 			"eslint:recommended",
 			"@vue/prettier",
 			"tabsanity"

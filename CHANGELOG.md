@@ -20,6 +20,13 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 6.2.0 (2022-10-15)
+
+- Use TypeScript for Events too
+- MINOR BREAKING CHANGE: the payload for the events `date-selection`, `date-selection-start`, and `date-selection-finish` now pass the DOM event as a second parameter to your event handler rather than as the third element of the array. This is more consistent with other events, and makes typing for the event handlers easier.
+
+If you need time to make some changes to adjust for the stricter event typing that is now available, please use 6.1.0 for now, since other than the above, these versions are identical.
+
 ## 6.1.0 (2022-10-15)
 
 - Adjust module export for style.css (#214)
