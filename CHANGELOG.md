@@ -20,6 +20,16 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 6.1.0 (2022-10-15)
+
+- Adjust module export for style.css (#214)
+- Move full example from other repository into this one (both examples accessible with `npm run dev`)
+- Change full example to `script setup`
+- Improve TS use and support
+- Fix scroll bar visibility issue (#213)
+- Fix tooltips (#212)
+- Update various dependencies
+
 ## 6.0.7 (2022-08-12)
 
 - Fix module export in package.json

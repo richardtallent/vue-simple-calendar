@@ -125,10 +125,10 @@ const dayDiff = (d1: Date, d2: Date): number => {
 }
 
 // http://stackoverflow.com/questions/492994/compare-two-dates-with-javascript
-const isSameDate = (d1: Date, d2: Date): boolean => d1 && d2 && dayDiff(d1, d2) === 0
+const isSameDate = (d1?: Date, d2?: Date): boolean => !!d1 && !!d2 && dayDiff(d1, d2) === 0
 
-const isSameDateTime = (d1: Date, d2: Date): boolean => d1 && d2 && d1.getTime() === d2.getTime()
-const isSameMonth = (d1: Date, d2: Date): boolean => d1 && d2 && d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth()
+const isSameDateTime = (d1?: Date, d2?: Date): boolean => !!d1 && !!d2 && d1.getTime() === d2.getTime()
+const isSameMonth = (d1?: Date, d2?: Date): boolean => !!d1 && !!d2 && d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth()
 const isPastMonth = (d: Date): boolean => beginningOfMonth(d) < beginningOfMonth(today())
 const isFutureMonth = (d: Date): boolean => beginningOfMonth(d) > beginningOfMonth(today())
 const isInFuture = (d: Date): boolean => dateOnly(d) > today()
@@ -147,7 +147,7 @@ const toLocalDate = (d: any): Date => (typeof d === "string" ? fromIsoStringToLo
 
 const dateOnly = (d: Date | string): Date => {
 	// Always use a copy, setHours mutates argument
-	const d2 = new Date(d)
+	const d2 = new Date(d as unknown as VarDate)
 	d2.setHours(0, 0, 0, 0)
 	return d2
 }
@@ -203,6 +203,8 @@ const normalizeItem = (item: ICalendarItem, isHovered: boolean): INormalizedCale
 		id: item.id,
 		// Pass the URL along
 		url: item.url,
+		// Use the item's title as the tooltip if the tooltip is undefined or null (but not if it is blank -- use blank to essentially disable tooltips)
+		tooltip: item.tooltip ?? item.title,
 	}
 }
 

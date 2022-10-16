@@ -16,7 +16,7 @@
 			},
 		]"
 	>
-		<slot :header-props="headerProps" name="header" />
+		<slot :headerProps="headerProps" name="header" />
 		<div class="cv-header-days">
 			<div v-if="displayWeekNumbers" class="cv-weeknumber" />
 			<template v-for="(label, index) in weekdayNames">
@@ -103,37 +103,66 @@
 <script setup lang="ts">
 import CalendarMath from "./CalendarMath"
 import CalendarViewState from "./CalendarViewState"
-import { computed, reactive, PropType, watch } from "vue"
+import { computed, reactive, watch, withDefaults } from "vue"
 import { ICalendarItem, INormalizedCalendarItem, DateTimeFormatOption } from "./ICalendarItem"
 import { IHeaderProps } from "./IHeaderProps"
 
-const props = defineProps({
-	showDate: { type: Date, default: undefined },
-	displayPeriodUom: { type: String, default: "month" },
-	displayPeriodCount: { type: Number, default: 1 },
-	displayWeekNumbers: { type: Boolean, default: false },
-	locale: { type: String, default: undefined },
-	monthNameFormat: { type: String as PropType<DateTimeFormatOption>, default: "long" },
-	weekdayNameFormat: { type: String as PropType<DateTimeFormatOption>, default: "short" },
-	showTimes: { type: Boolean, default: false },
-	timeFormatOptions: { type: Object, default: () => {} },
-	disablePast: { type: Boolean, default: false },
-	disableFuture: { type: Boolean, default: false },
-	enableDateSelection: { type: Boolean, default: false },
-	selectionStart: { type: Date, default: null },
-	selectionEnd: { type: Date, default: null },
-	enableDragDrop: { type: Boolean, default: false },
-	startingDayOfWeek: { type: Number, default: 0 },
-	items: { type: Array as () => Array<ICalendarItem>, default: () => [] },
-	dateClasses: { type: Object, default: () => {} },
-	itemTop: { type: String, default: "1.4em" },
-	itemContentHeight: { type: String, default: "1.4em" },
-	itemBorderHeight: { type: String, default: "2px" },
-	periodChangedCallback: { type: Function, default: undefined },
-	currentPeriodLabel: { type: String, default: "" },
-	currentPeriodLabelIcons: { type: String, default: "⇤-⇥" },
-	doEmitItemMouseEvents: { type: Boolean, default: false },
-})
+const props = withDefaults(
+	defineProps<{
+		showDate?: Date
+		displayPeriodUom?: string
+		displayPeriodCount?: number
+		displayWeekNumbers?: boolean
+		locale?: string
+		monthNameFormat?: DateTimeFormatOption
+		weekdayNameFormat?: DateTimeFormatOption
+		showTimes?: boolean
+		timeFormatOptions?: object
+		disablePast?: boolean
+		disableFuture?: boolean
+		enableDateSelection?: boolean
+		selectionStart?: Date
+		selectionEnd?: Date
+		enableDragDrop?: boolean
+		startingDayOfWeek?: number
+		items?: ICalendarItem[]
+		dateClasses?: Record<string, string[]>
+		itemTop?: string
+		itemContentHeight?: string
+		itemBorderHeight?: string
+		periodChangedCallback?: Function
+		currentPeriodLabel?: string
+		currentPeriodLabelIcons?: string
+		doEmitItemMouseEvents?: boolean
+	}>(),
+	{
+		showDate: undefined,
+		displayPeriodUom: "month",
+		displayPeriodCount: 1,
+		displayWeekNumbers: false,
+		locale: undefined,
+		monthNameFormat: "long",
+		weekdayNameFormat: "short",
+		showTimes: false,
+		timeFormatOptions: () => ({}),
+		disablePast: false,
+		disableFuture: false,
+		enableDateSelection: false,
+		selectionStart: undefined,
+		selectionEnd: undefined,
+		enableDragDrop: false,
+		startingDayOfWeek: 0,
+		items: () => [],
+		dateClasses: () => ({}),
+		itemTop: "1.4em",
+		itemContentHeight: "1.4em",
+		itemBorderHeight: "2px",
+		periodChangedCallback: undefined,
+		currentPeriodLabel: "",
+		currentPeriodLabelIcons: "⇤-⇥",
+		doEmitItemMouseEvents: false,
+	}
+)
 
 const emit = defineEmits([
 	"input",
@@ -552,6 +581,7 @@ header are in the CalendarViewHeader component.
 	/* Allow grid to scroll if there are too may weeks to fit in the view */
 	overflow-y: auto;
 	-ms-overflow-style: none;
+	scrollbar-width: none;
 }
 
 .cv-weeknumber {
@@ -595,6 +625,7 @@ header are in the CalendarViewHeader component.
 	direction: ltr;
 	position: relative;
 	overflow-y: auto;
+	scrollbar-width: none;
 }
 
 .cv-day {
@@ -766,7 +797,7 @@ _:-ms-lang(x),
 
 /* Hide scrollbars for the grid and the week */
 .cv-weeks::-webkit-scrollbar,
-.cv-week::-webkit-scrollbar {
+.cv-weekdays::-webkit-scrollbar {
 	width: 0; /* remove scrollbar space */
 	background: transparent; /* optional: just make scrollbar invisible */
 }
