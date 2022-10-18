@@ -44,7 +44,7 @@ class AppState {
 	selectionStart?: Date = undefined
 	selectionEnd?: Date = undefined
 	theme: string = "gcal"
-	items: Array<ICalendarItem> = []
+	items: ICalendarItem[] = []
 }
 
 const state = reactive(new AppState())
@@ -107,10 +107,11 @@ const onDrop = (item: INormalizedCalendarItem, date: Date) => {
 onMounted(() => (state.items = [...Array(25)].map((_, i) => getRandomEvent(i))))
 </script>
 <style>
-@import "../static/css/default.css";
-@import "../static/css/gcal.css";
-@import "../static/css/holidays-us.css";
-@import "../static/css/holidays-ue.css";
+/* For apps using the npm package, the below URLs should reference /node_modules/vue-simple-calendar/dist/css/ instead */
+@import "/css/default.css";
+@import "/css/gcal.css";
+@import "/css/holidays-us.css";
+@import "/css/holidays-ue.css";
 
 #example-simple {
 	font-family: Avenir, Arial, Helvetica, sans-serif;

@@ -13,6 +13,7 @@ export default defineConfig({
 			entry: path.resolve(__dirname, "lib/main.ts"),
 			name: "CalendarView",
 		},
+		assetsInclude: ["**/*.css"],
 		rollupOptions: {
 			// make sure to externalize deps that shouldn't be bundled into your library
 			external: ["vue"],

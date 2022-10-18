@@ -17,38 +17,14 @@ Traditional US Holidays
 */
 
 /* Easter: example of a holiday that changes each year. Easy to pre-populate for a reasonable number of years. */
-.cv-wrapper.holiday-us-traditional .d2015-04-05 .cv-day-number::before {
-	content: "\271D";
-}
-
-.cv-wrapper.holiday-us-traditional .d2016-03-27 .cv-day-number::before {
-	content: "\271D";
-}
-
-.cv-wrapper.holiday-us-traditional .d2017-04-16 .cv-day-number::before {
-	content: "\271D";
-}
-
-.cv-wrapper.holiday-us-traditional .d2018-04-01 .cv-day-number::before {
-	content: "\271D";
-}
-
-.cv-wrapper.holiday-us-traditional .d2019-04-21 .cv-day-number::before {
-	content: "\271D";
-}
-
-.cv-wrapper.holiday-us-traditional .d2020-04-12 .cv-day-number::before {
-	content: "\271D";
-}
-
-.cv-wrapper.holiday-us-traditional .d2021-04-04 .cv-day-number::before {
-	content: "\271D";
-}
-
-.cv-wrapper.holiday-us-traditional .d2022-04-17 .cv-day-number::before {
-	content: "\271D";
-}
-
+.cv-wrapper.holiday-us-traditional .d2015-04-05 .cv-day-number::before,
+.cv-wrapper.holiday-us-traditional .d2016-03-27 .cv-day-number::before,
+.cv-wrapper.holiday-us-traditional .d2017-04-16 .cv-day-number::before,
+.cv-wrapper.holiday-us-traditional .d2018-04-01 .cv-day-number::before,
+.cv-wrapper.holiday-us-traditional .d2019-04-21 .cv-day-number::before,
+.cv-wrapper.holiday-us-traditional .d2020-04-12 .cv-day-number::before,
+.cv-wrapper.holiday-us-traditional .d2021-04-04 .cv-day-number::before,
+.cv-wrapper.holiday-us-traditional .d2022-04-17 .cv-day-number::before,
 .cv-wrapper.holiday-us-traditional .d2023-04-09 .cv-day-number::before {
 	content: "\271D";
 }

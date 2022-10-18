@@ -8,14 +8,14 @@ interface ICalendarItem {
 	tooltip?: string
 	endDate?: Date
 	url?: string
-	classes?: Array<string> | null
+	classes?: string[] | null
 	style?: string
 }
 
 interface INormalizedCalendarItem extends ICalendarItem {
 	endDate: Date
 	originalItem: ICalendarItem
-	classes: Array<string>
+	classes: string[]
 	itemRow?: number
 }
 

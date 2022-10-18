@@ -20,6 +20,12 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 6.2.1 (2022-10-17)
+
+- Fix style export (#214, #215)
+- Fix where theme CSS files were not included in npm package
+- Minor code cleanup (TS array format, using template strings, README fixes, CSS formatting)
+
 ## 6.2.0 (2022-10-15)
 
 - Use TypeScript for Events too

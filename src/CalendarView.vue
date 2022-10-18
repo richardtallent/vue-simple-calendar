@@ -3,12 +3,12 @@
 		aria-label="Calendar"
 		:class="[
 			'cv-wrapper',
-			'locale-' + CalendarMath.languageCode(displayLocale),
-			'locale-' + displayLocale,
-			'y' + periodStart.getFullYear(),
-			'm' + CalendarMath.paddedMonth(periodStart),
-			'period-' + displayPeriodUom,
-			'periodCount-' + displayPeriodCount,
+			`locale-${CalendarMath.languageCode(displayLocale)}`,
+			`locale-${displayLocale}`,
+			`y${periodStart.getFullYear()}`,
+			`m${CalendarMath.paddedMonth(periodStart)}`,
+			`period-${displayPeriodUom}`,
+			`periodCount-${displayPeriodCount}`,
 			{
 				past: CalendarMath.isPastMonth(periodStart),
 				future: CalendarMath.isFutureMonth(periodStart),
@@ -31,7 +31,7 @@
 			<div
 				v-for="(weekStart, weekIndex) in weeksOfPeriod"
 				:key="`${weekIndex}-week`"
-				:class="['cv-week', 'week' + (weekIndex + 1), 'ws' + CalendarMath.isoYearMonthDay(weekStart)]"
+				:class="['cv-week', `week${weekIndex + 1}`, `ws${CalendarMath.isoYearMonthDay(weekStart)}`]"
 			>
 				<div v-if="displayWeekNumbers" class="cv-weeknumber">
 					<slot name="weekNumber" :date="weekStart" :numberInYear="periodStartCalendarWeek + weekIndex" :numberInPeriod="weekIndex + 1"
@@ -46,10 +46,10 @@
 						:class="[
 							'cv-day',
 							getColumnDOWClass(dayIndex),
-							'd' + CalendarMath.isoYearMonthDay(day),
-							'd' + CalendarMath.isoMonthDay(day),
-							'd' + CalendarMath.paddedDay(day),
-							'instance' + CalendarMath.instanceOfMonth(day),
+							`d${CalendarMath.isoYearMonthDay(day)}`,
+							`d${CalendarMath.isoMonthDay(day)}`,
+							`d${CalendarMath.paddedDay(day)}`,
+							`instance${CalendarMath.instanceOfMonth(day)}`,
 							{
 								today: CalendarMath.isSameDate(day, CalendarMath.today()),
 								outsideOfMonth: !CalendarMath.isSameMonth(day, defaultedShowDate),
@@ -215,7 +215,7 @@ const displayLastDate = computed((): Date => CalendarMath.endOfWeek(periodEnd.va
 
 // Create an array of dates, where each date represents the beginning of a week that
 // should be rendered in the view for the current period.
-const weeksOfPeriod = computed((): Array<Date> => {
+const weeksOfPeriod = computed((): Date[] => {
 	const numWeeks = Math.floor((CalendarMath.dayDiff(displayFirstDate.value, displayLastDate.value) + 1) / 7)
 	return [...Array(numWeeks)].map((_, i) => CalendarMath.addDays(displayFirstDate.value, i * 7))
 })
@@ -225,7 +225,7 @@ const monthNames = computed((): string[] => CalendarMath.getFormattedMonthNames(
 const weekdayNames = computed((): string[] => CalendarMath.getFormattedWeekdayNames(displayLocale.value, props.weekdayNameFormat, props.startingDayOfWeek))
 
 // Ensure all item properties have suitable default
-const fixedItems = computed((): Array<INormalizedCalendarItem> => {
+const fixedItems = computed((): INormalizedCalendarItem[] => {
 	if (!props.items) return []
 	return props.items.map((item) => CalendarMath.normalizeItem(item, item.id === state.currentHoveredItemId))
 })
@@ -435,11 +435,11 @@ const itemComparer = (a: INormalizedCalendarItem, b: INormalizedCalendarItem) =>
 }
 
 // Return a list of items that INCLUDE any portion of a given week.
-const findAndSortItemsInWeek = (weekStart: Date): Array<INormalizedCalendarItem> => findAndSortItemsInDateRange(weekStart, CalendarMath.addDays(weekStart, 6))
+const findAndSortItemsInWeek = (weekStart: Date): INormalizedCalendarItem[] => findAndSortItemsInDateRange(weekStart, CalendarMath.addDays(weekStart, 6))
 
 // Return a list of items that INCLUDE any day within the date range,
 // inclusive, sorted so items that start earlier are returned first.
-const findAndSortItemsInDateRange = (startDate: Date, endDate: Date): Array<INormalizedCalendarItem> =>
+const findAndSortItemsInDateRange = (startDate: Date, endDate: Date): INormalizedCalendarItem[] =>
 	fixedItems.value.filter((item) => item.endDate >= startDate && CalendarMath.dateOnly(item.startDate) <= endDate, this).sort(itemComparer)
 
 const dayHasItems = (day: Date): boolean => !!fixedItems.value.find((d) => d.endDate >= day && CalendarMath.dateOnly(d.startDate) <= day)
@@ -453,10 +453,11 @@ const dayIsSelected = (day: Date): boolean => {
 
 // Return a list of items that CONTAIN the week starting on a day.
 // Sorted so the items that start earlier are always shown first.
-const getWeekItems = (weekStart: Date): Array<INormalizedCalendarItem> => {
+const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 	const items = findAndSortItemsInWeek(weekStart)
-	const results = []
-	const itemRows: Array<Array<boolean>> = [[], [], [], [], [], [], []]
+	const results = [] as INormalizedCalendarItem[]
+	const itemRows: boolean[][] = [[], [], [], [], [], [], []]
+	if (!items) return results
 	for (let i = 0; i < items.length; i++) {
 		const ep = Object.assign({}, items[i], {
 			classes: [...items[i].classes],

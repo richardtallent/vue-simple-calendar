@@ -23,8 +23,8 @@ https://github.com/richardtallent/vue-simple-calendar-sample
 - [Events](#events)
 - [Slots](#slots)
   - [header](#header)
-  - [dayHeader](#dayHeader)
-  - [dayContent](#dayContent)
+  - [dayHeader](#day-header)
+  - [dayContent](#day-content)
   - [item](#item)
   - [weekNumber](#item)
 - [Customizing the Look and Feel](#customizing-the-look-and-feel)
@@ -133,8 +133,8 @@ Here's a minimal application example for an empty calendar, styled with the defa
 
 	import "..relative-path-to-node_modules/vue-simple-calendar/dist/style.css"
 	// The next two lines are optional themes
-	import "..relative-path-to-node_modules/vue-simple-calendar/static/css/default.css"
-	import "..relative-path-to-node_modules/vue-simple-calendar/static/css/holidays-us.css"
+	import "..relative-path-to-node_modules/vue-simple-calendar/dist/css/default.css"
+	import "..relative-path-to-node_modules/vue-simple-calendar/dist/css/holidays-us.css"
 
 	export default {
 		name: 'app',
@@ -253,9 +253,9 @@ You can create handlers for the following Vue events to add custom functionality
 
 ## Slots
 
-### header
+### Header
 
-This named slot contains the component you want to use as the calendar's header. Generally, this would show the current date range, and allow the user to navigate back and forth through time. If you don't provide a component for this slot, there will be no header, just the calendar grid. This component comes with a nice default header component, `CalendarViewHeader`, which you can either use directly, or use as a template for creating your own. (Prior to 4.0, if you didn't provide a component, a default header would be shown. That is no longer the case for reasons explained in the CHANGELOG.)
+The named slot `header` contains the component you want to use as the calendar's header. Generally, this would show the current date range, and allow the user to navigate back and forth through time. If you don't provide a component for this slot, there will be no header, just the calendar grid. This component comes with a nice default header component, `CalendarViewHeader`, which you can either use directly, or use as a template for creating your own. (Prior to 4.0, if you didn't provide a component, a default header would be shown. That is no longer the case for reasons explained in the CHANGELOG.)
 
 ```HTML
 <calendar-view :show-date="myShowDate">
@@ -290,21 +290,21 @@ The developer implementing her own header simply needs to create a header compon
 
 Note above that both `previousPeriod` and `previousFullPeriod` are provided, as well as `nextPeriod` and `nextFullPeriod`. The reason for this distinction is to allow the developer to decide how the calendar's Previous and Next buttons should move through time if `displayPeriodCount` is greater than 1. My personal preference is to move forward and backward by one week / month, allowing the user to pinpoint the exact date window they wish to see. But in some applications (a "quarterly" calendar, for example, or a calendar with set two-week periods), it may be better for the buttons to jump backward and forward based on the `displayPeriodCount` setting. This gives the developer both options -- just choose which interaction you want to use, and use those dates to set the new `showDate`.
 
-### dayHeader
+### Day Header
 
-This optional named slot **replaces** the default `div.day` elements that appear in the column headers for each day of the week. If all you need to do is change how the names are shown, it's probably better to override the `locale` and/or `weekdayNameFormat` property. This slot is intended for situations where you need to override the markup within each header cell. For example, if you want each day of the week to be clickable.
+The optional named slot `dayHeader` **replaces** the default `div.day` elements that appear in the column headers for each day of the week. If all you need to do is change how the names are shown, it's probably better to override the `locale` and/or `weekdayNameFormat` property. This slot is intended for situations where you need to override the markup within each header cell. For example, if you want each day of the week to be clickable.
 
 This slot passes two scoped variables: `index`, 0-7, and `label`, the text it would have used in the header based on the current `locale` and `weekdayNameFormat`.
 
-### dayContent
+### Day Content
 
-This optional named slot allows you to provide your own contents within the date cell. The day of the month is rendered in a separate (sibling) element with the class `cv-day-number`, so you should use CSS to hide this class if you want your slot to be the only content in the cell. Note that items are rendered _above_ the individual date cells, so your slot content will appear below any items on that day.
+The optional named slot `dayContent` allows you to provide your own contents within the date cell. The day of the month is rendered in a separate (sibling) element with the class `cv-day-number`, so you should use CSS to hide this class if you want your slot to be the only content in the cell. Note that items are rendered _above_ the individual date cells, so your slot content will appear below any items on that day.
 
 This slot passes one scoped variable: `day`, the date associated with the cell.
 
-### item
+### Item
 
-This optional named slot **replaces** the `div.item` for each item (not just the contents of the items element, the entire element). Use this if you want to override _entirely_ how items are rendered. For example, on a small mobile device, you may want to show just a thin stripe, dots, or icons to indicate items, without titles or times. This slot passes three scoped variables:
+The optional named slot `item` **replaces** the `div.item` for each item (not just the contents of the items element, the entire element). Use this if you want to override _entirely_ how items are rendered. For example, on a small mobile device, you may want to show just a thin stripe, dots, or icons to indicate items, without titles or times. This slot passes three scoped variables:
 
 - `value`: the _normalized_ calendar item
 - `weekStartDate`: the date of the first day of the week being rendered
@@ -312,9 +312,9 @@ This optional named slot **replaces** the `div.item` for each item (not just the
 
 Note that `item` is a version of the calendar item _normalized_ to be shown on that week's row, it's not the bare item pulled from the `items` prop. This customized version parses and defaults the `startDate` and `endDate`, defaults missing `id` to a random number, defaults a blank title to "Untitled", and adds a number of `classes` values based on the position and role of the item as shown for that week (whether it continues from the previous week, etc.). The original item is passed back as `item.originalItem`.
 
-### weekNumber
+### Week Number
 
-This optional named slot **replaces** the content shown in the "week number" column. By default, this shows the week number of that week within its year (given your chosen startingDayOfWeek, and where week "1" is the week that contains January 1). However, using the `weekNumber` slot, you can use this column to display anything -- a number, icons, text, etc. This slow passes three scoped variables:
+The optional named slot `weekNumber` **replaces** the content shown in the "week number" column. By default, this shows the week number of that week within its year (given your chosen startingDayOfWeek, and where week "1" is the week that contains January 1). However, using the `weekNumber` slot, you can use this column to display anything -- a number, icons, text, etc. This slow passes three scoped variables:
 
 - `weekStart`: The date that begins the week
 - `numberInYear`: The calendar week number (_i.e._, the number that would have been displayed by default)
@@ -493,7 +493,7 @@ I'm open to other suggestions, provided they are easily calculated and there's s
 
 These classes are applied to the start and end time of an item, respectively.
 
-## Plans
+## Future Plans
 
 - [x] Keep it simple, not a kitchen-sink control.
 - [x] Better docs.
@@ -542,9 +542,9 @@ Moment.js is great, but I would only need a tiny fraction of its capabilities, a
 
 The **baseline** style (what you get with no external CSS files imported) is intended to be as bare as possible while still providing full functionality and legibility. The idea here is to make integrating this component into your own theme as easy as possible by inheriting what it can from your parent application and minimizing the places where you may need to override its choices.
 
-The **default theme** stylesheet builds on this baseline to provide a restrained, clean, simple theme for the calendar, and is useful if you don't intend to create your own theme. You can include it from `static/css/default.css`. The sample app uses this stylesheet.
+The **default theme** stylesheet builds on this baseline to provide a restrained, clean, simple theme for the calendar, and is useful if you don't intend to create your own theme. You can include it from `dist/css/default.css`. The sample app uses this stylesheet.
 
-A third stylesheet, `static/css/holidays-us.css`, shows how simple it is to use CSS to style specific days using CSS selectors (it adds emoji icons for various holidays).
+A third stylesheet, `dist/css/holidays-us.css`, shows how simple it is to use CSS to style specific days using CSS selectors (it adds emoji icons for various holidays).
 
 ### What styles can I _not_ override?
 

@@ -24,7 +24,7 @@ const beginningOfPeriod = (d: Date, periodUom: string, startDow: number): Date =
 	}
 }
 
-const daysOfWeek = (weekStart: Date): Array<Date> => [...Array(7)].map((_, i) => addDays(weekStart, i))
+const daysOfWeek = (weekStart: Date): Date[] => [...Array(7)].map((_, i) => addDays(weekStart, i))
 
 // ********************************************
 // Date transforms that retain time of day
@@ -75,7 +75,7 @@ const formattedTime = (d: Date, locale: string, options?: Intl.DateTimeFormatOpt
 // May 6 – 26, 2018
 // May 13 – June 2, 2018
 // December 16, 2018 – January 5, 2019
-const formattedPeriod = (startDate: Date, endDate: Date, periodUom: string, monthNames: Array<string>) => {
+const formattedPeriod = (startDate: Date, endDate: Date, periodUom: string, monthNames: string[]) => {
 	const singleYear = startDate.getFullYear() === endDate.getFullYear()
 	const singleMonth = isSameMonth(startDate, endDate)
 	const isYear = periodUom === "year"
@@ -159,7 +159,7 @@ const dateOnly = (d: Date | string): Date => {
 const languageCode = (l: string): string => l.substring(0, 2)
 const supportsIntl = (): boolean => typeof Intl !== "undefined"
 
-const getFormattedMonthNames = (locale: string, format: DateTimeFormatOption): Array<string> => {
+const getFormattedMonthNames = (locale: string, format: DateTimeFormatOption): string[] => {
 	// Use the provided locale and format if possible to obtain the name of the month
 	if (!supportsIntl()) return [...Array(12)].map((_) => "")
 	const formatter = new Intl.DateTimeFormat(locale, { month: format })
@@ -167,7 +167,7 @@ const getFormattedMonthNames = (locale: string, format: DateTimeFormatOption): A
 	return [...Array(12)].map((_, i) => formatter.format(new Date(2017, i, 1)))
 }
 
-const getFormattedWeekdayNames = (locale: string, format: DateTimeFormatOption, startingDayOfWeek: number): Array<string> => {
+const getFormattedWeekdayNames = (locale: string, format: DateTimeFormatOption, startingDayOfWeek: number): string[] => {
 	// Use the provided locale and format if possible to obtain the name of the days of the week
 	if (!supportsIntl()) return [...Array(7)].map((_) => "")
 	const formatter = new Intl.DateTimeFormat(locale, { weekday: format })

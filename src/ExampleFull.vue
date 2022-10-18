@@ -356,9 +356,10 @@ const clickTestAddItem = (): void => {
 </script>
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css";
-@import "../static/css/gcal.css";
-@import "../static/css/holidays-us.css";
-@import "../static/css/holidays-ue.css";
+/* For apps using the npm package, the below URLs should reference /node_modules/vue-simple-calendar/dist/css/ instead */
+@import "/css/gcal.css";
+@import "/css/holidays-us.css";
+@import "/css/holidays-ue.css";
 
 #example-full {
 	display: flex;

@@ -8,10 +8,22 @@ as of May 2020.
 /* Header */
 
 .theme-gcal {
+	--event-color-tomato: #d50000;
+	--event-color-flamingo: #e67c73;
+	--event-color-tangerine: #f4511e;
+	--event-color-banana: #f6bf26;
+	--event-color-sage: #33b679;
+	--event-color-basil: #0b8043;
+	--event-color-peacock: #039be5;
+	--event-color-blueberry: #3f51b5;
+	--event-color-lavender: #7986cb;
+	--event-color-grape: #8e24aa;
+	--event-color-graphite: #616161;
+
 	font-size: 12px;
-	font-family: "Roboto", sans-serif;
+	font-family: Roboto, sans-serif;
 	font-weight: 400;
-	border-color: rgb(32, 33, 36);
+	border-color: rgb(32 33 36);
 }
 
 .theme-gcal .cv-header {
@@ -33,7 +45,7 @@ as of May 2020.
 }
 
 .theme-gcal .cv-header button:not(.currentPeriod) {
-	font-family: "Roboto", sans-serif;
+	font-family: Roboto, sans-serif;
 	background-color: transparent;
 	border: none;
 	border-radius: 99em;
@@ -42,7 +54,7 @@ as of May 2020.
 }
 
 .theme-gcal .cv-header button:hover {
-	background-color: rgba(32, 33, 36, 0.039);
+	background-color: rgba(32 33 36 3.9%);
 }
 
 .theme-gcal .cv-header button.currentPeriod {
@@ -63,7 +75,6 @@ as of May 2020.
 	height: 1.5em;
 	padding: 0;
 	text-align: center;
-	text-align: center;
 	letter-spacing: -0.6em;
 	padding-right: 0.6em;
 }
@@ -75,7 +86,7 @@ as of May 2020.
 .theme-gcal .cv-header-day {
 	border-bottom: none;
 	text-transform: uppercase;
-	padding: 0.75em 0 0.25em 0;
+	padding: 0.75em 0 0.25em;
 	color: #70757a;
 }
 
@@ -163,20 +174,6 @@ as of May 2020.
 
 .theme-gcal .cv-item.span7 {
 	width: calc((700% / 7) - 0.75em);
-}
-
-.theme-gcal {
-	--event-color-tomato: #d50000;
-	--event-color-flamingo: #e67c73;
-	--event-color-tangerine: #f4511e;
-	--event-color-banana: #f6bf26;
-	--event-color-sage: #33b679;
-	--event-color-basil: #0b8043;
-	--event-color-peacock: #039be5;
-	--event-color-blueberry: #3f51b5;
-	--event-color-lavender: #7986cb;
-	--event-color-grape: #8e24aa;
-	--event-color-graphite: #616161;
 }
 
 .theme-gcal .cv-item.isHovered {
