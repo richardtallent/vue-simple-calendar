@@ -77,7 +77,7 @@
 						<div class="cv-day-number">{{ day.getDate() }}</div>
 						<slot :day="day" name="dayContent" />
 					</div>
-					<template v-for="i in getWeekItems(weekStart)">
+					<template v-if="props.enableHtmlTitles" v-for="i in getWeekItems(weekStart)">
 						<slot :value="i" :weekStartDate="weekStart" :top="getItemTop(i)" name="item">
 							<div
 								:key="i.id"
@@ -95,6 +95,26 @@
 							/>
 						</slot>
 					</template>
+					<template v-else v-for="i in getWeekItems(weekStart)">
+						<slot :value="i" :weekStartDate="weekStart" :top="getItemTop(i)" name="item">
+							<div
+								:key="i.id"
+								:draggable="enableDragDrop"
+								:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
+								:class="i.classes"
+								:title="i.tooltip || i.title"
+								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
+								class="cv-item"
+								@dragstart="onDragItemStart(i, $event)"
+								@mouseenter="onMouseEnterItem(i, $event)"
+								@mouseleave="onMouseLeaveItem(i, $event)"
+								@click.stop="onClickItem(i, $event)"
+							>
+								{{ getItemTitle(i) }}
+							</div>
+							div>
+						</slot>
+					</template>
 				</div>
 			</div>
 		</div>
@@ -103,7 +123,7 @@
 <script setup lang="ts">
 import CalendarMath from "./CalendarMath"
 import CalendarViewState from "./CalendarViewState"
-import { computed, reactive, watch, withDefaults } from "vue"
+import { computed, reactive, watch } from "vue"
 import { ICalendarItem, INormalizedCalendarItem, DateTimeFormatOption } from "./ICalendarItem"
 import { IHeaderProps } from "./IHeaderProps"
 
@@ -134,6 +154,7 @@ const props = withDefaults(
 		currentPeriodLabel?: string
 		currentPeriodLabelIcons?: string
 		doEmitItemMouseEvents?: boolean
+		enableHtmlTitles?: boolean
 	}>(),
 	{
 		showDate: undefined,
@@ -161,6 +182,7 @@ const props = withDefaults(
 		currentPeriodLabel: "",
 		currentPeriodLabelIcons: "⇤-⇥",
 		doEmitItemMouseEvents: false,
+		enableHtmlTitles: true,
 	}
 )
 

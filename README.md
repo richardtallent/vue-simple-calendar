@@ -178,6 +178,10 @@ The following properties are supported, by functional area:
 - `dateClasses` - Optional object, where the key is a date in ISO form (e.g., "2018-04-15") and the value is a string or array of additional CSS classes that should be applied to the main element for that date. This could be useful for dynamically highlighting selected dates, holidays, blocked-off dates, etc. **NOTE:** For an example of how to use this property and associated styling, please refer to the [demo app](https://github.com/richardtallent/vue-simple-calendar-sample), which uses this prop to put a dagger emoji on the "ides" of the current month (the 13th or 15th, depending on the month) and some other icons on the 21st.
 - `periodChangedCallback` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `items` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
 - `displayWeekNumbers`: Adds a column for each week to show the "week number." By default, this appears to the left of the days and contains the calendar week number. The position can moved to the right using CSS. See the `weekNumber` slot for more details.
+- `enableHtmlTitles`: Allows the `title` property of your calendar items to contain HTML. **This is true by default.**
+
+| Important: if you put user-provided content in titles, you should either sanitize the HTML they provide, or disable this flag to prevent XSS vulnerabilities. |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 ### Grid Selection
 
