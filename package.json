@@ -1,6 +1,6 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "6.3.0",
+	"version": "6.3.1",
 	"private": false,
 	"description": "Simple Vue 3 calendar event control",
 	"author": "richardtallent <richard@tallent.us>",
@@ -23,9 +23,21 @@
 			"import": "./dist/vue-simple-calendar.mjs",
 			"require": "./dist/vue-simple-calendar.umd.js"
 		},
-		"./dist/style.css": {
-			"import": "./dist/style.css",
-			"require": "./dist/style.css"
+		"./dist/css/default.css": {
+			"import": "./dist/css/default.css",
+			"require": "./dist/css/default.css"
+		},
+		"./dist/css/gcal.css": {
+			"import": "./dist/css/gcal.css",
+			"require": "./dist/css/gcal.css"
+		},
+		"./dist/css/holidays-us.css": {
+			"import": "./dist/css/holidays-us.css",
+			"require": "./dist/css/holidays-us.css"
+		},
+		"./dist/css/holidays-ue.css": {
+			"import": "./dist/css/holidays-ue.css",
+			"require": "./dist/css/holidays-ue.css"
 		}
 	},
 	"scripts": {
@@ -34,25 +46,25 @@
 		"build": "vite build"
 	},
 	"dependencies": {
-		"vue": "^3.2.41"
+		"vue": "^3.2.47"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "^5.49.0",
+		"@typescript-eslint/parser": "^5.51.0",
 		"@vitejs/plugin-vue": "^4.0.0",
-		"@vue/compiler-sfc": "^3.2.45",
+		"@vue/compiler-sfc": "^3.2.47",
 		"autoprefixer": "^10.4.13",
-		"eslint": "^8.32.0",
+		"eslint": "^8.34.0",
 		"eslint-config-tabsanity": "^2.0.0",
 		"eslint-plugin-prettier": "^4.2.1",
 		"eslint-plugin-vue": "^9.9.0",
 		"postcss": "^8.4.21",
-		"prettier": "^2.8.3",
+		"prettier": "^2.8.4",
 		"rollup-plugin-typescript2": "^0.34.1",
-		"stylelint": "^14.16.1",
-		"stylelint-config-standard": "^29.0.0",
-		"typescript": "^4.9.4",
-		"vite": "^4.0.4",
-		"vite-plugin-dts": "^1.7.1"
+		"stylelint": "^15.1.0",
+		"stylelint-config-standard": "^30.0.1",
+		"typescript": "^4.9.5",
+		"vite": "^4.1.1",
+		"vite-plugin-dts": "^1.7.2"
 	},
 	"eslintConfig": {
 		"extends": [

@@ -20,6 +20,11 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 6.3.1 (2023-02-11)
+
+- Added stylesheets to the `package.json` `exports` list (#218)
+- Bump dependencies
+
 ## 6.3.0 (2023-01-26)
 
 - Add `enableHtmlTitles` option to make it easier to sanitize user-provided content in calendar item `title` values, and a related warning in the README (thanks Pau!)
