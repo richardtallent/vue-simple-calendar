@@ -112,7 +112,6 @@
 							>
 								{{ getItemTitle(i) }}
 							</div>
-							div>
 						</slot>
 					</template>
 				</div>
