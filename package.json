@@ -23,6 +23,10 @@
 			"import": "./dist/vue-simple-calendar.mjs",
 			"require": "./dist/vue-simple-calendar.umd.js"
 		},
+		"./dist/style.css": {
+			"import": "./dist/style.css",
+			"require": "./dist/style.css"
+		},
 		"./dist/css/default.css": {
 			"import": "./dist/css/default.css",
 			"require": "./dist/css/default.css"
