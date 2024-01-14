@@ -316,8 +316,8 @@ const onClickDay = (d: Date): void => {
 	state.message = `You clicked: ${d.toLocaleDateString()}`
 }
 
-const onClickItem = (e: INormalizedCalendarItem): void => {
-	state.message = `You clicked: ${e.title}`
+const onClickItem = (item: INormalizedCalendarItem): void => {
+	state.message = `You clicked: ${item.title}`
 }
 
 const setShowDate = (d: Date): void => {

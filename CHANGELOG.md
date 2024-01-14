@@ -20,6 +20,16 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 7.0.0 (2024-01-14)
+
+- BREAKING: Changed the week number computation to follow ISO 8601 (#228)
+- BREAKING: All slots now use `kebab-case`, which is the norm for Vue 3 (#224)
+- Fix type declared for events `click-item`, `item-mouseenter`, `item-mouseleave`, and `drag-start` events (they send the normalized item, not the original)
+- Fixed GCal theme to not hide the time of day due to low contrast on gray events
+- Added time of day to simple example to test time-of-day sorting
+- Fixed style declaration in package.json (#221, #224, thanks @Cayaf89!)
+- Bump dependencies
+
 ## 6.3.1 (2023-02-11)
 
 - Added stylesheets to the `package.json` `exports` list (#218)

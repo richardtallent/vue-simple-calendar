@@ -4,7 +4,7 @@
 
 **vue-simple-calendar** is a flexible, themeable, lightweight calendar component for Vue that supports multi-day scheduled items.
 
-**Important:** Version 6.0, released 2021-03-27, drops IE11 support and has been migrated to Vue 3 and Vite.
+**Important:** Version 6.0, released 2021-03-27, dropped IE11 support and was migrated to Vue 3 and Vite.
 Version 5 is still is available via npm if you need Vue 2 or IE11 support, but it will not be maintained going forward.
 
 ## Demo
@@ -58,7 +58,7 @@ There are other great calendar components out there, but most are either intende
 
 What this component _does not_ try to do:
 
-- There will be no "agenda" view (time-of-day grid). Adding this view would require too much additional complexity.
+- **There will be no "agenda" view (time-of-day grid).** Adding this view would require too much additional complexity.
 - There is no interface for managing calendar items. This is far too use-specific.
 - There is no built-in AJAX mechanism. This is also far too use-specific.
 - Only the Gregorian calendar is supported (7-day weeks, etc.).
@@ -296,13 +296,13 @@ Note above that both `previousPeriod` and `previousFullPeriod` are provided, as 
 
 ### Day Header
 
-The optional named slot `dayHeader` **replaces** the default `div.day` elements that appear in the column headers for each day of the week. If all you need to do is change how the names are shown, it's probably better to override the `locale` and/or `weekdayNameFormat` property. This slot is intended for situations where you need to override the markup within each header cell. For example, if you want each day of the week to be clickable.
+The optional named slot `day-header` **replaces** the default `div.day` elements that appear in the column headers for each day of the week. If all you need to do is change how the names are shown, it's probably better to override the `locale` and/or `weekdayNameFormat` property. This slot is intended for situations where you need to override the markup within each header cell. For example, if you want each day of the week to be clickable.
 
 This slot passes two scoped variables: `index`, 0-7, and `label`, the text it would have used in the header based on the current `locale` and `weekdayNameFormat`.
 
 ### Day Content
 
-The optional named slot `dayContent` allows you to provide your own contents within the date cell. The day of the month is rendered in a separate (sibling) element with the class `cv-day-number`, so you should use CSS to hide this class if you want your slot to be the only content in the cell. Note that items are rendered _above_ the individual date cells, so your slot content will appear below any items on that day.
+The optional named slot `day-content` allows you to provide your own contents within the date cell. The day of the month is rendered in a separate (sibling) element with the class `cv-day-number`, so you should use CSS to hide this class if you want your slot to be the only content in the cell. Note that items are rendered _above_ the individual date cells, so your slot content will appear below any items on that day.
 
 This slot passes one scoped variable: `day`, the date associated with the cell.
 
@@ -318,7 +318,9 @@ Note that `item` is a version of the calendar item _normalized_ to be shown on t
 
 ### Week Number
 
-The optional named slot `weekNumber` **replaces** the content shown in the "week number" column. By default, this shows the week number of that week within its year (given your chosen startingDayOfWeek, and where week "1" is the week that contains January 1). However, using the `weekNumber` slot, you can use this column to display anything -- a number, icons, text, etc. This slow passes three scoped variables:
+The optional named slot `week-number` **replaces** the content shown in the "week number" column. By default, this shows the week number of that week within its year. This is computed using the ISO 8601 logic, where "week 1" of a year is the week containing the first Thursday of January. This has no relation to your `startingDayOfWeek` property. If there is a partial week before the first week of the year, it is numbered `0` (if you move back to December of the prior year, that same week would be week 52 or 53 of that year).
+
+Using the `week-number` slot, you can use this column to display anything -- a number, icons, text, etc. This slow passes three scoped variables:
 
 - `weekStart`: The date that begins the week
 - `numberInYear`: The calendar week number (_i.e._, the number that would have been displayed by default)

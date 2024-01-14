@@ -6,13 +6,15 @@
 			:enable-date-selection="true"
 			:selection-start="state.selectionStart"
 			:selection-end="state.selectionEnd"
-			:display-week-numbers="false"
+			:starting-day-of-week="1"
 			:enable-drag-drop="true"
 			:item-top="themeOptions.top"
 			:item-content-height="themeOptions.height"
 			:item-border-height="themeOptions.border"
 			:class="`theme-${state.theme}`"
 			:current-period-label="themeOptions.currentPeriodLabel"
+			:show-times="true"
+			:display-week-numbers="true"
 			class="holiday-us-traditional holiday-us-official holiday-ue"
 			@date-selection-start="setSelection"
 			@date-selection="setSelection"
@@ -84,7 +86,7 @@ const finishSelection = (dateRange: Date[]) => setSelection(dateRange)
 
 const getRandomEvent = (index: number): ICalendarItem => {
 	const startDay = Math.floor(Math.random() * 28 + 1)
-	const endDay = Math.floor(Math.random() * 4) + startDay
+	const endDay = Math.floor(Math.random() * 3) + startDay
 	var d = new Date()
 	var i = {
 		id: index.toString(),
@@ -92,6 +94,14 @@ const getRandomEvent = (index: number): ICalendarItem => {
 		startDate: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), startDay)),
 		endDate: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), endDay)),
 		classes: Math.random() > 0.9 ? ["custom-date-class-red"] : null,
+	}
+	if(startDay === endDay) {
+		const eightAM = 8;
+		const timeRange = 12;
+		const startTime = (startDay === endDay) ? (eightAM + Math.floor(Math.random() * timeRange)) * 60 * 60 * 1000 : 0
+		const endTime = startTime + Math.floor(Math.random() * 3) * 60 * 60 * 1000
+		i.startDate = new Date(i.startDate.getTime() + startTime)
+		i.startDate = new Date(i.endDate.getTime() + endTime)
 	}
 	return i
 }

@@ -1,7 +1,7 @@
 import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
 import dts from "vite-plugin-dts"
-const path = require("path")
+import path from "path"
 
 // Use this config file to build the libary
 

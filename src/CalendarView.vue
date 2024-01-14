@@ -20,7 +20,7 @@
 		<div class="cv-header-days">
 			<div v-if="displayWeekNumbers" class="cv-weeknumber" />
 			<template v-for="(label, index) in weekdayNames">
-				<slot :index="getColumnDOWClass(index)" :label="label" name="dayHeader">
+				<slot :index="getColumnDOWClass(index)" :label="label" name="day-header">
 					<div :key="getColumnDOWClass(index)" :class="getColumnDOWClass(index)" class="cv-header-day">
 						{{ label }}
 					</div>
@@ -34,9 +34,9 @@
 				:class="['cv-week', `week${weekIndex + 1}`, `ws${CalendarMath.isoYearMonthDay(weekStart)}`]"
 			>
 				<div v-if="displayWeekNumbers" class="cv-weeknumber">
-					<slot name="weekNumber" :date="weekStart" :numberInYear="periodStartCalendarWeek + weekIndex" :numberInPeriod="weekIndex + 1"
-						><span>{{ periodStartCalendarWeek + weekIndex }}</span></slot
-					>
+					<slot name="week-number" :date="weekStart" :numberInYear="periodStartCalendarWeek + weekIndex" :numberInPeriod="weekIndex + 1">
+						<span>{{ periodStartCalendarWeek + weekIndex }}</span>
+					</slot>
 				</div>
 				<div class="cv-weekdays">
 					<div
@@ -75,7 +75,7 @@
 						@dragleave.prevent="onDragLeave(day, $event)"
 					>
 						<div class="cv-day-number">{{ day.getDate() }}</div>
-						<slot :day="day" name="dayContent" />
+						<slot :day="day" name="day-content" />
 					</div>
 					<template v-if="props.enableHtmlTitles" v-for="i in getWeekItems(weekStart)">
 						<slot :value="i" :weekStartDate="weekStart" :top="getItemTop(i)" name="item">
@@ -190,10 +190,10 @@ const emit = defineEmits<{
 	//(e: "input", payload: foo, windowEvent: Event): void
 	(e: "period-changed"): void
 	(e: "click-date", day: Date, itemsInRange: INormalizedCalendarItem[], windowEvent: Event): void
-	(e: "click-item", item: ICalendarItem, windowEvent: Event): void
-	(e: "item-mouseenter", item: ICalendarItem, windowEvent: Event): void
-	(e: "item-mouseleave", item: ICalendarItem, windowEvent: Event): void
-	(e: "drag-start", item: ICalendarItem, windowEvent: Event): void
+	(e: "click-item", item: INormalizedCalendarItem, windowEvent: Event): void
+	(e: "item-mouseenter", item: INormalizedCalendarItem, windowEvent: Event): void
+	(e: "item-mouseleave", item: INormalizedCalendarItem, windowEvent: Event): void
+	(e: "drag-start", item: INormalizedCalendarItem, windowEvent: Event): void
 	(e: "drag-over-date", currentDragItem: INormalizedCalendarItem, day: Date, windowEvent: Event): void
 	(e: "drag-enter-date", currentDragItem: INormalizedCalendarItem, day: Date, windowEvent: Event): void
 	(e: "drag-leave-date", currentDragItem: INormalizedCalendarItem, day: Date, windowEvent: Event): void
@@ -224,9 +224,11 @@ const periodEnd = computed(
 )
 
 const periodStartCalendarWeek = computed((): number => {
-	const firstWeekStarts = CalendarMath.beginningOfWeek(CalendarMath.beginningOfPeriod(periodStart.value, "year", 0), props.startingDayOfWeek)
+	const jan1 = new Date(periodStart.value.getFullYear(), 0, 1)
+    const firstThursday = CalendarMath.addDays(jan1, (11 - jan1.getDay()) % 7);
+	const startOfFirstWeek = CalendarMath.beginningOfPeriod(firstThursday, "week", props.startingDayOfWeek)
 	const periodWeekStarts = CalendarMath.beginningOfWeek(periodStart.value, props.startingDayOfWeek)
-	return 1 + Math.floor(CalendarMath.dayDiff(firstWeekStarts, periodWeekStarts) / 7)
+	return 1 + Math.floor(CalendarMath.dayDiff(startOfFirstWeek, periodWeekStarts) / 7)
 })
 
 // For month and year views, the first and last dates displayed in the grid may not
@@ -321,7 +323,7 @@ const onClickDay = (day: Date, windowEvent: Event): void => {
 	emit("click-date", day, findAndSortItemsInDateRange(day, day), windowEvent)
 }
 
-const onClickItem = (calendarItem: ICalendarItem, windowEvent: Event): void => emit("click-item", calendarItem, windowEvent)
+const onClickItem = (calendarItem: INormalizedCalendarItem, windowEvent: Event): void => emit("click-item", calendarItem, windowEvent)
 
 // The day name header needs to know the dow for class assignment, and this value should
 // not change based on startingDayOfWeek (i.e., Sunday is always 0). This function
@@ -347,14 +349,14 @@ const getIncrementedPeriod = (count: number): Date | null => {
 // Hover items (#95, #136)
 // ******************************
 
-const onMouseEnterItem = (calendarItem: ICalendarItem, windowEvent: Event): void => {
+const onMouseEnterItem = (calendarItem: INormalizedCalendarItem, windowEvent: Event): void => {
 	state.currentHoveredItemId = calendarItem.id
 	if (props.doEmitItemMouseEvents) {
 		emit("item-mouseenter", calendarItem, windowEvent)
 	}
 }
 
-const onMouseLeaveItem = (calendarItem: ICalendarItem, windowEvent: Event): void => {
+const onMouseLeaveItem = (calendarItem: INormalizedCalendarItem, windowEvent: Event): void => {
 	state.currentHoveredItemId = ""
 	if (props.doEmitItemMouseEvents) {
 		emit("item-mouseleave", calendarItem, windowEvent)
@@ -487,7 +489,7 @@ const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 		})
 		const continued = ep.startDate < weekStart
 		const startOffset = continued ? 0 : CalendarMath.dayDiff(weekStart, ep.startDate)
-		const span = Math.min(7 - startOffset, CalendarMath.dayDiff(CalendarMath.addDays(weekStart, startOffset), ep.endDate) + 1)
+		const span = Math.max(1, Math.min(7 - startOffset, CalendarMath.dayDiff(CalendarMath.addDays(weekStart, startOffset), ep.endDate) + 1))
 		if (continued) ep.classes.push("continued")
 		if (CalendarMath.dayDiff(weekStart, ep.endDate) > 6) ep.classes.push("toBeContinued")
 		if (CalendarMath.isInPast(ep.endDate)) ep.classes.push("past")
