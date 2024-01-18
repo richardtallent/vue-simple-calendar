@@ -12,7 +12,7 @@
 	},
 	"homepage": "https://tallent.us/vue-simple-calendar/",
 	"main": "./dist/vue-simple-calendar.umd.js",
-	"module": "./dist/vue-simple-calendar.mjs",
+	"module": "./dist/vue-simple-calendar.js",
 	"types": "./dist/lib/main.d.ts",
 	"style": "./dist/style.css",
 	"files": [
@@ -21,7 +21,7 @@
 	],
 	"exports": {
 		".": {
-			"import": "./dist/vue-simple-calendar.mjs",
+			"import": "./dist/vue-simple-calendar.js",
 			"require": "./dist/vue-simple-calendar.umd.js"
 		},
 		"./dist/style.css": {
