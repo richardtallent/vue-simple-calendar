@@ -20,6 +20,11 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 7.0.1 (2024-01-15)
+
+- Fix ESM filename references (#230, #231, thanks @christophbeberweil!)
+- Bump dependencies
+
 ## 7.0.0 (2024-01-14)
 
 - BREAKING: Changed the week number computation to follow ISO 8601 (#228)
