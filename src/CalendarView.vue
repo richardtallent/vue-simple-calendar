@@ -27,94 +27,105 @@
 				</slot>
 			</template>
 		</div>
-		<div :aria-multiselectable="enableDateSelection" class="cv-weeks">
+		<div :aria-multiselectable="enableDateSelection" class="cv-months">
 			<div
-				v-for="(weekStart, weekIndex) in weeksOfPeriod"
-				:key="`${weekIndex}-week`"
-				:class="['cv-week', `week${weekIndex + 1}`, `ws${CalendarMath.isoYearMonthDay(weekStart)}`]"
+				v-for="(monthStart, monthIndex) in monthsOfPeriod"
+				:key="`${monthIndex}-month`"
+				:class="['cv-month', `month${monthIndex + 1}`, `ws${CalendarMath.isoYearMonth(monthStart)}`]"
 			>
-				<div v-if="displayWeekNumbers" class="cv-weeknumber">
-					<slot name="week-number" :date="weekStart" :numberInYear="periodStartCalendarWeek + weekIndex" :numberInPeriod="weekIndex + 1">
-						<span>{{ periodStartCalendarWeek + weekIndex }}</span>
-					</slot>
+				<div class="cv-monthheading-row">
+					<h2 v-if="displayPeriodUom === 'year'" class="cv-monthheading">
+						{{ monthNames[monthIndex] }}
+					</h2>
 				</div>
-				<div class="cv-weekdays">
-					<div
-						v-for="(day, dayIndex) in CalendarMath.daysOfWeek(weekStart)"
-						:key="getColumnDOWClass(dayIndex)"
-						:draggable="enableDateSelection"
-						:class="[
-							'cv-day',
-							getColumnDOWClass(dayIndex),
-							`d${CalendarMath.isoYearMonthDay(day)}`,
-							`d${CalendarMath.isoMonthDay(day)}`,
-							`d${CalendarMath.paddedDay(day)}`,
-							`instance${CalendarMath.instanceOfMonth(day)}`,
-							{
-								today: CalendarMath.isSameDate(day, CalendarMath.today()),
-								outsideOfMonth: !CalendarMath.isSameMonth(day, defaultedShowDate),
-								past: CalendarMath.isInPast(day),
-								future: CalendarMath.isInFuture(day),
-								last: CalendarMath.isLastDayOfMonth(day),
-								lastInstance: CalendarMath.isLastInstanceOfMonth(day),
-								hasItems: dayHasItems(day),
-								selectionStart: CalendarMath.isSameDate(day, selectionStart),
-								selectionEnd: CalendarMath.isSameDate(day, selectionEnd),
-							},
-							...((dateClasses && dateClasses[CalendarMath.isoYearMonthDay(day)]) || []),
-						]"
-						:aria-grabbed="enableDateSelection ? dayIsSelected(day) : undefined"
-						:aria-label="day.getDate().toString()"
-						:aria-selected="dayIsSelected(day)"
-						:aria-dropeffect="enableDragDrop && state.currentDragItem ? 'move' : enableDateSelection && state.dateSelectionOrigin ? 'execute' : 'none'"
-						@click="onClickDay(day, $event)"
-						@dragstart="onDragDateStart(day, $event)"
-						@drop.prevent="onDrop(day, $event)"
-						@dragover.prevent="onDragOver(day, $event)"
-						@dragenter.prevent="onDragEnter(day, $event)"
-						@dragleave.prevent="onDragLeave(day, $event)"
-					>
-						<div class="cv-day-number">{{ day.getDate() }}</div>
-						<slot :day="day" name="day-content" />
+				<div
+					v-for="(weekStart, weekIndex) in CalendarMath.weeksOfMonth(monthStart, periodStart, periodEnd)"
+					:key="`${weekIndex}-week`"
+					:class="['cv-week', `week${weekIndex + 1}`, `ws${CalendarMath.isoYearMonthDay(weekStart)}`]"
+				>
+					<div v-if="displayWeekNumbers" class="cv-weeknumber">
+						<slot name="week-number" :date="weekStart" :numberInYear="periodStartCalendarWeek + weekIndex" :numberInPeriod="weekIndex + 1">
+							<span>{{ periodStartCalendarWeek + weekIndex }}</span>
+						</slot>
 					</div>
-					<template v-if="props.enableHtmlTitles" v-for="i in getWeekItems(weekStart)">
-						<slot :value="i" :weekStartDate="weekStart" :top="getItemTop(i)" name="item">
-							<div
-								:key="i.id"
-								:draggable="enableDragDrop"
-								:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
-								:class="i.classes"
-								:title="i.tooltip || i.title"
-								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
-								class="cv-item"
-								@dragstart="onDragItemStart(i, $event)"
-								@mouseenter="onMouseEnterItem(i, $event)"
-								@mouseleave="onMouseLeaveItem(i, $event)"
-								@click.stop="onClickItem(i, $event)"
-								v-html="getItemTitle(i)"
-							/>
-						</slot>
-					</template>
-					<template v-else v-for="i in getWeekItems(weekStart)">
-						<slot :value="i" :weekStartDate="weekStart" :top="getItemTop(i)" name="item">
-							<div
-								:key="i.id"
-								:draggable="enableDragDrop"
-								:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
-								:class="i.classes"
-								:title="i.tooltip || i.title"
-								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
-								class="cv-item"
-								@dragstart="onDragItemStart(i, $event)"
-								@mouseenter="onMouseEnterItem(i, $event)"
-								@mouseleave="onMouseLeaveItem(i, $event)"
-								@click.stop="onClickItem(i, $event)"
-							>
-								{{ getItemTitle(i) }}
-							</div>
-							div>
-						</slot>
-					</template>
+					<div class="cv-weekdays">
+						<div
+							v-for="(day, dayIndex) in CalendarMath.daysOfWeek(weekStart)"
+							:key="getColumnDOWClass(dayIndex)"
+							:draggable="enableDateSelection"
+							:class="[
+								'cv-day',
+								getColumnDOWClass(dayIndex),
+								`d${CalendarMath.isoYearMonthDay(day)}`,
+								`d${CalendarMath.isoMonthDay(day)}`,
+								`d${CalendarMath.paddedDay(day)}`,
+								`instance${CalendarMath.instanceOfMonth(day)}`,
+								{
+									today: CalendarMath.isSameDate(day, CalendarMath.today()),
+									outsideOfMonth: !CalendarMath.isSameMonth(day, defaultedShowDate),
+									past: CalendarMath.isInPast(day),
+									future: CalendarMath.isInFuture(day),
+									last: CalendarMath.isLastDayOfMonth(day),
+									lastInstance: CalendarMath.isLastInstanceOfMonth(day),
+									hasItems: dayHasItems(day),
+									selectionStart: CalendarMath.isSameDate(day, selectionStart),
+									selectionEnd: CalendarMath.isSameDate(day, selectionEnd),
+								},
+								...((dateClasses && dateClasses[CalendarMath.isoYearMonthDay(day)]) || []),
+							]"
+							:aria-grabbed="enableDateSelection ? dayIsSelected(day) : undefined"
+							:aria-label="day.getDate().toString()"
+							:aria-selected="dayIsSelected(day)"
+							:aria-dropeffect="enableDragDrop && state.currentDragItem ? 'move' : enableDateSelection && state.dateSelectionOrigin ? 'execute' : 'none'"
+							@click="onClickDay(day, $event)"
+							@dragstart="onDragDateStart(day, $event)"
+							@drop.prevent="onDrop(day, $event)"
+							@dragover.prevent="onDragOver(day, $event)"
+							@dragenter.prevent="onDragEnter(day, $event)"
+							@dragleave.prevent="onDragLeave(day, $event)"
+						>
+							<div class="cv-day-number">{{ day.getDate() }}</div>
+							<slot :day="day" name="day-content" />
+						</div>
+						<template v-if="props.enableHtmlTitles" v-for="i in getWeekItems(weekStart)">
+							<slot :value="i" :weekStartDate="weekStart" :top="getItemTop(i)" name="item">
+								<div
+									:key="i.id"
+									:draggable="enableDragDrop"
+									:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
+									:class="i.classes"
+									:title="i.tooltip || i.title"
+									:style="`top:${getItemTop(i)};${i.originalItem.style}`"
+									class="cv-item"
+									@dragstart="onDragItemStart(i, $event)"
+									@mouseenter="onMouseEnterItem(i, $event)"
+									@mouseleave="onMouseLeaveItem(i, $event)"
+									@click.stop="onClickItem(i, $event)"
+									v-html="getItemTitle(i)"
+								/>
+							</slot>
+						</template>
+						<template v-else v-for="i in getWeekItems(weekStart)">
+							<slot :value="i" :weekStartDate="weekStart" :top="getItemTop(i)" name="item">
+								<div
+									:key="i.id"
+									:draggable="enableDragDrop"
+									:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
+									:class="i.classes"
+									:title="i.tooltip || i.title"
+									:style="`top:${getItemTop(i)};${i.originalItem.style}`"
+									class="cv-item"
+									@dragstart="onDragItemStart(i, $event)"
+									@mouseenter="onMouseEnterItem(i, $event)"
+									@mouseleave="onMouseLeaveItem(i, $event)"
+									@click.stop="onClickItem(i, $event)"
+								>
+									{{ getItemTitle(i) }}
+								</div>
+								div>
+							</slot>
+						</template>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -225,7 +236,7 @@ const periodEnd = computed(
 
 const periodStartCalendarWeek = computed((): number => {
 	const jan1 = new Date(periodStart.value.getFullYear(), 0, 1)
-    const firstThursday = CalendarMath.addDays(jan1, (11 - jan1.getDay()) % 7);
+	const firstThursday = CalendarMath.addDays(jan1, (11 - jan1.getDay()) % 7)
 	const startOfFirstWeek = CalendarMath.beginningOfPeriod(firstThursday, "week", props.startingDayOfWeek)
 	const periodWeekStarts = CalendarMath.beginningOfWeek(periodStart.value, props.startingDayOfWeek)
 	return 1 + Math.floor(CalendarMath.dayDiff(startOfFirstWeek, periodWeekStarts) / 7)
@@ -237,11 +248,14 @@ const periodStartCalendarWeek = computed((): number => {
 const displayFirstDate = computed((): Date => CalendarMath.beginningOfWeek(periodStart.value, props.startingDayOfWeek))
 const displayLastDate = computed((): Date => CalendarMath.endOfWeek(periodEnd.value, props.startingDayOfWeek))
 
-// Create an array of dates, where each date represents the beginning of a week that
+// Create an array of dates, where each date represents the beginning of a month that
 // should be rendered in the view for the current period.
-const weeksOfPeriod = computed((): Date[] => {
-	const numWeeks = Math.floor((CalendarMath.dayDiff(displayFirstDate.value, displayLastDate.value) + 1) / 7)
-	return [...Array(numWeeks)].map((_, i) => CalendarMath.addDays(displayFirstDate.value, i * 7))
+const monthsOfPeriod = computed((): Date[] => {
+	// Adding 7 days to the displayFirstDate to ensure we go into the first month of the period instead of catching the tail end of the last month
+	const firstDayOfMonths = CalendarMath.beginningOfMonth(CalendarMath.addDays(displayFirstDate.value, 7))
+	const numMonths = Math.max(Math.floor(CalendarMath.dayDiff(firstDayOfMonths, displayLastDate.value) / 30), 1)
+
+	return [...Array(numMonths)].map((_, i) => CalendarMath.addMonths(firstDayOfMonths, i))
 })
 
 // Cache the names based on current locale and format settings
@@ -586,8 +600,20 @@ header are in the CalendarViewHeader component.
 	border-width: 1px 1px 0 0;
 }
 
+.cv-monthheading-row {
+	border-style: solid;
+	border-color: #ddd;
+	border-width: 1px 1px 0 0;
+}
+
+.cv-monthheading {
+	font-weight: 600;
+	font-size: 1.6rem;
+	margin: 1.2rem 0 0.8rem 0.6rem;
+}
+
 /* The calendar grid should take up the remaining vertical space */
-.cv-weeks {
+.cv-months {
 	display: flex;
 	flex-grow: 1;
 	flex-shrink: 1;
@@ -599,6 +625,17 @@ header are in the CalendarViewHeader component.
 	overflow-y: auto;
 	-ms-overflow-style: none;
 	scrollbar-width: none;
+}
+
+.cv-month {
+	display: flex;
+
+	/* Shorthand flex: 1 1 0 not supported by IE11 */
+	flex-grow: 1;
+	flex-shrink: 1;
+	flex-basis: 0;
+	flex-flow: column;
+	border-width: 0;
 }
 
 .cv-weeknumber {
@@ -729,7 +766,7 @@ _:-ms-lang(x),
 
 .cv-header-days,
 .cv-header-day,
-.cv-weeks,
+.cv-months,
 .cv-week,
 .cv-day,
 .cv-item {
@@ -813,7 +850,7 @@ _:-ms-lang(x),
 }
 
 /* Hide scrollbars for the grid and the week */
-.cv-weeks::-webkit-scrollbar,
+.cv-months::-webkit-scrollbar,
 .cv-weekdays::-webkit-scrollbar {
 	width: 0; /* remove scrollbar space */
 	background: transparent; /* optional: just make scrollbar invisible */

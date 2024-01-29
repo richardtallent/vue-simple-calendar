@@ -24,7 +24,39 @@ const beginningOfPeriod = (d: Date, periodUom: string, startDow: number): Date =
 	}
 }
 
+// Create an array of dates, where each date represents the beginning of a week that
+// should be rendered in the view for the current period.
+const weeksOfPeriod = (periodStart: Date, periodEnd: Date) => {
+	const numWeeks = Math.floor((dayDiff(periodStart, periodEnd) + 1) / 7)
+	return [...Array(numWeeks)].map((_, i) => addDays(periodStart, i * 7))
+}
+
 const daysOfWeek = (weekStart: Date): Date[] => [...Array(7)].map((_, i) => addDays(weekStart, i))
+
+/**
+ * Given a month and the boundaries of a date period, will return:
+ * - when the period is entirely within the month, the weeks that are contained in the period
+ * - all the weeks that are contained in the month
+ *
+ * @param monthStart
+ * @param periodStartDate
+ * @param periodEndDate
+ */
+const weeksOfMonth = (monthStart: Date, periodStartDate: Date, periodEndDate: Date): Date[] => {
+	const firstDay = beginningOfWeek(monthStart, 0)
+	const lastDay = endOfMonth(monthStart)
+
+	// when the period is entirely within the month we return only the weeks that are contained in the period
+	if (periodStartDate >= firstDay && periodEndDate <= lastDay) {
+		return weeksOfPeriod(periodStartDate, periodEndDate)
+	}
+
+	const weeks = []
+	for (let d = firstDay; d <= lastDay; d = addDays(d, 7)) {
+		weeks.push(d)
+	}
+	return weeks
+}
 
 // ********************************************
 // Date transforms that retain time of day
@@ -36,7 +68,9 @@ const endOfWeek = (d: Date, startDow: number): Date => addDays(beginningOfWeek(d
 // ********************************************
 // Date transforms that ignore/wipe time of day
 // ********************************************
+const addMonths = (d: Date, months: number): Date => new Date(d.getFullYear(), d.getMonth() + months, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds())
 const beginningOfMonth = (d: Date): Date => new Date(d.getFullYear(), d.getMonth())
+const endOfMonth = (d: Date): Date => addDays(addMonths(beginningOfMonth(d), 1), -1)
 const instanceOfMonth = (d: Date): number => Math.ceil(d.getDate() / 7)
 
 // This function increments a date by a given number of date units. Accepted units are: year, month, week. For year and month,
@@ -210,12 +244,15 @@ const normalizeItem = (item: ICalendarItem, isHovered: boolean): INormalizedCale
 
 export default {
 	addDays,
+	addMonths,
 	beginningOfMonth,
+	endOfMonth,
 	beginningOfPeriod,
 	beginningOfWeek,
 	dateOnly,
 	dayDiff,
 	daysOfWeek,
+	weeksOfMonth,
 	endOfWeek,
 	formattedPeriod,
 	formattedTime,
