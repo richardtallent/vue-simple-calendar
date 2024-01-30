@@ -56,26 +56,14 @@
 							:class="[
 								'cv-day',
 								getColumnDOWClass(dayIndex),
-								`d${CalendarMath.isoYearMonthDay(day)}`,
-								`d${CalendarMath.isoMonthDay(day)}`,
-								`d${CalendarMath.paddedDay(day)}`,
-								`instance${CalendarMath.instanceOfMonth(day)}`,
-								{
-									today: CalendarMath.isSameDate(day, CalendarMath.today()),
-									outsideOfMonth: !CalendarMath.isSameMonth(day, defaultedShowDate),
-									past: CalendarMath.isInPast(day),
-									future: CalendarMath.isInFuture(day),
-									last: CalendarMath.isLastDayOfMonth(day),
-									lastInstance: CalendarMath.isLastInstanceOfMonth(day),
-									hasItems: dayHasItems(day),
-									selectionStart: CalendarMath.isSameDate(day, selectionStart),
-									selectionEnd: CalendarMath.isSameDate(day, selectionEnd),
-								},
+								getCvDayClassNames(day, monthStart),
 								...((dateClasses && dateClasses[CalendarMath.isoYearMonthDay(day)]) || []),
 							]"
+							v-bind="getCvDayAttrs(day, monthStart)"
+							:inert="!CalendarMath.isSameMonth(day, monthStart)"
 							:aria-grabbed="enableDateSelection ? dayIsSelected(day) : undefined"
 							:aria-label="day.getDate().toString()"
-							:aria-selected="dayIsSelected(day)"
+							:aria-selected="CalendarMath.isSameMonth(day, monthStart) && dayIsSelected(day)"
 							:aria-dropeffect="enableDragDrop && state.currentDragItem ? 'move' : enableDateSelection && state.dateSelectionOrigin ? 'execute' : 'none'"
 							@click="onClickDay(day, $event)"
 							@dragstart="onDragDateStart(day, $event)"
@@ -84,10 +72,12 @@
 							@dragenter.prevent="onDragEnter(day, $event)"
 							@dragleave.prevent="onDragLeave(day, $event)"
 						>
-							<div class="cv-day-number">{{ day.getDate() }}</div>
-							<slot :day="day" name="day-content" />
+							<template v-if="displayPeriodUom !== 'year' || CalendarMath.isSameMonth(day, monthStart)">
+								<div class="cv-day-number">{{ day.getDate() }}</div>
+								<slot :day="day" name="day-content" />
+							</template>
 						</div>
-						<template v-if="props.enableHtmlTitles" v-for="i in getWeekItems(weekStart)">
+						<template v-if="props.enableHtmlTitles" v-for="i in getWeekItems(weekStart, monthStart)">
 							<slot :value="i" :weekStartDate="weekStart" :top="getItemTop(i)" name="item">
 								<div
 									:key="i.id"
@@ -105,7 +95,7 @@
 								/>
 							</slot>
 						</template>
-						<template v-else v-for="i in getWeekItems(weekStart)">
+						<template v-else v-for="i in getWeekItems(weekStart, monthStart)">
 							<slot :value="i" :weekStartDate="weekStart" :top="getItemTop(i)" name="item">
 								<div
 									:key="i.id"
@@ -491,8 +481,13 @@ const dayIsSelected = (day: Date): boolean => {
 
 // Return a list of items that CONTAIN the week starting on a day.
 // Sorted so the items that start earlier are always shown first.
-const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
-	const items = findAndSortItemsInWeek(weekStart)
+const getWeekItems = (weekStart: Date, monthStart: Date): INormalizedCalendarItem[] => {
+	const monthEnd = CalendarMath.endOfMonth(monthStart)
+
+	const leftBoundary = new Date(Math.max(monthStart.getTime(), weekStart.getTime()))
+	const rightBoundary = new Date(Math.min(monthEnd.getTime(), CalendarMath.addDays(weekStart, 6).getTime()))
+
+	const items = findAndSortItemsInWeek(new Date(Math.max(weekStart.getTime(), monthStart.getTime())))
 	const results = [] as INormalizedCalendarItem[]
 	const itemRows: boolean[][] = [[], [], [], [], [], [], []]
 	if (!items) return results
@@ -501,11 +496,19 @@ const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 			classes: [...items[i].classes],
 			itemRow: 0,
 		})
-		const continued = ep.startDate < weekStart
-		const startOffset = continued ? 0 : CalendarMath.dayDiff(weekStart, ep.startDate)
-		const span = Math.max(1, Math.min(7 - startOffset, CalendarMath.dayDiff(CalendarMath.addDays(weekStart, startOffset), ep.endDate) + 1))
+		const continued = ep.startDate < leftBoundary
+		const startOffset = continued ? CalendarMath.dayDiff(weekStart, leftBoundary) : CalendarMath.dayDiff(leftBoundary, ep.startDate)
+
+		// The day when the item should start. If the item starts before the week, it will be the week's start day.
+		const itemStartDay = CalendarMath.addDays(weekStart, startOffset)
+		// The remaining length of the item during the current week.
+		const itemLength = CalendarMath.dayDiff(itemStartDay, ep.endDate) + 1
+		// The days that are still available in the week before its end.
+		const remainingDays = CalendarMath.dayDiff(weekStart, rightBoundary) + 1 - startOffset
+		const span = Math.max(1, Math.min(remainingDays, itemLength))
+
 		if (continued) ep.classes.push("continued")
-		if (CalendarMath.dayDiff(weekStart, ep.endDate) > 6) ep.classes.push("toBeContinued")
+		if (ep.endDate > rightBoundary) ep.classes.push("toBeContinued")
 		if (CalendarMath.isInPast(ep.endDate)) ep.classes.push("past")
 		if (ep.originalItem.url) ep.classes.push("hasUrl")
 		for (let d = 0; d < 7; d++) {
@@ -547,6 +550,39 @@ const getItemTop = (item: INormalizedCalendarItem): string => {
 	const h = props.itemContentHeight
 	const b = props.itemBorderHeight
 	return `calc(${props.itemTop} + ${r}*${h} + ${r}*${b})`
+}
+
+const getCvDayClassNames = (day: Date, monthStart: Date) => {
+	const isSameMonth = CalendarMath.isSameMonth(day, monthStart)
+
+	return {
+		today: isSameMonth && CalendarMath.isSameDate(day, CalendarMath.today()),
+		outsideOfMonth: !isSameMonth,
+		past: isSameMonth && CalendarMath.isInPast(day),
+		future: isSameMonth && CalendarMath.isInFuture(day),
+		last: isSameMonth && CalendarMath.isLastDayOfMonth(day),
+		lastInstance: isSameMonth && CalendarMath.isLastInstanceOfMonth(day),
+		hasItems: isSameMonth && dayHasItems(day),
+		selectionStart: isSameMonth && CalendarMath.isSameDate(day, props.selectionStart),
+		selectionEnd: isSameMonth && CalendarMath.isSameDate(day, props.selectionEnd),
+		[`d${CalendarMath.isoYearMonthDay(day)}`]: isSameMonth,
+		[`d${CalendarMath.isoMonthDay(day)}`]: isSameMonth,
+		[`d${CalendarMath.paddedDay(day)}`]: isSameMonth,
+		[`instance${CalendarMath.instanceOfMonth(day)}`]: isSameMonth,
+	}
+}
+
+const getCvDayAttrs = (day: Date, monthStart: Date) => {
+	const isSameMonth = CalendarMath.isSameMonth(day, monthStart)
+
+	if (!isSameMonth) return { inert: true }
+
+	return {
+		"aria-grabbed": props.enableDateSelection ? dayIsSelected(day) : undefined,
+		"aria-label": day.getDate().toString(),
+		"aria-selected": CalendarMath.isSameMonth(day, monthStart) && dayIsSelected(day),
+		"aria-dropeffect": props.enableDragDrop && state.currentDragItem ? "move" : props.enableDateSelection && state.dateSelectionOrigin ? "execute" : "none",
+	}
 }
 </script>
 <!--
@@ -604,6 +640,7 @@ header are in the CalendarViewHeader component.
 	border-style: solid;
 	border-color: #ddd;
 	border-width: 1px 1px 0 0;
+	margin-right: 1px;
 }
 
 .cv-monthheading {
@@ -618,7 +655,7 @@ header are in the CalendarViewHeader component.
 	flex-grow: 1;
 	flex-shrink: 1;
 	flex-basis: auto;
-	flex-flow: column nowrap;
+	flex-flow: column;
 	border-width: 0 0 1px 1px;
 
 	/* Allow grid to scroll if there are too may weeks to fit in the view */
