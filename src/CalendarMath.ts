@@ -225,6 +225,25 @@ const normalizeItem = (item: ICalendarItem, isHovered: boolean): INormalizedCale
 	}
 }
 
+const getISOWeekNumber = (weekStart: Date, monthStart: Date, startDow: number): number => {
+	const actualStart = new Date(Math.max(weekStart.getTime(), monthStart.getTime()))
+
+	const jan1 = new Date(actualStart.getFullYear(), 0, 1)
+	const firstThursday = addDays(jan1, (11 - jan1.getDay()) % 7)
+	const startOfFirstWeek = beginningOfPeriod(firstThursday, "week", startDow)
+	const periodWeekStarts = beginningOfWeek(actualStart, startDow)
+	return 1 + Math.floor(dayDiff(startOfFirstWeek, periodWeekStarts) / 7)
+}
+
+const getWeekNumberInPeriod = (weekStart: Date, periodStart: Date): number => {
+	// Calculate the difference in milliseconds
+	const timeDifference = weekStart.getTime() - periodStart.getTime()
+	// Calculate the difference in weeks
+	const weeksDifference = Math.floor(timeDifference / (7 * 24 * 60 * 60 * 1000))
+	// Week number starts from 1
+	return weeksDifference + 1
+}
+
 export default {
 	addDays,
 	addMonths,
@@ -264,4 +283,6 @@ export default {
 	supportsIntl,
 	today,
 	toLocalDate,
+	getISOWeekNumber,
+	getWeekNumberInPeriod,
 }

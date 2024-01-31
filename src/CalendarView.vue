@@ -44,8 +44,13 @@
 					:class="['cv-week', `week${weekIndex + 1}`, `ws${CalendarMath.isoYearMonthDay(weekStart)}`]"
 				>
 					<div v-if="displayWeekNumbers" class="cv-weeknumber">
-						<slot name="week-number" :date="weekStart" :numberInYear="periodStartCalendarWeek + weekIndex" :numberInPeriod="weekIndex + 1">
-							<span>{{ periodStartCalendarWeek + weekIndex }}</span>
+						<slot
+							name="week-number"
+							:date="weekStart"
+							:numberInYear="CalendarMath.getISOWeekNumber(weekStart, monthStart, startingDayOfWeek)"
+							:numberInPeriod="CalendarMath.getWeekNumberInPeriod(weekStart, displayFirstDate)"
+						>
+							<span>{{ CalendarMath.getISOWeekNumber(weekStart, monthStart, startingDayOfWeek) }}</span>
 						</slot>
 					</div>
 					<div class="cv-weekdays">
@@ -217,14 +222,6 @@ const periodStart = computed((): Date => CalendarMath.beginningOfPeriod(defaulte
 const periodEnd = computed(
 	(): Date => CalendarMath.addDays(CalendarMath.incrementPeriod(periodStart.value, props.displayPeriodUom, props.displayPeriodCount), -1)
 )
-
-const periodStartCalendarWeek = computed((): number => {
-	const jan1 = new Date(periodStart.value.getFullYear(), 0, 1)
-	const firstThursday = CalendarMath.addDays(jan1, (11 - jan1.getDay()) % 7)
-	const startOfFirstWeek = CalendarMath.beginningOfPeriod(firstThursday, "week", props.startingDayOfWeek)
-	const periodWeekStarts = CalendarMath.beginningOfWeek(periodStart.value, props.startingDayOfWeek)
-	return 1 + Math.floor(CalendarMath.dayDiff(startOfFirstWeek, periodWeekStarts) / 7)
-})
 
 // For month and year views, the first and last dates displayed in the grid may not
 // be the same as the intended period, since the period may not start and stop evenly
