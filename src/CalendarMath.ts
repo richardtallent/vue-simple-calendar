@@ -27,35 +27,18 @@ const beginningOfPeriod = (d: Date, periodUom: string, startDow: number): Date =
 // Create an array of dates, where each date represents the beginning of a week that
 // should be rendered in the view for the current period.
 const weeksOfPeriod = (periodStart: Date, periodEnd: Date) => {
-	const numWeeks = Math.floor((dayDiff(periodStart, periodEnd) + 1) / 7)
+	const numWeeks = Math.ceil((dayDiff(periodStart, periodEnd) + 1) / 7)
 	return [...Array(numWeeks)].map((_, i) => addDays(periodStart, i * 7))
 }
 
 const daysOfWeek = (weekStart: Date): Date[] => [...Array(7)].map((_, i) => addDays(weekStart, i))
 
-/**
- * Given a month and the boundaries of a date period, will return:
- * - when the period is entirely within the month, the weeks that are contained in the period
- * - all the weeks that are contained in the month
- *
- * @param monthStart
- * @param periodStartDate
- * @param periodEndDate
- */
-const weeksOfMonth = (monthStart: Date, periodStartDate: Date, periodEndDate: Date): Date[] => {
-	const firstDay = beginningOfWeek(monthStart, 0)
-	const lastDay = endOfMonth(monthStart)
-
-	// when the period is entirely within the month we return only the weeks that are contained in the period
-	if (periodStartDate >= firstDay && periodEndDate <= lastDay) {
+const weeksOfMonth = (monthStart: Date, periodStartDate: Date, periodEndDate: Date, displayPeriod: string, startDow: number): Date[] => {
+	if (displayPeriod === "week") {
 		return weeksOfPeriod(periodStartDate, periodEndDate)
 	}
 
-	const weeks = []
-	for (let d = firstDay; d <= lastDay; d = addDays(d, 7)) {
-		weeks.push(d)
-	}
-	return weeks
+	return weeksOfPeriod(beginningOfWeek(monthStart, startDow), endOfMonth(monthStart))
 }
 
 // ********************************************

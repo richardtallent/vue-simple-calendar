@@ -39,7 +39,7 @@
 					</h2>
 				</div>
 				<div
-					v-for="(weekStart, weekIndex) in CalendarMath.weeksOfMonth(monthStart, periodStart, periodEnd)"
+					v-for="(weekStart, weekIndex) in CalendarMath.weeksOfMonth(monthStart, periodStart, periodEnd, displayPeriodUom, startingDayOfWeek)"
 					:key="`${weekIndex}-week`"
 					:class="['cv-week', `week${weekIndex + 1}`, `ws${CalendarMath.isoYearMonthDay(weekStart)}`]"
 				>
@@ -60,11 +60,6 @@
 								...((dateClasses && dateClasses[CalendarMath.isoYearMonthDay(day)]) || []),
 							]"
 							v-bind="getCvDayAttrs(day, monthStart)"
-							:inert="!CalendarMath.isSameMonth(day, monthStart)"
-							:aria-grabbed="enableDateSelection ? dayIsSelected(day) : undefined"
-							:aria-label="day.getDate().toString()"
-							:aria-selected="CalendarMath.isSameMonth(day, monthStart) && dayIsSelected(day)"
-							:aria-dropeffect="enableDragDrop && state.currentDragItem ? 'move' : enableDateSelection && state.dateSelectionOrigin ? 'execute' : 'none'"
 							@click="onClickDay(day, $event)"
 							@dragstart="onDragDateStart(day, $event)"
 							@drop.prevent="onDrop(day, $event)"
@@ -112,7 +107,6 @@
 								>
 									{{ getItemTitle(i) }}
 								</div>
-								div>
 							</slot>
 						</template>
 					</div>
@@ -124,7 +118,7 @@
 <script setup lang="ts">
 import CalendarMath from "./CalendarMath"
 import CalendarViewState from "./CalendarViewState"
-import { computed, reactive, watch } from "vue"
+import { HTMLAttributes, computed, reactive, watch } from "vue"
 import { ICalendarItem, INormalizedCalendarItem, DateTimeFormatOption } from "./ICalendarItem"
 import { IHeaderProps } from "./IHeaderProps"
 
@@ -462,9 +456,6 @@ const itemComparer = (a: INormalizedCalendarItem, b: INormalizedCalendarItem) =>
 	return a.id < b.id ? -1 : 1
 }
 
-// Return a list of items that INCLUDE any portion of a given week.
-const findAndSortItemsInWeek = (weekStart: Date): INormalizedCalendarItem[] => findAndSortItemsInDateRange(weekStart, CalendarMath.addDays(weekStart, 6))
-
 // Return a list of items that INCLUDE any day within the date range,
 // inclusive, sorted so items that start earlier are returned first.
 const findAndSortItemsInDateRange = (startDate: Date, endDate: Date): INormalizedCalendarItem[] =>
@@ -482,12 +473,16 @@ const dayIsSelected = (day: Date): boolean => {
 // Return a list of items that CONTAIN the week starting on a day.
 // Sorted so the items that start earlier are always shown first.
 const getWeekItems = (weekStart: Date, monthStart: Date): INormalizedCalendarItem[] => {
-	const monthEnd = CalendarMath.endOfMonth(monthStart)
+	const endOfWeek = CalendarMath.endOfWeek(weekStart, props.startingDayOfWeek)
+	const endOfMonth = CalendarMath.endOfMonth(monthStart)
+	const isYearPeriod = props.displayPeriodUom === "year"
 
-	const leftBoundary = new Date(Math.max(monthStart.getTime(), weekStart.getTime()))
-	const rightBoundary = new Date(Math.min(monthEnd.getTime(), CalendarMath.addDays(weekStart, 6).getTime()))
+	// When in the year view the minimum date to consider for every week should be cut off to the first day of the month
+	const leftBoundary = isYearPeriod ? new Date(Math.max(monthStart.getTime(), weekStart.getTime())) : weekStart
+	// When in the year view the maximum date to consider for every week should be cut off to the last day of the month
+	const rightBoundary = isYearPeriod ? new Date(Math.min(endOfMonth.getTime(), CalendarMath.addDays(weekStart, 6).getTime())) : endOfWeek
 
-	const items = findAndSortItemsInWeek(new Date(Math.max(weekStart.getTime(), monthStart.getTime())))
+	const items = findAndSortItemsInDateRange(leftBoundary, rightBoundary)
 	const results = [] as INormalizedCalendarItem[]
 	const itemRows: boolean[][] = [[], [], [], [], [], [], []]
 	if (!items) return results
@@ -554,33 +549,35 @@ const getItemTop = (item: INormalizedCalendarItem): string => {
 
 const getCvDayClassNames = (day: Date, monthStart: Date) => {
 	const isSameMonth = CalendarMath.isSameMonth(day, monthStart)
+	const isFillerTile = props.displayPeriodUom === "year" && !isSameMonth
 
 	return {
-		today: isSameMonth && CalendarMath.isSameDate(day, CalendarMath.today()),
+		today: !isFillerTile && CalendarMath.isSameDate(day, CalendarMath.today()),
 		outsideOfMonth: !isSameMonth,
-		past: isSameMonth && CalendarMath.isInPast(day),
-		future: isSameMonth && CalendarMath.isInFuture(day),
-		last: isSameMonth && CalendarMath.isLastDayOfMonth(day),
-		lastInstance: isSameMonth && CalendarMath.isLastInstanceOfMonth(day),
-		hasItems: isSameMonth && dayHasItems(day),
-		selectionStart: isSameMonth && CalendarMath.isSameDate(day, props.selectionStart),
-		selectionEnd: isSameMonth && CalendarMath.isSameDate(day, props.selectionEnd),
-		[`d${CalendarMath.isoYearMonthDay(day)}`]: isSameMonth,
-		[`d${CalendarMath.isoMonthDay(day)}`]: isSameMonth,
-		[`d${CalendarMath.paddedDay(day)}`]: isSameMonth,
-		[`instance${CalendarMath.instanceOfMonth(day)}`]: isSameMonth,
+		past: !isFillerTile && CalendarMath.isInPast(day),
+		future: !isFillerTile && CalendarMath.isInFuture(day),
+		last: !isFillerTile && CalendarMath.isLastDayOfMonth(day),
+		lastInstance: !isFillerTile && CalendarMath.isLastInstanceOfMonth(day),
+		hasItems: !isFillerTile && dayHasItems(day),
+		selectionStart: !isFillerTile && CalendarMath.isSameDate(day, props.selectionStart),
+		selectionEnd: !isFillerTile && CalendarMath.isSameDate(day, props.selectionEnd),
+		[`d${CalendarMath.isoYearMonthDay(day)}`]: !isFillerTile,
+		[`d${CalendarMath.isoMonthDay(day)}`]: !isFillerTile,
+		[`d${CalendarMath.paddedDay(day)}`]: !isFillerTile,
+		[`instance${CalendarMath.instanceOfMonth(day)}`]: !isFillerTile,
 	}
 }
 
-const getCvDayAttrs = (day: Date, monthStart: Date) => {
+const getCvDayAttrs = (day: Date, monthStart: Date): HTMLAttributes => {
 	const isSameMonth = CalendarMath.isSameMonth(day, monthStart)
+	const isFillerTile = props.displayPeriodUom === "year" && !isSameMonth
 
-	if (!isSameMonth) return { inert: true }
+	if (isFillerTile) return { inert: true }
 
 	return {
 		"aria-grabbed": props.enableDateSelection ? dayIsSelected(day) : undefined,
 		"aria-label": day.getDate().toString(),
-		"aria-selected": CalendarMath.isSameMonth(day, monthStart) && dayIsSelected(day),
+		"aria-selected": dayIsSelected(day),
 		"aria-dropeffect": props.enableDragDrop && state.currentDragItem ? "move" : props.enableDateSelection && state.dateSelectionOrigin ? "execute" : "none",
 	}
 }
