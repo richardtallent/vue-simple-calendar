@@ -297,6 +297,8 @@ const periodRange = computed(() => ({
 	displayLastDate: displayLastDate,
 }))
 
+const isYearView = computed(() => props.displayPeriodUom === "year")
+
 watch(
 	() => periodRange,
 	(newVal) => {
@@ -473,7 +475,7 @@ const getWeekItems = (weekStart: Date, monthStart: Date): INormalizedCalendarIte
 	// Subtracting 1 day because CalendarMath.endOfWeek returns the first day of the next week, not the last included in the original week
 	const endOfWeek = CalendarMath.addDays(CalendarMath.endOfWeek(weekStart, props.startingDayOfWeek), -1)
 	const endOfMonth = CalendarMath.endOfMonth(monthStart)
-	const isYearPeriod = props.displayPeriodUom === "year"
+	const isYearPeriod = isYearView.value
 
 	// When in the year view the minimum date to consider for every week should be cut off to the first day of the month
 	const leftBoundary = isYearPeriod ? new Date(Math.max(monthStart.getTime(), weekStart.getTime())) : weekStart
@@ -547,7 +549,7 @@ const getItemTop = (item: INormalizedCalendarItem): string => {
 
 const getCvDayClassNames = (day: Date, monthStart: Date) => {
 	const isSameMonth = CalendarMath.isSameMonth(day, monthStart)
-	const isFillerTile = props.displayPeriodUom === "year" && !isSameMonth
+	const isFillerTile = isYearView.value && !isSameMonth
 
 	return {
 		today: !isFillerTile && CalendarMath.isSameDate(day, CalendarMath.today()),
@@ -568,7 +570,7 @@ const getCvDayClassNames = (day: Date, monthStart: Date) => {
 
 const getCvDayAttrs = (day: Date, monthStart: Date): HTMLAttributes => {
 	const isSameMonth = CalendarMath.isSameMonth(day, monthStart)
-	const isFillerTile = props.displayPeriodUom === "year" && !isSameMonth
+	const isFillerTile = isYearView.value && !isSameMonth
 
 	if (isFillerTile) return { inert: true }
 
