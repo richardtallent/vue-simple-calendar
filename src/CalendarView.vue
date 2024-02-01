@@ -470,7 +470,8 @@ const dayIsSelected = (day: Date): boolean => {
 // Return a list of items that CONTAIN the week starting on a day.
 // Sorted so the items that start earlier are always shown first.
 const getWeekItems = (weekStart: Date, monthStart: Date): INormalizedCalendarItem[] => {
-	const endOfWeek = CalendarMath.endOfWeek(weekStart, props.startingDayOfWeek)
+	// Subtracting 1 day because CalendarMath.endOfWeek returns the first day of the next week, not the last included in the original week
+	const endOfWeek = CalendarMath.addDays(CalendarMath.endOfWeek(weekStart, props.startingDayOfWeek), -1)
 	const endOfMonth = CalendarMath.endOfMonth(monthStart)
 	const isYearPeriod = props.displayPeriodUom === "year"
 

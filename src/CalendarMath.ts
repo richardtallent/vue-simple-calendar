@@ -226,8 +226,8 @@ const normalizeItem = (item: ICalendarItem, isHovered: boolean): INormalizedCale
 }
 
 const getISOWeekNumber = (weekStart: Date, monthStart: Date, startDow: number): number => {
+	// Setting the actual start to the start of the month to account for the case the week starts in the previous year
 	const actualStart = new Date(Math.max(weekStart.getTime(), monthStart.getTime()))
-
 	const jan1 = new Date(actualStart.getFullYear(), 0, 1)
 	const firstThursday = addDays(jan1, (11 - jan1.getDay()) % 7)
 	const startOfFirstWeek = beginningOfPeriod(firstThursday, "week", startDow)
