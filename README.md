@@ -93,17 +93,17 @@ In your application, you will need to:
 
 - import the component and register it with Vue
 - import the default theme or any other theme you want to use (CSS)
-- create the `calendar-view` component
-- create the `calendar-view-header` component as a child of the `calendar-view` if you want a header for the calendar
+- create the `CalendarView` component
+- create the `CalendarViewHeader` component as a child of the `CalendarView` if you want a header for the calendar
 - wire up the properties and events
 
 Tips:
 
-- Remember to use _kebab-case_ when specifying these properties using attributes on the `calendar-view` element (_e.g._, `<calendar-view month-name-format="long">`)
-- Remember to use _data binding_ (`:` prefix) for properties that should be a `Boolean`, `Number`, `Array`, or otherwise interpreted with JavaScript (_e.g._, `<calendar-view :show-times="true">`). You can omit the `:` for `String` properties with literal values.
+- Remember to use _kebab-case_ when specifying these properties using attributes on the `CalendarView` element (_e.g._, `<CalendarView month-name-format="long">`)
+- Remember to use _data binding_ (`:` prefix) for properties that should be a `Boolean`, `Number`, `Array`, or otherwise interpreted with JavaScript (_e.g._, `<CalendarView :show-times="true">`). You can omit the `:` for `String` properties with literal values.
 - The component will fill its parent's height and width, so be sure the parent has a minimum height that is appropriate for the number of weeks and average items per week being shown.
 - The default calendar header emits an `input` event when a user clicks a button in the header to move the calendar backward or forward through time. The event's argument is the new date to be shown. You have to handle this event and pass the date back to the calendar to change the view.
-- To minimize the impact of an ancestor element's layout on the calendar's functionality, it is **recommended** that the parent of the `<calendar-view>` component _only_ contain the component, and that the parent have the following styles (#71):
+- To minimize the impact of an ancestor element's layout on the calendar's functionality, it is **recommended** that the parent of the `<CalendarView>` component _only_ contain the component, and that the parent have the following styles (#71):
 
 ```CSS
 display: flex;
@@ -117,15 +117,14 @@ Here's a minimal application example for an empty calendar, styled with the defa
 <template>
 	<div id="app">
 		<h1>My Calendar</h1>
-		<calendar-view
+		<CalendarView
 			:show-date="showDate"
 			class="theme-default holiday-us-traditional holiday-us-official">
 			<template #header="{ headerProps }">
-				<calendar-view-header
-					:header-props="headerProps"
+				<CalendarViewHeader
 					@input="setShowDate" />
 			</template>
-		</calendar-view>
+		</CalendarView>
 	</div>
 </template>
 <script>
@@ -262,12 +261,14 @@ You can create handlers for the following Vue events to add custom functionality
 The named slot `header` contains the component you want to use as the calendar's header. Generally, this would show the current date range, and allow the user to navigate back and forth through time. If you don't provide a component for this slot, there will be no header, just the calendar grid. This component comes with a nice default header component, `CalendarViewHeader`, which you can either use directly, or use as a template for creating your own. (Prior to 4.0, if you didn't provide a component, a default header would be shown. That is no longer the case for reasons explained in the CHANGELOG.)
 
 ```HTML
-<calendar-view :show-date="myShowDate">
-	<calendar-view-header slot="header" slot-scope="{ headerProps }" :header-props="headerProps" @input="setMyShowDate" />
-</calendar-view>
+<CalendarView :show-date="myShowDate">
+    <template #header="{ headerProps }"
+		<CalendarViewHeader :header-props @input="setMyShowDate" />
+	</template>
+</CalendarView>
 ```
 
-The parent `calendar-view` passes a property called `headerProps` to the header component. This property includes all of these values (basically, anything you would normally need to render a calendar header):
+The parent `CalendarView` passes a property called `headerProps` to the header component. This property includes all of these values (basically, anything you would normally need to render a calendar header):
 
 - `periodStart`: the first date of the `displayPeriodUom` containing `showDate`
 - `periodEnd`: the last date of the `displayPeriodUom` containing `showDate` (the `displayPeriodCount` setting impacts this)

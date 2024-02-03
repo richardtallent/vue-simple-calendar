@@ -23,7 +23,7 @@
 		>
 			<template #header="{ headerProps }">
 				<CalendarViewHeader
-					:header-props="headerProps"
+					:header-props
 					:previous-year-label="themeOptions.previousYearLabel"
 					:previous-period-label="themeOptions.previousPeriodLabel"
 					:next-period-label="themeOptions.nextPeriodLabel"
@@ -62,7 +62,7 @@ const themeOptions = computed((): any =>
 				nextPeriodLabel: "\uE5CC",
 				nextYearLabel: "\uE5CC\uE5CC",
 				currentPeriodLabel: "Today",
-		  }
+			}
 		: {
 				top: "1.4em",
 				height: "1.4em",
@@ -72,7 +72,7 @@ const themeOptions = computed((): any =>
 				nextPeriodLabel: ">",
 				nextYearLabel: ">>",
 				currentPeriodLabel: "",
-		  }
+			}
 )
 
 const setShowDate = (d: Date) => (state.showDate = d)
@@ -95,10 +95,10 @@ const getRandomEvent = (index: number): ICalendarItem => {
 		endDate: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), endDay)),
 		classes: Math.random() > 0.9 ? ["custom-date-class-red"] : null,
 	}
-	if(startDay === endDay) {
-		const eightAM = 8;
-		const timeRange = 12;
-		const startTime = (startDay === endDay) ? (eightAM + Math.floor(Math.random() * timeRange)) * 60 * 60 * 1000 : 0
+	if (startDay === endDay) {
+		const eightAM = 8
+		const timeRange = 12
+		const startTime = startDay === endDay ? (eightAM + Math.floor(Math.random() * timeRange)) * 60 * 60 * 1000 : 0
 		const endTime = startTime + Math.floor(Math.random() * 3) * 60 * 60 * 1000
 		i.startDate = new Date(i.startDate.getTime() + startTime)
 		i.startDate = new Date(i.endDate.getTime() + endTime)

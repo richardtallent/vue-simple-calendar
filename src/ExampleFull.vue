@@ -135,7 +135,7 @@
 				@click-item="onClickItem"
 			>
 				<template #header="{ headerProps }">
-					<CalendarViewHeader :header-props="headerProps" @input="setShowDate" />
+					<CalendarViewHeader :header-props @input="setShowDate" />
 				</template>
 			</CalendarView>
 		</div>
