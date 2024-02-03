@@ -74,7 +74,10 @@
 						@dragenter.prevent="onDragEnter(day, $event)"
 						@dragleave.prevent="onDragLeave(day, $event)"
 					>
-						<div class="cv-day-number">{{ day.getDate() }}</div>
+						<div class="cv-day-number">
+							<span v-if="fomName(day)" class="cv-fom-name">{{ fomName(day) }}</span>
+							{{ day.getDate() }}
+						</div>
 						<slot :day="day" name="day-content" />
 					</div>
 					<template v-if="props.enableHtmlTitles" v-for="i in getWeekItems(weekStart)">
@@ -155,6 +158,7 @@ const props = withDefaults(
 		currentPeriodLabelIcons?: string
 		doEmitItemMouseEvents?: boolean
 		enableHtmlTitles?: boolean
+		monthNameOn1st?: boolean
 	}>(),
 	{
 		showDate: undefined,
@@ -183,6 +187,7 @@ const props = withDefaults(
 		currentPeriodLabelIcons: "⇤-⇥",
 		doEmitItemMouseEvents: false,
 		enableHtmlTitles: true,
+		monthNameOn1st: true,
 	}
 )
 
@@ -225,7 +230,7 @@ const periodEnd = computed(
 
 const periodStartCalendarWeek = computed((): number => {
 	const jan1 = new Date(periodStart.value.getFullYear(), 0, 1)
-    const firstThursday = CalendarMath.addDays(jan1, (11 - jan1.getDay()) % 7);
+	const firstThursday = CalendarMath.addDays(jan1, (11 - jan1.getDay()) % 7)
 	const startOfFirstWeek = CalendarMath.beginningOfPeriod(firstThursday, "week", props.startingDayOfWeek)
 	const periodWeekStarts = CalendarMath.beginningOfWeek(periodStart.value, props.startingDayOfWeek)
 	return 1 + Math.floor(CalendarMath.dayDiff(startOfFirstWeek, periodWeekStarts) / 7)
@@ -270,6 +275,9 @@ const currentPeriodLabelFinal = computed((): string => {
 	if (props.currentPeriodLabel === "icons") return props.currentPeriodLabelIcons[Math.sign(c.getTime() - s.getTime()) + 1]
 	return props.currentPeriodLabel
 })
+
+const showMonthNameOn1st = computed(() => props.monthNameOn1st && (props.displayPeriodUom !== "month" || props.displayPeriodCount > 1))
+const fomName = (day: Date): string => (showMonthNameOn1st.value && day.getDate() == 1 ? monthNames.value[day.getMonth()] : "")
 
 const headerProps = computed(
 	(): IHeaderProps => ({
@@ -663,7 +671,12 @@ header are in the CalendarViewHeader component.
 
 .cv-day-number {
 	height: auto;
+	width: 100%;
 	align-self: flex-start;
+}
+
+.d01 .cv-day-number:has(.cv-fom-name) {
+	background-color: var(--cal-fom-name-bg, #fcf);
 }
 
 /* Default styling for holiday hover descriptions */

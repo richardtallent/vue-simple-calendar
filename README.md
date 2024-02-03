@@ -178,6 +178,7 @@ The following properties are supported, by functional area:
 - `periodChangedCallback` - Optional **function** to be called calendar updates initially and any time thereafter where the date range shown on the calendar changes. This is intended to allow your application to, say, query a back-end server to update the `items` property based on the date range visible in the calendar. When your function is called, it is passed an object as the argument, with four keys: `periodStart` / `periodEnd` (the dates that fall within the range of the months being shown) and `displayFirstDate` / `displayLastDate` (the dates shown on the calendar, including those that fall outside the period). See CHANGELOG for details on why I'm using a functional property rather than emitting an event.
 - `displayWeekNumbers`: Adds a column for each week to show the "week number." By default, this appears to the left of the days and contains the calendar week number. The position can moved to the right using CSS. See the `weekNumber` slot for more details.
 - `enableHtmlTitles`: Allows the `title` property of your calendar items to contain HTML. **This is true by default.**
+- `monthNameOn1st`: Defaults to `true`. When you are _not_ using a single-month view, this will includ the name of the month with the day number on the 1st of each month.
 
 | Important: if you put user-provided content in titles, you should either sanitize the HTML they provide, or disable this flag to prevent XSS vulnerabilities. |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -303,7 +304,7 @@ This slot passes two scoped variables: `index`, 0-7, and `label`, the text it wo
 
 ### Day Content
 
-The optional named slot `day-content` allows you to provide your own contents within the date cell. The day of the month is rendered in a separate (sibling) element with the class `cv-day-number`, so you should use CSS to hide this class if you want your slot to be the only content in the cell. Note that items are rendered _above_ the individual date cells, so your slot content will appear below any items on that day.
+The optional named slot `day-content` allows you to provide your own contents within the date cell. The day of the month (and, sometimes, the month name) is rendered in a separate (sibling) element with the class `cv-day-number`, so you should use CSS to hide this class if you want your slot to be the only content in the cell. Note that items are rendered _above_ the individual date cells, so your slot content will appear below any items on that day.
 
 This slot passes one scoped variable: `day`, the date associated with the cell.
 
@@ -363,6 +364,7 @@ div cv-wrapper locale-X yYYYY mMM (past|future) period-X periodCount-X wrap-item
 			dv-weekdays
 				div cv-day dowX dYYYY-MM-DD dMM-DD dDD wmX (past|today|future|last|outsideOfMonth|lastInstance|selectionStart|selectionEnd) [x 7]
 					div cv-day-number
+						div cv-fom-name
 					DAYCONTENT
 				ITEM
 					div cv-item offsetX spanX (continued|toBeContinued|hasUrl|hasItems) [x # of items]
@@ -417,6 +419,14 @@ Each week also has a class representing the date of the Sunday starting that wee
 If an item title is truncated, this enables an _optional_ behavior that will wrap the item to show the entire title when the user hovers over it.
 
 ### Day classes
+
+#### cv-day-number
+
+The day of the month for each cell. Parent of `cv-fom-name`.
+
+#### cv-fom-name
+
+On the 1st, includes the month name depending on the period and `monthNameOn1st` prop.
 
 #### dow*X*
 
