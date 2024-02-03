@@ -24,7 +24,22 @@ const beginningOfPeriod = (d: Date, periodUom: string, startDow: number): Date =
 	}
 }
 
+// Create an array of dates, where each date represents the beginning of a week that
+// should be rendered in the view for the current period.
+const weeksOfPeriod = (periodStart: Date, periodEnd: Date) => {
+	const numWeeks = Math.ceil((dayDiff(periodStart, periodEnd) + 1) / 7)
+	return [...Array(numWeeks)].map((_, i) => addDays(periodStart, i * 7))
+}
+
 const daysOfWeek = (weekStart: Date): Date[] => [...Array(7)].map((_, i) => addDays(weekStart, i))
+
+const weeksOfMonth = (monthStart: Date, periodStartDate: Date, periodEndDate: Date, displayPeriod: string, startDow: number): Date[] => {
+	if (displayPeriod === "week") {
+		return weeksOfPeriod(periodStartDate, periodEndDate)
+	}
+
+	return weeksOfPeriod(beginningOfWeek(monthStart, startDow), endOfMonth(monthStart))
+}
 
 // ********************************************
 // Date transforms that retain time of day
@@ -36,7 +51,9 @@ const endOfWeek = (d: Date, startDow: number): Date => addDays(beginningOfWeek(d
 // ********************************************
 // Date transforms that ignore/wipe time of day
 // ********************************************
+const addMonths = (d: Date, months: number): Date => new Date(d.getFullYear(), d.getMonth() + months, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds())
 const beginningOfMonth = (d: Date): Date => new Date(d.getFullYear(), d.getMonth())
+const endOfMonth = (d: Date): Date => addDays(addMonths(beginningOfMonth(d), 1), -1)
 const instanceOfMonth = (d: Date): number => Math.ceil(d.getDate() / 7)
 
 // This function increments a date by a given number of date units. Accepted units are: year, month, week. For year and month,
@@ -208,14 +225,36 @@ const normalizeItem = (item: ICalendarItem, isHovered: boolean): INormalizedCale
 	}
 }
 
+const getISOWeekNumber = (weekStart: Date, monthStart: Date, startDow: number): number => {
+	// Setting the actual start to the start of the month to account for the case the week starts in the previous year
+	const actualStart = new Date(Math.max(weekStart.getTime(), monthStart.getTime()))
+	const jan1 = new Date(actualStart.getFullYear(), 0, 1)
+	const firstThursday = addDays(jan1, (11 - jan1.getDay()) % 7)
+	const startOfFirstWeek = beginningOfPeriod(firstThursday, "week", startDow)
+	const periodWeekStarts = beginningOfWeek(actualStart, startDow)
+	return 1 + Math.floor(dayDiff(startOfFirstWeek, periodWeekStarts) / 7)
+}
+
+const getWeekNumberInPeriod = (weekStart: Date, periodStart: Date): number => {
+	// Calculate the difference in milliseconds
+	const timeDifference = weekStart.getTime() - periodStart.getTime()
+	// Calculate the difference in weeks
+	const weeksDifference = Math.floor(timeDifference / (7 * 24 * 60 * 60 * 1000))
+	// Week number starts from 1
+	return weeksDifference + 1
+}
+
 export default {
 	addDays,
+	addMonths,
 	beginningOfMonth,
+	endOfMonth,
 	beginningOfPeriod,
 	beginningOfWeek,
 	dateOnly,
 	dayDiff,
 	daysOfWeek,
+	weeksOfMonth,
 	endOfWeek,
 	formattedPeriod,
 	formattedTime,
@@ -244,4 +283,6 @@ export default {
 	supportsIntl,
 	today,
 	toLocalDate,
+	getISOWeekNumber,
+	getWeekNumberInPeriod,
 }
