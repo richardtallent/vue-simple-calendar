@@ -10,6 +10,7 @@ interface ICalendarItem {
 	url?: string
 	classes?: string[] | null
 	style?: string
+	meta?: { [Key: string]: any }
 }
 
 interface INormalizedCalendarItem extends ICalendarItem {
