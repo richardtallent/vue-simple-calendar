@@ -33,8 +33,8 @@
 				:key="`${monthIndex}-month`"
 				:class="['cv-month', `month${monthIndex + 1}`, `ws${CalendarMath.isoYearMonth(monthStart)}`]"
 			>
-				<div class="cv-monthheading-row">
-					<h2 v-if="displayPeriodUom === 'year'" class="cv-monthheading">
+				<div v-if="displayPeriodUom === 'year'" class="cv-monthheading-row">
+					<h2 class="cv-monthheading">
 						{{ monthNames[monthIndex] }}
 					</h2>
 				</div>
@@ -492,7 +492,7 @@ const getWeekItems = (weekStart: Date, monthStart: Date): INormalizedCalendarIte
 			itemRow: 0,
 		})
 		const continued = ep.startDate < leftBoundary
-		const startOffset = continued ? CalendarMath.dayDiff(weekStart, leftBoundary) : CalendarMath.dayDiff(leftBoundary, ep.startDate)
+		const startOffset = continued ? CalendarMath.dayDiff(weekStart, leftBoundary) : CalendarMath.dayDiff(weekStart, ep.startDate)
 
 		// The day when the item should start. If the item starts before the week, it will be the week's start day.
 		const itemStartDay = CalendarMath.addDays(weekStart, startOffset)
@@ -637,7 +637,6 @@ header are in the CalendarViewHeader component.
 	border-style: solid;
 	border-color: #ddd;
 	border-width: 1px 1px 0 0;
-	margin-right: 1px;
 }
 
 .cv-monthheading {
