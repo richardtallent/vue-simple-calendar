@@ -22,7 +22,8 @@
 	"exports": {
 		".": {
 			"import": "./dist/vue-simple-calendar.js",
-			"require": "./dist/vue-simple-calendar.umd.js"
+			"require": "./dist/vue-simple-calendar.umd.js",
+			"types": "./dist/lib/main.d.ts"
 		},
 		"./dist/style.css": {
 			"import": "./dist/style.css",
