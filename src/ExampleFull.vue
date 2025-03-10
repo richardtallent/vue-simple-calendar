@@ -282,13 +282,15 @@ const themeClasses = computed(() => ({
 	"holiday-us-official": state.useHolidayTheme,
 }))
 
-const myDateClasses = (): Record<string, string[]> => {
+type DateClasses = { [key: string]: string | string[] }
+
+const myDateClasses = (): DateClasses => {
 	// This was added to demonstrate the dateClasses prop. Note in particular that the
 	// keys of the object are `yyyy-mm-dd` ISO date strings (not dates), and the values
 	// for those keys are strings or string arrays. Keep in mind that your CSS to style these
 	// may need to be fairly specific to make it override your theme's styles. See the
 	// CSS at the bottom of this component to see how these are styled.
-	const o = {} as Record<string, string[]>
+	const o = {} as DateClasses
 	const theFirst = thisMonth(1)
 	const ides = [2, 4, 6, 9].includes(theFirst.getMonth()) ? 15 : 13
 	const idesDate = thisMonth(ides)

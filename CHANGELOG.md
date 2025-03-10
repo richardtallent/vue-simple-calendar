@@ -23,7 +23,8 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 ## 7.2.0 (2025-03-09)
 
 - Bump dependencies
-- Type fix (#239)
+- Type fix (#239, thanks @DanieleS)
+- Add enableTooltip option (#249, thanks @StarkOne)
 
 ## 7.1.0 (2024-02-03)
 

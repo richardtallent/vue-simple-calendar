@@ -87,7 +87,7 @@
 								:draggable="enableDragDrop"
 								:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
 								:class="i.classes"
-								:title="enableTooltip ? i.tooltip || i.title : null"
+								:title="enableTooltip ? i.tooltip || i.title : undefined"
 								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
 								class="cv-item"
 								@dragstart="onDragItemStart(i, $event)"
@@ -105,7 +105,7 @@
 								:draggable="enableDragDrop"
 								:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
 								:class="i.classes"
-								:title="enableTooltip ? i.tooltip || i.title : null"
+								:title="enableTooltip ? i.tooltip || i.title : undefined"
 								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
 								class="cv-item"
 								@dragstart="onDragItemStart(i, $event)"
@@ -113,6 +113,7 @@
 								@mouseleave="onMouseLeaveItem(i, $event)"
 								@click.stop="onClickItem(i, $event)"
 							>
+								{{ enableTooltip ?? "p" }}
 								{{ getItemTitle(i) }}
 							</div>
 							div>
@@ -129,6 +130,8 @@ import CalendarViewState from "./CalendarViewState"
 import { computed, reactive, watch } from "vue"
 import { ICalendarItem, INormalizedCalendarItem, DateTimeFormatOption } from "./ICalendarItem"
 import { IHeaderProps } from "./IHeaderProps"
+
+type DateClasses = { [key: string]: string | string[] }
 
 const props = withDefaults(
 	defineProps<{
@@ -149,7 +152,7 @@ const props = withDefaults(
 		enableDragDrop?: boolean
 		startingDayOfWeek?: number
 		items?: ICalendarItem[]
-		dateClasses?: Record<string, string[]>
+		dateClasses?: DateClasses
 		itemTop?: string
 		itemContentHeight?: string
 		itemBorderHeight?: string
