@@ -87,7 +87,7 @@
 								:draggable="enableDragDrop"
 								:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
 								:class="i.classes"
-								:title="i.tooltip || i.title"
+								:title="enableTooltip ? i.tooltip || i.title : null"
 								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
 								class="cv-item"
 								@dragstart="onDragItemStart(i, $event)"
@@ -105,7 +105,7 @@
 								:draggable="enableDragDrop"
 								:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
 								:class="i.classes"
-								:title="i.tooltip || i.title"
+								:title="enableTooltip ? i.tooltip || i.title : null"
 								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
 								class="cv-item"
 								@dragstart="onDragItemStart(i, $event)"
@@ -156,6 +156,7 @@ const props = withDefaults(
 		periodChangedCallback?: Function
 		currentPeriodLabel?: string
 		currentPeriodLabelIcons?: string
+		enableTooltip?: boolean
 		doEmitItemMouseEvents?: boolean
 		enableHtmlTitles?: boolean
 		monthNameOn1st?: boolean
@@ -185,6 +186,7 @@ const props = withDefaults(
 		periodChangedCallback: undefined,
 		currentPeriodLabel: "",
 		currentPeriodLabelIcons: "⇤-⇥",
+		enableTooltip: true,
 		doEmitItemMouseEvents: false,
 		enableHtmlTitles: true,
 		monthNameOn1st: true,
