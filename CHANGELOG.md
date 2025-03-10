@@ -20,6 +20,11 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 7.2.0 (2025-03-09)
+
+- Bump dependencies
+- Type fix (#239)
+
 ## 7.1.0 (2024-02-03)
 
 - Add name of the month on the 1st of the month, unless showing a single month. Defaults to true, but configurable and styleable.
