@@ -20,11 +20,19 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 7.2.1 (2025-03-29)
+
+- Fixed export for primary CSS file (#250)
+- Fix export order for types, and now exporting types for `ICalendarItem`, `INormalizedCalendarItem`, `DateTimeFormatOption` (#241)
+- Bump dependencies
+
 ## 7.2.0 (2025-03-09)
+
+**NOTE: While not a major release there was apparently a recent breaking change. The main CSS file is now `vue-simple-calendar.css`, not `style.css`. I believe this was a change in Vite's behavior.**
 
 - Bump dependencies
 - Type fix (#239, thanks @DanieleS)
-- Add enableTooltip option (#249, thanks @StarkOne)
+- Add enableTooltip option (#249 / #242, thanks @StarkOne)
 
 ## 7.1.0 (2024-02-03)
 
