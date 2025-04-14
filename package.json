@@ -58,20 +58,20 @@
 		"vue": "^3.5.13"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "^8.28.0",
+		"@typescript-eslint/parser": "^8.29.1",
 		"@vitejs/plugin-vue": "^5.2.3",
 		"@vue/compiler-sfc": "^3.5.13",
 		"autoprefixer": "^10.4.21",
-		"eslint": "^9.23.0",
-		"eslint-plugin-prettier": "^5.2.5",
+		"eslint": "^9.24.0",
+		"eslint-plugin-prettier": "^5.2.6",
 		"eslint-plugin-vue": "^10.0.0",
 		"postcss": "^8.5.3",
 		"prettier": "^3.5.3",
 		"rollup-plugin-typescript2": "^0.36.0",
-		"stylelint": "^16.17.0",
-		"stylelint-config-standard": "^37.0.0",
-		"typescript": "^5.8.2",
-		"vite": "^6.2.3",
+		"stylelint": "^16.18.0",
+		"stylelint-config-standard": "^38.0.0",
+		"typescript": "^5.8.3",
+		"vite": "^6.2.6",
 		"vite-plugin-dts": "^4.5.3"
 	},
 	"eslintConfig": {
