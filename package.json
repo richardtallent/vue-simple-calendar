@@ -1,6 +1,6 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "7.2.1",
+	"version": "7.2.2",
 	"private": false,
 	"type": "module",
 	"description": "Simple Vue 3 calendar event control",
@@ -55,24 +55,24 @@
 		"build": "vite build"
 	},
 	"dependencies": {
-		"vue": "^3.5.13"
+		"vue": "^3.5.32"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "^8.29.1",
-		"@vitejs/plugin-vue": "^5.2.3",
-		"@vue/compiler-sfc": "^3.5.13",
-		"autoprefixer": "^10.4.21",
-		"eslint": "^9.24.0",
-		"eslint-plugin-prettier": "^5.2.6",
-		"eslint-plugin-vue": "^10.0.0",
-		"postcss": "^8.5.3",
-		"prettier": "^3.5.3",
-		"rollup-plugin-typescript2": "^0.36.0",
-		"stylelint": "^16.18.0",
-		"stylelint-config-standard": "^38.0.0",
-		"typescript": "^5.8.3",
-		"vite": "^6.2.6",
-		"vite-plugin-dts": "^4.5.3"
+		"@typescript-eslint/parser": "^8.58.2",
+		"@vitejs/plugin-vue": "^6.0.6",
+		"@vue/compiler-sfc": "^3.5.32",
+		"autoprefixer": "^10.5.0",
+		"eslint": "^9.39.4",
+		"eslint-plugin-prettier": "^5.5.5",
+		"eslint-plugin-vue": "^10.8.0",
+		"postcss": "^8.5.10",
+		"prettier": "^3.8.3",
+		"rollup-plugin-typescript2": "^0.37.0",
+		"stylelint": "^17.8.0",
+		"stylelint-config-standard": "^40.0.0",
+		"typescript": "^6.0.3",
+		"vite": "^8.0.8",
+		"vite-plugin-dts": "^4.5.4"
 	},
 	"eslintConfig": {
 		"extends": [

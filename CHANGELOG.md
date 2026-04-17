@@ -20,6 +20,11 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 7.2.2 (2026-04-17)
+
+- Fix Safari layering where sticky `.cv-day` elements could render above `.cv-item` elements while scrolling (`z-index` ordering fix in core CSS) (#261)
+- Bump dependencies
+
 ## 7.2.1 (2025-03-29)
 
 - Fixed export for primary CSS file (#250)

@@ -668,6 +668,7 @@ header are in the CalendarViewHeader component.
 	position: relative; /* Fallback for IE11, which doesn't support sticky */
 	position: sticky; /* When week's items are scrolled, keep the day content fixed */
 	top: 0;
+	z-index: 0; /* Safari: keep sticky day cells below event items */
 	border-width: 1px 1px 0 0;
 
 	/* Restore user's direction setting (overridden for week) */
@@ -728,6 +729,7 @@ _:-ms-lang(x),
 
 .cv-item {
 	position: absolute;
+	z-index: 1; /* Safari: ensure event items render above sticky day cells */
 	white-space: nowrap;
 	overflow: hidden;
 	background-color: #f7f7f7;
