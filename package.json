@@ -11,7 +11,7 @@
 		"url": "git+https://github.com/richardtallent/vue-simple-calendar.git"
 	},
 	"homepage": "https://tallent.us/vue-simple-calendar/",
-	"main": "./dist/vue-simple-calendar.umd.js",
+	"main": "./dist/vue-simple-calendar.umd.cjs",
 	"module": "./dist/vue-simple-calendar.js",
 	"types": "./dist/lib/main.d.ts",
 	"style": "./dist/style.css",
@@ -23,7 +23,7 @@
 		".": {
 			"types": "./dist/lib/main.d.ts",
 			"import": "./dist/vue-simple-calendar.js",
-			"require": "./dist/vue-simple-calendar.umd.js"
+			"require": "./dist/vue-simple-calendar.umd.cjs"
 		},
 		"./interfaces": {
 			"types": "./dist/lib/interfaces.d.ts"
