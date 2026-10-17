@@ -27,6 +27,8 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Add `day-number` slot to customize the contents of `.cv-day-number`; the default rendering is unchanged when the slot is not used (#262, thanks @kangcen-guo)
 - Add `ariaLabel` prop to `CalendarView`, and `previousYearAriaLabel`, `previousPeriodAriaLabel`, `currentPeriodAriaLabel`, `nextPeriodAriaLabel`, and `nextYearAriaLabel` props to `CalendarViewHeader`, so the English-only `aria-label`s can be localized (#257, thanks @antoniolucasnobar)
 - Bump dependencies (Vue 3.5.44, Vite 8.3, ESLint 10, vite-plugin-dts 5, etc.). Built CSS is now minified by Vite 8's CSS minifier (same selectors, equivalent rules), and generated `.d.ts` files for components use the newer vue-tsc output style (same props, emits, and slots)
+- Add tests for date math
+- Building the library from source now requires Node `^20.19.0 || >=22.12.0` (Vite 8's minimum; `vite.config.js` uses `import.meta.dirname`), declared in `engines`. Consumers of the published package are unaffected
 
 ## 7.2.2 (2026-04-17)
 

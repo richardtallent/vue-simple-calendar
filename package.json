@@ -11,6 +11,9 @@
 		"url": "git+https://github.com/richardtallent/vue-simple-calendar.git"
 	},
 	"homepage": "https://tallent.us/vue-simple-calendar/",
+	"engines": {
+		"node": "^20.19.0 || >=22.12.0"
+	},
 	"main": "./dist/vue-simple-calendar.umd.cjs",
 	"module": "./dist/vue-simple-calendar.js",
 	"types": "./dist/lib/main.d.ts",
@@ -52,28 +55,26 @@
 	"scripts": {
 		"dev": "vite",
 		"devs": "vite --https",
-		"build": "vite build"
+		"build": "vite build",
+		"test": "TZ=America/New_York vitest run && TZ=Pacific/Auckland vitest run && TZ=UTC vitest run"
 	},
 	"dependencies": {
-		"vue": "^3.5.32"
+		"vue": "^3.5.44"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "^8.58.2",
-		"@vitejs/plugin-vue": "^6.0.6",
-		"@vue/compiler-sfc": "^3.5.32",
+		"@typescript-eslint/parser": "^8.71.2",
+		"@vitejs/plugin-vue": "^6.0.10",
+		"@vue/compiler-sfc": "^3.5.44",
 		"@vue/language-core": "^3.3.13",
-		"autoprefixer": "^10.5.0",
 		"eslint": "^10.13.0",
-		"eslint-plugin-prettier": "^5.5.5",
-		"eslint-plugin-vue": "^10.8.0",
-		"postcss": "^8.5.10",
-		"prettier": "^3.8.3",
+		"eslint-plugin-prettier": "^5.5.7",
+		"eslint-plugin-vue": "^10.11.1",
+		"prettier": "^3.9.10",
 		"rollup-plugin-typescript2": "^0.37.0",
-		"stylelint": "^17.8.0",
-		"stylelint-config-standard": "^40.0.0",
 		"typescript": "^6.0.3",
-		"vite": "^8.0.8",
-		"vite-plugin-dts": "^5.1.2"
+		"vite": "^8.3.4",
+		"vite-plugin-dts": "^5.1.2",
+		"vitest": "^5.0.5"
 	},
 	"eslintConfig": {
 		"extends": [
@@ -92,21 +93,6 @@
 		"bracketSpacing": true,
 		"trailingComma": "es5",
 		"printWidth": 160
-	},
-	"postcss": {
-		"plugins": {
-			"autoprefixer": {}
-		}
-	},
-	"stylelint": {
-		"extends": "stylelint-config-standard",
-		"exclude": [
-			"dist"
-		],
-		"rules": {
-			"no-descending-specificity": null,
-			"selector-class-pattern": null
-		}
 	},
 	"browserslist": [
 		"defaults",

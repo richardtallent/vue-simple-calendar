@@ -10,7 +10,7 @@ export default defineConfig({
 	build: {
 		sourcemap: false,
 		lib: {
-			entry: path.resolve(__dirname, "lib/main.ts"),
+			entry: path.resolve(import.meta.dirname, "lib/main.ts"),
 			name: "CalendarView",
 		},
 		assetsInclude: ["**/*.css"],
