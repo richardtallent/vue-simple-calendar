@@ -25,6 +25,7 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Fix `main` and `exports.require` pointing to the missing `vue-simple-calendar.umd.js`; they now point to `vue-simple-calendar.umd.cjs`, so `require()` and Jest work again (#264, #265, thanks @eertmanhidde)
 - `INormalizedCalendarItem` and `CalendarView` are now generic over your own item type (`INormalizedCalendarItem<MyItem>`), so extra properties on your items are typed on `originalItem` in events and slots. Fully backward compatible: the type parameter defaults to `ICalendarItem`. Documented under "Custom item data" (#263)
 - Add `day-number` slot to customize the contents of `.cv-day-number`; the default rendering is unchanged when the slot is not used (#262, thanks @kangcen-guo)
+- Add `ariaLabel` prop to `CalendarView`, and `previousYearAriaLabel`, `previousPeriodAriaLabel`, `currentPeriodAriaLabel`, `nextPeriodAriaLabel`, and `nextYearAriaLabel` props to `CalendarViewHeader`, so the English-only `aria-label`s can be localized (#257, thanks @antoniolucasnobar)
 - Bump dependencies (Vue 3.5.44, Vite 8.3, ESLint 10, vite-plugin-dts 5, etc.). Built CSS is now minified by Vite 8's CSS minifier (same selectors, equivalent rules), and generated `.d.ts` files for components use the newer vue-tsc output style (same props, emits, and slots)
 
 ## 7.2.2 (2026-04-17)

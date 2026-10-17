@@ -1,23 +1,23 @@
 <template>
 	<div class="cv-header">
 		<div class="cv-header-nav">
-			<button :disabled="!headerProps.previousYear" class="previousYear" aria-label="Previous Year" @click.prevent="onInput(headerProps.previousYear!)">
+			<button :disabled="!headerProps.previousYear" class="previousYear" :aria-label="previousYearAriaLabel" @click.prevent="onInput(headerProps.previousYear!)">
 				{{ previousYearLabel }}
 			</button>
 			<button
 				:disabled="!headerProps.previousPeriod"
 				class="previousPeriod"
-				aria-label="Previous Period"
+				:aria-label="previousPeriodAriaLabel"
 				@click.prevent="onInput(headerProps.previousPeriod!)"
 				v-html="previousPeriodLabel"
 			/>
-			<button class="currentPeriod" aria-label="Current Period" @click.prevent="onInput(headerProps.currentPeriod)">
+			<button class="currentPeriod" :aria-label="currentPeriodAriaLabel" @click.prevent="onInput(headerProps.currentPeriod)">
 				{{ headerProps.currentPeriodLabel }}
 			</button>
-			<button :disabled="!headerProps.nextPeriod" class="nextPeriod" aria-label="Next Period" @click.prevent="onInput(headerProps.nextPeriod!)">
+			<button :disabled="!headerProps.nextPeriod" class="nextPeriod" :aria-label="nextPeriodAriaLabel" @click.prevent="onInput(headerProps.nextPeriod!)">
 				{{ nextPeriodLabel }}
 			</button>
-			<button :disabled="!headerProps.nextYear" class="nextYear" aria-label="Next Year" @click.prevent="onInput(headerProps.nextYear!)">
+			<button :disabled="!headerProps.nextYear" class="nextYear" :aria-label="nextYearAriaLabel" @click.prevent="onInput(headerProps.nextYear!)">
 				{{ nextYearLabel }}
 			</button>
 		</div>
@@ -38,6 +38,11 @@ defineProps({
 	previousPeriodLabel: { type: String, default: "<" },
 	nextPeriodLabel: { type: String, default: ">" },
 	nextYearLabel: { type: String, default: ">>" },
+	previousYearAriaLabel: { type: String, default: "Previous Year" },
+	previousPeriodAriaLabel: { type: String, default: "Previous Period" },
+	currentPeriodAriaLabel: { type: String, default: "Current Period" },
+	nextPeriodAriaLabel: { type: String, default: "Next Period" },
+	nextYearAriaLabel: { type: String, default: "Next Year" },
 })
 
 const emit = defineEmits<{

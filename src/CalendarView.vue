@@ -1,6 +1,6 @@
 <template>
 	<div
-		aria-label="Calendar"
+		:aria-label="ariaLabel"
 		:class="[
 			'cv-wrapper',
 			`locale-${CalendarMath.languageCode(displayLocale)}`,
@@ -165,6 +165,7 @@ const props = withDefaults(
 		doEmitItemMouseEvents?: boolean
 		enableHtmlTitles?: boolean
 		monthNameOn1st?: boolean
+		ariaLabel?: string
 	}>(),
 	{
 		showDate: undefined,
@@ -195,6 +196,7 @@ const props = withDefaults(
 		doEmitItemMouseEvents: false,
 		enableHtmlTitles: true,
 		monthNameOn1st: true,
+		ariaLabel: "Calendar",
 	}
 )
 
