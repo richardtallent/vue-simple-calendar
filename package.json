@@ -1,6 +1,6 @@
 {
 	"name": "vue-simple-calendar",
-	"version": "7.2.2",
+	"version": "7.2.3",
 	"private": false,
 	"type": "module",
 	"description": "Simple Vue 3 calendar event control",
