@@ -1,8 +1,8 @@
-import { INormalizedCalendarItem } from "./ICalendarItem"
+import { ICalendarItem, INormalizedCalendarItem } from "./ICalendarItem"
 import CalendarMath from "./CalendarMath"
 
-class CalendarViewState {
-	currentDragItem?: INormalizedCalendarItem = undefined
+class CalendarViewState<T extends ICalendarItem = ICalendarItem> {
+	currentDragItem?: INormalizedCalendarItem<T> = undefined
 	dateSelectionOrigin?: Date = undefined
 	currentHoveredItemId: string = ""
 	CalendarMath: object = CalendarMath

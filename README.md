@@ -226,6 +226,24 @@ Each item shown on the calendar can have the following properties. `id` and `sta
 - `classes` - An array of strings with any additional CSS classes you wish to assign to the item.
 - `style` - A string with any additional CSS styles you wish to apply to the item.
 
+### Custom item data
+
+Items may carry any additional properties you like (a venue, a description, a record ID, etc.). The component ignores them, and hands your original, unmodified item back as `originalItem` on the normalized item passed to every event (`click-item`, etc.) and slot. For example, `item.originalItem.venue`.
+
+If you use TypeScript, extend `ICalendarItem` with your own fields and pass your type to `INormalizedCalendarItem`. `CalendarView` is generic, so `items` and the event handlers pick up your type automatically:
+
+```ts
+import { ICalendarItem, INormalizedCalendarItem } from "vue-simple-calendar"
+
+interface MyItem extends ICalendarItem {
+	venue: string
+	description: string
+}
+
+const items: MyItem[] = [...]
+const onClickItem = (item: INormalizedCalendarItem<MyItem>) => openModal(item.originalItem.venue)
+```
+
 ## Events
 
 (Note: below, `calendarItem` refers to the **normalized** version of the calendar item involved in the activity. For more information, see the "item" slot below.)

@@ -124,7 +124,7 @@
 		</div>
 	</div>
 </template>
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends ICalendarItem = ICalendarItem">
 import CalendarMath from "./CalendarMath"
 import CalendarViewState from "./CalendarViewState"
 import { computed, reactive, watch } from "vue"
@@ -151,7 +151,7 @@ const props = withDefaults(
 		selectionEnd?: Date
 		enableDragDrop?: boolean
 		startingDayOfWeek?: number
-		items?: ICalendarItem[]
+		items?: T[]
 		dateClasses?: DateClasses
 		itemTop?: string
 		itemContentHeight?: string
@@ -199,21 +199,22 @@ const props = withDefaults(
 const emit = defineEmits<{
 	//(e: "input", payload: foo, windowEvent: Event): void
 	(e: "period-changed"): void
-	(e: "click-date", day: Date, itemsInRange: INormalizedCalendarItem[], windowEvent: Event): void
-	(e: "click-item", item: INormalizedCalendarItem, windowEvent: Event): void
-	(e: "item-mouseenter", item: INormalizedCalendarItem, windowEvent: Event): void
-	(e: "item-mouseleave", item: INormalizedCalendarItem, windowEvent: Event): void
-	(e: "drag-start", item: INormalizedCalendarItem, windowEvent: Event): void
-	(e: "drag-over-date", currentDragItem: INormalizedCalendarItem, day: Date, windowEvent: Event): void
-	(e: "drag-enter-date", currentDragItem: INormalizedCalendarItem, day: Date, windowEvent: Event): void
-	(e: "drag-leave-date", currentDragItem: INormalizedCalendarItem, day: Date, windowEvent: Event): void
-	(e: "drop-on-date", currentDragItem: INormalizedCalendarItem, day: Date, windowEvent: Event): void
+	(e: "click-date", day: Date, itemsInRange: INormalizedCalendarItem<T>[], windowEvent: Event): void
+	(e: "click-item", item: INormalizedCalendarItem<T>, windowEvent: Event): void
+	(e: "item-mouseenter", item: INormalizedCalendarItem<T>, windowEvent: Event): void
+	(e: "item-mouseleave", item: INormalizedCalendarItem<T>, windowEvent: Event): void
+	(e: "drag-start", item: INormalizedCalendarItem<T>, windowEvent: Event): void
+	(e: "drag-over-date", currentDragItem: INormalizedCalendarItem<T>, day: Date, windowEvent: Event): void
+	(e: "drag-enter-date", currentDragItem: INormalizedCalendarItem<T>, day: Date, windowEvent: Event): void
+	(e: "drag-leave-date", currentDragItem: INormalizedCalendarItem<T>, day: Date, windowEvent: Event): void
+	(e: "drop-on-date", currentDragItem: INormalizedCalendarItem<T>, day: Date, windowEvent: Event): void
 	(e: "date-selection", selectedDateRange: [Date, Date], windowEvent: Event): void
 	(e: "date-selection-start", selectedDateRange: [Date, Date], windowEvent: Event): void
 	(e: "date-selection-finish", selectedDateRange: [Date, Date], windowEvent: Event): void
 }>()
 
-const state = reactive(new CalendarViewState())
+// reactive() would wrap T in UnwrapRef<T>, which TS cannot reconcile with the generic item type
+const state = reactive(new CalendarViewState<T>()) as CalendarViewState<T>
 
 // Props cannot default to computed/method returns, so create defaulted version of this
 // property and use it rather than the bare prop (Vue Issue #6013).
@@ -259,7 +260,7 @@ const monthNames = computed((): string[] => CalendarMath.getFormattedMonthNames(
 const weekdayNames = computed((): string[] => CalendarMath.getFormattedWeekdayNames(displayLocale.value, props.weekdayNameFormat, props.startingDayOfWeek))
 
 // Ensure all item properties have suitable default
-const fixedItems = computed((): INormalizedCalendarItem[] => {
+const fixedItems = computed((): INormalizedCalendarItem<T>[] => {
 	if (!props.items) return []
 	return props.items.map((item) => CalendarMath.normalizeItem(item, item.id === state.currentHoveredItemId))
 })
@@ -336,7 +337,7 @@ const onClickDay = (day: Date, windowEvent: Event): void => {
 	emit("click-date", day, findAndSortItemsInDateRange(day, day), windowEvent)
 }
 
-const onClickItem = (calendarItem: INormalizedCalendarItem, windowEvent: Event): void => emit("click-item", calendarItem, windowEvent)
+const onClickItem = (calendarItem: INormalizedCalendarItem<T>, windowEvent: Event): void => emit("click-item", calendarItem, windowEvent)
 
 // The day name header needs to know the dow for class assignment, and this value should
 // not change based on startingDayOfWeek (i.e., Sunday is always 0). This function
@@ -362,14 +363,14 @@ const getIncrementedPeriod = (count: number): Date | null => {
 // Hover items (#95, #136)
 // ******************************
 
-const onMouseEnterItem = (calendarItem: INormalizedCalendarItem, windowEvent: Event): void => {
+const onMouseEnterItem = (calendarItem: INormalizedCalendarItem<T>, windowEvent: Event): void => {
 	state.currentHoveredItemId = calendarItem.id
 	if (props.doEmitItemMouseEvents) {
 		emit("item-mouseenter", calendarItem, windowEvent)
 	}
 }
 
-const onMouseLeaveItem = (calendarItem: INormalizedCalendarItem, windowEvent: Event): void => {
+const onMouseLeaveItem = (calendarItem: INormalizedCalendarItem<T>, windowEvent: Event): void => {
 	state.currentHoveredItemId = ""
 	if (props.doEmitItemMouseEvents) {
 		emit("item-mouseleave", calendarItem, windowEvent)
@@ -397,7 +398,7 @@ const onDragDateStart = (day: Date, windowEvent: DragEvent): boolean => {
 // Drag and drop items
 // ******************************
 
-const onDragItemStart = (calendarItem: INormalizedCalendarItem, windowEvent: DragEvent): boolean => {
+const onDragItemStart = (calendarItem: INormalizedCalendarItem<T>, windowEvent: DragEvent): boolean => {
 	if (!props.enableDragDrop) return false
 	// Firefox and possibly other browsers require dataTransfer to be set, even if the value is not used. IE11
 	// requires that the first argument be exactly "text" (not "text/plain", etc.). The calendar item's ID is
@@ -463,7 +464,7 @@ const onDrop = (day: Date, windowEvent: Event): void => {
 // Calendar Items
 // ******************************
 
-const itemComparer = (a: INormalizedCalendarItem, b: INormalizedCalendarItem) => {
+const itemComparer = (a: INormalizedCalendarItem<T>, b: INormalizedCalendarItem<T>) => {
 	if (a.startDate < b.startDate) return -1
 	if (b.startDate < a.startDate) return 1
 	if (a.endDate > b.endDate) return -1
@@ -472,11 +473,11 @@ const itemComparer = (a: INormalizedCalendarItem, b: INormalizedCalendarItem) =>
 }
 
 // Return a list of items that INCLUDE any portion of a given week.
-const findAndSortItemsInWeek = (weekStart: Date): INormalizedCalendarItem[] => findAndSortItemsInDateRange(weekStart, CalendarMath.addDays(weekStart, 6))
+const findAndSortItemsInWeek = (weekStart: Date): INormalizedCalendarItem<T>[] => findAndSortItemsInDateRange(weekStart, CalendarMath.addDays(weekStart, 6))
 
 // Return a list of items that INCLUDE any day within the date range,
 // inclusive, sorted so items that start earlier are returned first.
-const findAndSortItemsInDateRange = (startDate: Date, endDate: Date): INormalizedCalendarItem[] =>
+const findAndSortItemsInDateRange = (startDate: Date, endDate: Date): INormalizedCalendarItem<T>[] =>
 	fixedItems.value.filter((item) => item.endDate >= startDate && CalendarMath.dateOnly(item.startDate) <= endDate, this).sort(itemComparer)
 
 const dayHasItems = (day: Date): boolean => !!fixedItems.value.find((d) => d.endDate >= day && CalendarMath.dateOnly(d.startDate) <= day)
@@ -490,9 +491,9 @@ const dayIsSelected = (day: Date): boolean => {
 
 // Return a list of items that CONTAIN the week starting on a day.
 // Sorted so the items that start earlier are always shown first.
-const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
+const getWeekItems = (weekStart: Date): INormalizedCalendarItem<T>[] => {
 	const items = findAndSortItemsInWeek(weekStart)
-	const results = [] as INormalizedCalendarItem[]
+	const results = [] as INormalizedCalendarItem<T>[]
 	const itemRows: boolean[][] = [[], [], [], [], [], [], []]
 	if (!items) return results
 	for (let i = 0; i < items.length; i++) {
@@ -526,7 +527,7 @@ const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 
 // Creates the HTML to prefix the item title showing the items start and/or end time.
 // Midnight is not displayed.
-const getFormattedTimeRange = (item: INormalizedCalendarItem): string => {
+const getFormattedTimeRange = (item: INormalizedCalendarItem<T>): string => {
 	const startTime = '<span class="startTime">' + CalendarMath.formattedTime(item.startDate, displayLocale.value, props.timeFormatOptions) + "</span>"
 	let endTime = ""
 	if (!CalendarMath.isSameDateTime(item.startDate, item.endDate)) {
@@ -535,13 +536,13 @@ const getFormattedTimeRange = (item: INormalizedCalendarItem): string => {
 	return startTime + endTime
 }
 
-const getItemTitle = (item: INormalizedCalendarItem): string => {
+const getItemTitle = (item: INormalizedCalendarItem<T>): string => {
 	if (!props.showTimes) return item.title
 	return getFormattedTimeRange(item) + " " + item.title
 }
 
 // Compute the top position of the item based on its assigned row within the given week.
-const getItemTop = (item: INormalizedCalendarItem): string => {
+const getItemTop = (item: INormalizedCalendarItem<T>): string => {
 	const r = item.itemRow
 	const h = props.itemContentHeight
 	const b = props.itemBorderHeight

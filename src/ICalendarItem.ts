@@ -12,9 +12,11 @@ interface ICalendarItem {
 	style?: string
 }
 
-interface INormalizedCalendarItem extends ICalendarItem {
+// T is the caller's own item type (typically `interface MyItem extends ICalendarItem { ... }`), so any extra
+// properties on the items passed in are available, fully typed, on `originalItem`.
+interface INormalizedCalendarItem<T extends ICalendarItem = ICalendarItem> extends ICalendarItem {
 	endDate: Date
-	originalItem: ICalendarItem
+	originalItem: T
 	classes: string[]
 	itemRow?: number
 }
