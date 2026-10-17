@@ -20,6 +20,11 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 7.2.3 (2026-10-17)
+
+- Fix `main` and `exports.require` pointing to the missing `vue-simple-calendar.umd.js`; they now point to `vue-simple-calendar.umd.cjs`, so `require()` and Jest work again (#264, #265, thanks @eertmanhidde)
+- Bump dependencies (Vue 3.5.44, Vite 8.3, ESLint 10, vite-plugin-dts 5, etc.). Built CSS is now minified by Vite 8's CSS minifier (same selectors, equivalent rules), and generated `.d.ts` files for components use the newer vue-tsc output style (same props, emits, and slots)
+
 ## 7.2.2 (2026-04-17)
 
 - Fix Safari layering where sticky `.cv-day` elements could render above `.cv-item` elements while scrolling (`z-index` ordering fix in core CSS) (#261)

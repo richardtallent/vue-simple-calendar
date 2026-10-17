@@ -61,8 +61,9 @@
 		"@typescript-eslint/parser": "^8.58.2",
 		"@vitejs/plugin-vue": "^6.0.6",
 		"@vue/compiler-sfc": "^3.5.32",
+		"@vue/language-core": "^3.3.13",
 		"autoprefixer": "^10.5.0",
-		"eslint": "^9.39.4",
+		"eslint": "^10.13.0",
 		"eslint-plugin-prettier": "^5.5.5",
 		"eslint-plugin-vue": "^10.8.0",
 		"postcss": "^8.5.10",
@@ -72,7 +73,7 @@
 		"stylelint-config-standard": "^40.0.0",
 		"typescript": "^6.0.3",
 		"vite": "^8.0.8",
-		"vite-plugin-dts": "^4.5.4"
+		"vite-plugin-dts": "^5.1.2"
 	},
 	"eslintConfig": {
 		"extends": [
