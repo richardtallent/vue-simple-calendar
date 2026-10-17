@@ -75,8 +75,10 @@
 						@dragleave.prevent="onDragLeave(day, $event)"
 					>
 						<div class="cv-day-number">
-							<span v-if="fomName(day)" class="cv-fom-name">{{ fomName(day) }}</span>
-							{{ day.getDate() }}
+							<slot name="day-number" :day="day" :dayOfMonth="day.getDate()" :fomName="fomName(day)">
+								<span v-if="fomName(day)" class="cv-fom-name">{{ fomName(day) }}</span>
+								{{ day.getDate() }}
+							</slot>
 						</div>
 						<slot :day="day" name="day-content" />
 					</div>

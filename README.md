@@ -24,6 +24,7 @@ https://github.com/richardtallent/vue-simple-calendar-sample
 - [Slots](#slots)
   - [header](#header)
   - [dayHeader](#day-header)
+  - [dayNumber](#day-number)
   - [dayContent](#day-content)
   - [item](#item)
   - [weekNumber](#item)
@@ -320,6 +321,12 @@ Note above that both `previousPeriod` and `previousFullPeriod` are provided, as 
 The optional named slot `day-header` **replaces** the default `div.day` elements that appear in the column headers for each day of the week. If all you need to do is change how the names are shown, it's probably better to override the `locale` and/or `weekdayNameFormat` property. This slot is intended for situations where you need to override the markup within each header cell. For example, if you want each day of the week to be clickable.
 
 This slot passes two scoped variables: `index`, 0-7, and `label`, the text it would have used in the header based on the current `locale` and `weekdayNameFormat`.
+
+### Day Number
+
+The optional named slot `day-number` **replaces** the contents of the `div.cv-day-number` element, which by default shows the day of the month and, on the first of the month, the month name. The wrapper `div.cv-day-number` is always rendered, so existing styles still apply. Use this to add badges, custom formatting, or other indicators to the day number itself.
+
+This slot passes three scoped variables: `day`, the date associated with the cell; `dayOfMonth`, the day of the month as a number; and `fomName`, the month name shown on the first of the month (an empty value on other days, or when it is not being shown).
 
 ### Day Content
 
