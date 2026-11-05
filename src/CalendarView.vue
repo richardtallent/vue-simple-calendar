@@ -1,5 +1,6 @@
 <template>
 	<div
+		role="group"
 		:aria-label="ariaLabel"
 		:class="[
 			'cv-wrapper',
@@ -27,7 +28,7 @@
 				</slot>
 			</template>
 		</div>
-		<div :aria-multiselectable="enableDateSelection" class="cv-weeks">
+		<div class="cv-weeks">
 			<div
 				v-for="(weekStart, weekIndex) in weeksOfPeriod"
 				:key="`${weekIndex}-week`"
@@ -63,10 +64,7 @@
 							},
 							...((dateClasses && dateClasses[CalendarMath.isoYearMonthDay(day)]) || []),
 						]"
-						:aria-grabbed="enableDateSelection ? dayIsSelected(day) : undefined"
-						:aria-label="day.getDate().toString()"
-						:aria-selected="dayIsSelected(day)"
-						:aria-dropeffect="enableDragDrop && state.currentDragItem ? 'move' : enableDateSelection && state.dateSelectionOrigin ? 'execute' : 'none'"
+						:aria-selected="dayIsSelected(day) || undefined"
 						@click="onClickDay(day, $event)"
 						@dragstart="onDragDateStart(day, $event)"
 						@drop.prevent="onDrop(day, $event)"
