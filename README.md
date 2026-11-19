@@ -190,7 +190,7 @@ The following properties are supported, by functional area:
 - `selectionStart` - the start of the date range you want to select. This date is decorated with the `selectionStart` class.
 - `selectionEnd` - the end of the date range you want to select. This date is decorated with the `selectionEnd` class.
 
-Note: Each date between `selectionStart` and `selectionEnd` (including them) has the `aria-selected` attribute. This is used in the default CSS theme to highlight these in yellow).
+Note: Each date between `selectionStart` and `selectionEnd` (including them) has the `selected` class. This is used in the default CSS theme to highlight these in yellow. (Prior to 7.3.1, this used the `aria-selected` attribute instead.)
 
 ### Header Display
 
@@ -391,7 +391,7 @@ div cv-wrapper locale-X yYYYY mMM (past|future) period-X periodCount-X wrap-item
 			(div cv-weeknumber)
 				span
 			dv-weekdays
-				div cv-day dowX dYYYY-MM-DD dMM-DD dDD wmX (past|today|future|last|outsideOfMonth|lastInstance|selectionStart|selectionEnd) [x 7]
+				div cv-day dowX dYYYY-MM-DD dMM-DD dDD wmX (past|today|future|last|outsideOfMonth|lastInstance|selectionStart|selectionEnd|selected) [x 7]
 					div cv-day-number
 						div cv-fom-name
 					DAYCONTENT
@@ -506,6 +506,10 @@ This class is added to the day specified by the `selectionStart` prop.
 #### selectionEnd
 
 This class is added to the day specified by the `selectionEnd` prop.
+
+#### selected
+
+This class is added to every day between `selectionStart` and `selectionEnd`, inclusive.
 
 ### Calendar Item classes
 

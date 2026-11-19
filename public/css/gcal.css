@@ -130,7 +130,7 @@ as of May 2020.
 	color: #fff;
 }
 
-.theme-gcal .cv-day[aria-selected="true"] {
+.theme-gcal .cv-day.selected {
 	background-color: #ffc;
 }
 

@@ -1,5 +1,6 @@
 <template>
 	<div
+		role="group"
 		:aria-label="ariaLabel"
 		:class="[
 			'cv-wrapper',
@@ -27,7 +28,7 @@
 				</slot>
 			</template>
 		</div>
-		<div :aria-multiselectable="enableDateSelection" class="cv-weeks">
+		<div class="cv-weeks">
 			<div
 				v-for="(weekStart, weekIndex) in weeksOfPeriod"
 				:key="`${weekIndex}-week`"
@@ -60,13 +61,10 @@
 								hasItems: dayHasItems(day),
 								selectionStart: CalendarMath.isSameDate(day, selectionStart),
 								selectionEnd: CalendarMath.isSameDate(day, selectionEnd),
+								selected: dayIsSelected(day),
 							},
 							...((dateClasses && dateClasses[CalendarMath.isoYearMonthDay(day)]) || []),
 						]"
-						:aria-grabbed="enableDateSelection ? dayIsSelected(day) : undefined"
-						:aria-label="day.getDate().toString()"
-						:aria-selected="dayIsSelected(day)"
-						:aria-dropeffect="enableDragDrop && state.currentDragItem ? 'move' : enableDateSelection && state.dateSelectionOrigin ? 'execute' : 'none'"
 						@click="onClickDay(day, $event)"
 						@dragstart="onDragDateStart(day, $event)"
 						@drop.prevent="onDrop(day, $event)"
@@ -87,7 +85,6 @@
 							<div
 								:key="i.id"
 								:draggable="enableDragDrop"
-								:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
 								:class="i.classes"
 								:title="enableTooltip ? i.tooltip || i.title : undefined"
 								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
@@ -105,7 +102,6 @@
 							<div
 								:key="i.id"
 								:draggable="enableDragDrop"
-								:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
 								:class="i.classes"
 								:title="enableTooltip ? i.tooltip || i.title : undefined"
 								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
