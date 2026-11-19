@@ -20,6 +20,13 @@ I originally intended for this to be part of v5.0, but it was holding things up,
 - Document new button properties, move to headerProps
 - Add and document header slot for additional buttons, etc. on the same flex row
 
+## 7.3.1 (unreleased)
+
+- Remove ARIA attributes that are invalid on the calendar's role-less elements, which caused axe-core `aria-allowed-attr` / `aria-prohibited-attr` failures on every day cell (#266, #267, thanks @Makohan):
+  - `.cv-wrapper` now has `role="group"`, so the `ariaLabel` prop is actually announced
+  - Removed `aria-multiselectable` from `.cv-weeks`, `aria-label` / `aria-dropeffect` / `aria-grabbed` / `aria-selected` from `.cv-day`, and `aria-grabbed` from `.cv-item`
+- **Styling change:** days in the selection range now have a `selected` class instead of `aria-selected="true"`. The bundled themes are updated; if your own CSS uses `.cv-day[aria-selected="true"]`, change it to `.cv-day.selected`
+
 ## 7.3.0 (2026-10-17)
 
 - Fix `main` and `exports.require` pointing to the missing `vue-simple-calendar.umd.js`; they now point to `vue-simple-calendar.umd.cjs`, so `require()` and Jest work again (#264, #265, thanks @eertmanhidde)

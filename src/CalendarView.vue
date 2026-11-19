@@ -61,10 +61,10 @@
 								hasItems: dayHasItems(day),
 								selectionStart: CalendarMath.isSameDate(day, selectionStart),
 								selectionEnd: CalendarMath.isSameDate(day, selectionEnd),
+								selected: dayIsSelected(day),
 							},
 							...((dateClasses && dateClasses[CalendarMath.isoYearMonthDay(day)]) || []),
 						]"
-						:aria-selected="dayIsSelected(day) || undefined"
 						@click="onClickDay(day, $event)"
 						@dragstart="onDragDateStart(day, $event)"
 						@drop.prevent="onDrop(day, $event)"
@@ -85,7 +85,6 @@
 							<div
 								:key="i.id"
 								:draggable="enableDragDrop"
-								:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
 								:class="i.classes"
 								:title="enableTooltip ? i.tooltip || i.title : undefined"
 								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
@@ -103,7 +102,6 @@
 							<div
 								:key="i.id"
 								:draggable="enableDragDrop"
-								:aria-grabbed="enableDragDrop ? i == state.currentDragItem : undefined"
 								:class="i.classes"
 								:title="enableTooltip ? i.tooltip || i.title : undefined"
 								:style="`top:${getItemTop(i)};${i.originalItem.style}`"
