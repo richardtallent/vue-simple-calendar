@@ -609,6 +609,12 @@ A third stylesheet, `dist/css/holidays-us.css`, shows how simple it is to use CS
 # install dependencies
 npm install
 
-# build for production with minification
-npm run bundle
+# run the demo app with hot reload
+npm run dev
+
+# build the library (with .d.ts files) to dist/
+npm run build
+
+# run tests (in three time zones)
+npm test
 ```
